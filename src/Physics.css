@@ -1,0 +1,14 @@
+.physics-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Use the full height of the viewport */
+    width: 100vw; /* Use the full height of the viewport */
+    color: #ffffff; /* White text color */
+    background-color: #333333; /* Dark background color */
+    text-align: center; /* Center the text */
+    padding: 20px; /* Add some padding */
+    font-size: 100px;
+}
+

@@ -1,14 +1,14 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useSpring, animated } from '@react-spring/web';
 import { NavLink, Routes, Route, BrowserRouter as Router } from 'react-router-dom'; // Correct import path
-import './App.css';
+import './Thoughts.css';
 import Notes from './Notes';
 
 import Effects, { generateRainbowColors, generatePathStep, createCustomBody, Effect } from './Effects'; // Assuming Effects is a default export
 
 
 
-export default function App() {
+export default function Thoughts() {
 
     /**
      * 
@@ -21,19 +21,28 @@ export default function App() {
      */
 
     useEffect(() => {
-    }, [1]);
+
+
+    }, []);
     const [isAnimating, setIsAnimating] = useState(false);
     const [isContentDisplayed, setIsContentDisplayed] = useState(false);
+    const [trigger, setTrigger] = useState(false);
     
-
-    const notesContentLength = 1000; // Replace with dynamic length if needed
-    const totalDuration = notesContentLength * 50; // Total duration to display all characters
-
+    //console.log("totaldureation:" + totalDuration);
     const [springProps, api] = useSpring(() => ({
-        x: totalDuration,
+        x: 0,
+        xPhase: 0,
+        yPhase: 0,
         originX: 400, // Initial origin X
         originY: 300, // Initial origin Y
-        config: { duration: 1000 }
+        config: { duration: 1200 }
+    }));
+
+    // Spring for xPhase rotation
+    const [xPhaseSpringProps, xPhaseSpring] = useSpring(() => ({
+        xPhase: 0,
+        yPhase: 0,
+        config: { duration: 1200 }
     }));
 
     const { strokeDashAnimator } = useSpring({
@@ -43,21 +52,26 @@ export default function App() {
             originY: 300, // Initial origin Y,
         },
         strokeDashAnimator: isContentDisplayed ? 1 : 0,
-        config: { duration: totalDuration }
+        config: { duration: 100 }
     });
     const colors = generateRainbowColors(360); // Generate rainbow colors
 
-    const handleClick = (e) => {
+
+    const handleNextThoughtClick = (e) => {
         // Toggle the animation state using the function form of state setter
         setIsAnimating(prev => !prev);
-
+        setTrigger(!trigger);
+        
         //const rect = e.currentTarget.getBoundingClientRect();
         //const clickX = e.clientX - rect.left; // Calculate the click position relative to the SVG element
         //const clickY = e.clientY - rect.top;
 
         if (!isAnimating) {
+            //console.log(notesContentLength);
             api.start({
                 x: 600,
+                xPhase: 100,
+                yPhase: 100,
                 originX: 400, // Set new origin X
                 originY: 300, // Set new origin Y
                 config: { duration: 2000 }
@@ -65,59 +79,29 @@ export default function App() {
         } else {
             api.start({
                 x: 0,
-
-                config: { duration: 1 }
+                config: { duration: 1000 }
             });
+
         }
+
+    };
+    const onContentDisplayed = () => {
+        // Optionally handle the completion of the note display
+        console.log("displayed!");
+        spiralPath = xPhaseSpringProps.xPhase.to(xP => generatePathStep(600, springProps.originX.get(), springProps.originY.get(), 1, 0, deltaAngle, scale, xAngularFreq, yAngularFreq, xP, yPhase));
     };
 
-    const handleBackgroundEffectClick = () => {
-        // Instantiate a BackgroundEffect object with desired parameters
-        /*const backgroundEffect = new Effect(
-            400,    // xCoord
-            0,      // yCoord
-            0,      // step
-            2,      // xFunctionCode
-            1,      // yFunctionCode
-            1,      // deltaAngle
-            1,      // scale
-            468,      // xAngularFreq
-            120,      // yAngularFreq
-            20,      // xPhase
-            2       // yPhase
-        );*/
-        const bE = Effect.random();
-        // Call the play method to start the effect
-        bE.play(200);
-    };
+    const onContentLength = () => {
+        // Optionally handle the completion of the note display
+        console.log("legnth!");
+        spiralPath = springProps.xPhase.to(xP => generatePathStep(600, springProps.originX.get(), springProps.originY.get(), 2, 0, deltaAngle, scale, xAngularFreq, yAngularFreq, xP, yPhase));
 
-    const handleShadeClick = () => {
-        // Instantiate a BackgroundEffect object with desired parameters
-        const backgroundEffect = new Effect()
-            .setXCoord(500)
-            .setYCoord(500)
-            .setStartValue(500)
-            .setEndValue(10000)
-            .setStep(1)
-            .setLifespan(99999)
-            .setFadeOutDuration(10000)
-            .setXFunctionCode(0)
-            .setYFunctionCode(1)
-            .setDeltaAngle(1)
-            .setScale(0.1)
-            .setXAngularFreq(1)
-            .setYAngularFreq(1)
-            .setXPhase(1)
-            .setYPhase(1)
-            .setPulseID(5)
-            .setPulseAmplitude(0.0001)
-            .setPulseFrequency(100000)
-            .setPulseLowerBound(1)
-            .setPulseUpperBound(1.1);
-        // Call the play method to start the effect
-        backgroundEffect.play();
-    };
+        xPhaseSpring.start({
+            xPhase: 100,
+            config: { duration: 1200 }
+        });
 
+    };
     const [step, setStep] = useState(0); // Adjustable step variable
     const [time, setTime] = useState(0); // Time variable for sine wave modulation
     const [deltaAngle, setDeltaAngle] = useState(1); // Adjustable angle increment
@@ -127,7 +111,7 @@ export default function App() {
     const [xPhase, setXPhase] = useState(1);
     const [yPhase, setYPhase] = useState(1);
 
-    const spiralPath = springProps
+    var spiralPath = springProps
         .x
         .to(x => generatePathStep(x, springProps.originX.get(), springProps.originY.get(), 1, 0, deltaAngle, scale, xAngularFreq, yAngularFreq, xPhase, yPhase));
 
@@ -149,32 +133,17 @@ export default function App() {
 
     return (
         <>
-            <Effects
-                step={step}
-                setStep={setStep}
-                time={time}
-                setTime={setTime}
-                deltaAngle={deltaAngle}
-                setDeltaAngle={setDeltaAngle}
-                setScale={setScale}
-                xAngularFreq={xAngularFreq}
-                setXAngularFreq={setXAngularFreq}
-                yAngularFreq={yAngularFreq}
-                setYAngularFreq={setYAngularFreq}
-                xPhase={xPhase}
-                yPhase={yPhase}
-            />
+
             <div className="home-container" style={{ fontSize: '50px', marginLeft: '800px' }}>
             </div>
-            
+
             <div className="main" style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                
+
                 <animated.svg
                     width="800"
                     height="600"
                     viewBox="0 0 800 600"
                     style={{ overflow: 'visible', marginBottom: '20px' }}
-                    onClick={handleClick}
                 >
                     <animated.path
                         d={spiralPath}
@@ -189,9 +158,10 @@ export default function App() {
                 </animated.svg>
 
                 <div className="note">
-                    <Notes onContentDisplayed={setIsContentDisplayed} />
+                    <Notes trigger={trigger} onContentDisplayed={onContentDisplayed} onContentLength={onContentLength} />
+
                 </div>
-                
+
                 <div className="controls">
 
                     <SliderWithLabel
@@ -216,14 +186,14 @@ export default function App() {
                         setValue={setDeltaAngle}
                         min={0.05}
                         max={100}
-                        step={0.0001}
+                        step={0.01}
                     />
                     <SliderWithLabel
                         label="X Angular Frequency"
                         value={xAngularFreq}
                         setValue={setXAngularFreq}
                         min={0.1}
-                        max={100}
+                        max={2}
                         step={0.001}
                     />
                     <SliderWithLabel
@@ -231,7 +201,7 @@ export default function App() {
                         value={yAngularFreq}
                         setValue={setYAngularFreq}
                         min={0.1}
-                        max={100}
+                        max={2}
                         step={0.001}
                     />
                     <SliderWithLabel
@@ -250,8 +220,7 @@ export default function App() {
                         max={20}
                         step={0.1}
                     />
-                    <button onClick={handleBackgroundEffectClick}>Start Background Effect</button>
-                    <button onClick={handleShadeClick}>Shading Test</button>
+                    <button onClick={handleNextThoughtClick}>Next Thought</button>
                 </div>
             </div>
         </>

@@ -1,0 +1,27 @@
+.progressBarContainer {
+    background: #333333;
+    border: 2px solid red;
+    position: absolute;
+    top: 100px;
+    left: 10px;
+    z-index: 1;
+}
+
+.timelineContainer {
+
+}
+
+.progressBar {
+}
+
+.progressBarLabel {
+    color: white;
+}
+
+.progressBarButton {
+    width: 100px;
+    height: 20px;
+    margin: 30px;
+    display: grid;
+}
+

@@ -1,0 +1,256 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\TimelineController.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\TimelineController.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\TimelineController.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\TimelineController.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\Home.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\Home.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\Notes.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\Notes.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\Effects.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\Effects.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\RadialMenu.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\RadialMenu.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\PatternFactory.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\PatternFactory.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\PatternFactory.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\PatternFactory.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\Pattern.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\Pattern.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\Home.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\Home.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\Ascii.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\Ascii.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\Particles.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\Particles.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 149,
+          "SelectedChildIndex": 6,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Home.css",
+              "DocumentMoniker": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\Home.css",
+              "RelativeDocumentMoniker": "src\\Home.css",
+              "ToolTip": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\Home.css",
+              "RelativeToolTip": "src\\Home.css",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2024-03-28T14:20:38.137Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "TimelineController.css",
+              "DocumentMoniker": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\TimelineController.css",
+              "RelativeDocumentMoniker": "src\\TimelineController.css",
+              "ToolTip": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\TimelineController.css",
+              "RelativeToolTip": "src\\TimelineController.css",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2024-03-28T14:20:25.641Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "PatternFactory.css",
+              "DocumentMoniker": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\PatternFactory.css",
+              "RelativeDocumentMoniker": "src\\PatternFactory.css",
+              "ToolTip": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\PatternFactory.css",
+              "RelativeToolTip": "src\\PatternFactory.css",
+              "ViewState": "AQIAABQAAAAAAAAAAAAIwDAAAAAUAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2024-03-28T14:14:44.674Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "index.js",
+              "DocumentMoniker": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\index.js",
+              "RelativeDocumentMoniker": "src\\index.js",
+              "ToolTip": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\index.js",
+              "RelativeToolTip": "src\\index.js",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAAABcAAAAMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2024-03-28T14:11:35.044Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Effects.js",
+              "DocumentMoniker": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\Effects.js",
+              "RelativeDocumentMoniker": "src\\Effects.js",
+              "ToolTip": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\Effects.js",
+              "RelativeToolTip": "src\\Effects.js",
+              "ViewState": "AQIAABEAAAAAAAAAAAAQwAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2024-03-28T14:07:16.85Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Notes.js",
+              "DocumentMoniker": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\Notes.js",
+              "RelativeDocumentMoniker": "src\\Notes.js",
+              "ToolTip": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\Notes.js",
+              "RelativeToolTip": "src\\Notes.js",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABcAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2024-03-24T03:44:38.784Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "TimelineController.js",
+              "DocumentMoniker": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\TimelineController.js",
+              "RelativeDocumentMoniker": "src\\TimelineController.js",
+              "ToolTip": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\TimelineController.js",
+              "RelativeToolTip": "src\\TimelineController.js",
+              "ViewState": "AQIAAMEAAAAAAAAAAAAAAAABAABSAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2024-03-19T16:49:05.243Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Home.js",
+              "DocumentMoniker": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\Home.js",
+              "RelativeDocumentMoniker": "src\\Home.js",
+              "ToolTip": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\Home.js",
+              "RelativeToolTip": "src\\Home.js",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACUAAABoAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2024-03-19T15:58:39.704Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "FloatingWindowState": {
+        "Id": "27448e6f-fd26-41cf-bc75-96cc5b7d0f9f",
+        "Display": 1,
+        "X": 0,
+        "Y": -8,
+        "Width": 299,
+        "Height": 1936,
+        "WindowState": 2
+      },
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Pattern.js",
+              "DocumentMoniker": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\Pattern.js",
+              "RelativeDocumentMoniker": "src\\Pattern.js",
+              "ToolTip": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\Pattern.js",
+              "RelativeToolTip": "src\\Pattern.js",
+              "ViewState": "AQIAACcAAAAAAAAAAAAAAEYAAAAwAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2024-03-19T16:35:51.859Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Ascii.js",
+              "DocumentMoniker": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\Ascii.js",
+              "RelativeDocumentMoniker": "src\\Ascii.js",
+              "ToolTip": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\Ascii.js",
+              "RelativeToolTip": "src\\Ascii.js",
+              "ViewState": "AQIAAAIAAAAAAAAAAAAiwAwAAAAZAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2024-03-24T14:07:31.069Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Particles.js",
+              "DocumentMoniker": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\Particles.js",
+              "RelativeDocumentMoniker": "src\\Particles.js",
+              "ToolTip": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\Particles.js",
+              "RelativeToolTip": "src\\Particles.js",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABQAAAAbAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2024-03-23T14:45:12.613Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "RadialMenu.js",
+              "DocumentMoniker": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\RadialMenu.js",
+              "RelativeDocumentMoniker": "src\\RadialMenu.js",
+              "ToolTip": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\RadialMenu.js",
+              "RelativeToolTip": "src\\RadialMenu.js",
+              "ViewState": "AQIAAE8AAAAAAAAAAAAgwHsAAAAnAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2024-03-23T15:19:42.608Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "PatternFactory.js",
+              "DocumentMoniker": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\PatternFactory.js",
+              "RelativeDocumentMoniker": "src\\PatternFactory.js",
+              "ToolTip": "C:\\Users\\Ahmed\\Playground\\MyWebsiteForReal\\website\\src\\PatternFactory.js",
+              "RelativeToolTip": "src\\PatternFactory.js",
+              "ViewState": "AQIAAAEAAAAAAAAAAAAAABcAAAAZAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2024-03-28T14:05:20.441Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+.controls-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adapt number of columns based on available width */
+    gap: 5px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0px;
+    background-color: #fff; /* Background color for the fixed container */
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1); /* Shadow to lift the panel off the page */
+    overflow-x: auto; /* Allows scrolling horizontally if there are more controls than fit */
+    z-index: 1000; /* Ensures the controls stay above other content */
+}
+
+
+.parameter-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 5px;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.parameter-grid {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    gap: 2px;
+}
+.parameter-grid button,
+.parameter-grid input {
+    flex: 1;
+}
+
+.param-label {
+   padding-right: 10px; 
+
+}
+.param-select {
+    flex: 1;
+    margin-right: 5px;
+    width:100px;
+}
+
+.param-adjust-amount {
+    width: 50px;
+    margin-left: 5px;
+}
+
+.button-small {
+    padding: 0px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button-small:hover {
+    background-color: #0056b3;
+}
+
+.input-small {
+    border: 2px solid #007bff;
+    border-radius: 4px;
+    text-align: center;
+    padding: 5px 10px;
+    width: 50px;
+}
+
+.input-small:focus, .input-small.invalid {
+    border-color: #dc3545; /* Red color for focus or invalid inputs */
+}
+
+.toggle-container {
+    text-align: center;
+}
+
+.toggle-button {
+    padding: 5px 20px;
+    border-radius: 4px;
+    background-color: #28a745;
+    transition: background-color 0.3s;
+}
+
+    .toggle-button:hover {
+        background-color: #218838;
+    }
+
+/* Optional: Add responsive behavior */
+@media (max-width: 768px) {
+    .controls-container {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+/* Optional: Adjust the grid layout for smaller screens */
+@media (max-width: 480px) {
+    .parameter-grid {
+        grid-template-columns: repeat(3, 1fr) auto repeat(3, 1fr); /* Smaller buttons on smaller screens */
+    }
+
+    .button-small {
+        padding: 2px;
+        font-size: 0.8rem;
+    }
+
+    .input-small, .toggle-button {
+        padding: 2px 5px;
+    }
+}

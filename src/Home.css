@@ -1,0 +1,24 @@
+.home-page {
+    position: relative; /* Ensures it's positioned relative to your viewport */
+    z-index: 1; /* Ensures it sits above the canvas */
+}
+
+.homepage-button-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns */
+    gap: 40px;
+    justify-items: center; /* Center grid items horizontally */
+    align-items: center; /* Center grid items vertically */
+    position: fixed;
+    left: 50%;
+    bottom: 200px;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.homepage-button {
+    width: 100px;
+    height: 50px;
+    background-color: black;
+    color: white;
+}
