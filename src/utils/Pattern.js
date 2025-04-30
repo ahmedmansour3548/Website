@@ -136,14 +136,19 @@ class Pattern {
       vertexCount++;
       
       // Apply adjustments, if any.
-      if (vertexCount % Math.floor(newParams.loopVertex) === 0) {
-        newParams.paramsToAdjust.forEach((param, idx) => {
-          if (newParams[param] !== undefined && newParams.adjustAmounts[idx] !== undefined) {
-            newParams[param] += newParams.adjustAmounts[idx];
-          }
-          angle = 0; // Reset angle after adjustment.
-        });
+      if (newParams.loopVertex && vertexCount % Math.floor(newParams.loopVertex) === 0) {
+      for (let i = 0; i < newParams.paramsToAdjust.length; i++) {
+        const param = newParams.paramsToAdjust[i];
+        const amt = newParams.adjustAmounts[i];
+        if (
+          newParams[param] !== undefined &&
+          typeof amt === 'number'
+        ) {
+          newParams[param] += amt;
+        }
       }
+      angle = 0;
+    }
       
       angle += newParams.deltaAngle;
     }
