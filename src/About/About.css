@@ -1,0 +1,74 @@
+.about-container {
+    display: flex;
+    align-items: flex-start;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.image-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.about-image {
+    width: 550px; /* Adjust the width as needed */
+    height: auto;
+    margin-bottom: 10px; /* Space between the image and the arrows */
+    transition: opacity 0.5s ease-in-out; /* Smooth fade transition */
+    box-shadow: -50px 0px 20px 100px rgb(0, 0, 0); /* Add shadow for 3D effect */
+}
+
+.fade-in {
+    opacity: 1;
+}
+
+.fade-out {
+    opacity: 0;
+}
+
+.arrow-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100px; /* Adjust the width as needed */
+}
+
+.arrow {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.left-arrow {
+    margin-right: 10px;
+}
+
+.right-arrow {
+    margin-left: 10px;
+}
+
+.about-content {
+    flex: 1;
+    color: white; /* Ensure text is visible over the pattern */
+    padding-left: 90px;
+}
+
+.about-title {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.about-description {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.about-graphics {
+    /* Add styles for your vector graphics or images here */
+}
+

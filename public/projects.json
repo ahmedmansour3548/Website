@@ -1,0 +1,168 @@
+{
+    "categories": [
+        {
+            "id": "coding",
+            "title": "Coding Projects",
+            "projects": [
+                {
+                    "id": "knighthacks2020",
+                    "title": "Knight Hacks 2020",
+                    "description": "Description of Project 2...",
+                    "headerPhoto": "/assets/photos/projects/knighthacks2020_header.png",
+                    "headerPhotoWidth": 1204,
+                    "headerPhotoHeight": 660,
+                    "keyTakeaways": [
+                        "Improved real-time collaboration skills",
+                        "Learned how to handle API rate limits effectively",
+                        "Gained experience with WebSockets for real-time updates"
+                    ],
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/test.jpg",
+                            "width": 1024,
+                            "height": 768
+                        },
+                        {
+                            "url": "/assets/photos/projects/test.jpg",
+                            "width": 1024,
+                            "height": 768
+                        }
+                    ],
+                    "link": "/projects/coding/knighthacks2020"
+                }
+            ,
+        
+                {
+                    "id": "qubitvr",
+                    "title": "QubitVR",
+                    "description": "Description of Project 2...",
+                    "headerPhoto": "/assets/photos/projects/qubitvr_header.png",
+                    "headerPhotoWidth": 1911,
+                    "headerPhotoHeight": 905,
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/test.jpg",
+                            "width": 1024,
+                            "height": 768
+                        }
+                    ],
+                    "link": "/projects/coding/project2"
+                }
+            ,
+            
+                {
+                    "id": "subvrine",
+                    "title": "SubVRine",
+                    "description": "Description of Project 2...",
+                    "headerPhoto": "/assets/photos/projects/subvrine_header.png",
+                    "headerPhotoWidth": 1779,
+                    "headerPhotoHeight": 880,
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/test.jpg",
+                            "width": 1024,
+                            "height": 768
+                        }
+                    ],
+                    "link": "/projects/coding/project2"
+                }
+            ,
+            
+                {
+                    "id": "solitudevr",
+                    "title": "SolitudeVR",
+                    "description": "Description of Project 2...",
+                    "headerPhoto": "/assets/photos/projects/solitudevr_header.png",
+                    "headerPhotoWidth": 1605,
+                    "headerPhotoHeight": 880,
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/test.jpg",
+                            "width": 1024,
+                            "height": 768
+                        }
+                    ],
+                    "link": "/projects/coding/project2"
+                }
+                ,
+                {
+                    "id": "longboardvr",
+                    "title": "LongboardVR",
+                    "description": "Description of Project 2...",
+                    "headerPhoto": "/assets/photos/projects/longboardvr_header.png",
+                    "headerPhotoWidth": 1605,
+                    "headerPhotoHeight": 880,
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/test.jpg",
+                            "width": 1024,
+                            "height": 768
+                        }
+                    ],
+                    "link": "/projects/coding/project2"
+                }
+                ,
+                {
+                    "id": "battletetris",
+                    "title": "BattleTetris",
+                    "description": "Description of Project 2...",
+                    "headerPhoto": "/assets/photos/projects/battletetris_header.png",
+                    "headerPhotoWidth": 799,
+                    "headerPhotoHeight": 629,
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/test.jpg",
+                            "width": 1024,
+                            "height": 768
+                        }
+                    ],
+                    "link": "/projects/coding/project2"
+                }
+                ,
+                {
+                    "id": "concentriccircle",
+                    "title": "Concentric Circles",
+                    "description": "Description of Project 2...",
+                    "headerPhoto": "/assets/photos/projects/concentriccircle_header.png",
+                    "headerPhotoWidth": 799,
+                    "headerPhotoHeight": 629,
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/test.jpg",
+                            "width": 1024,
+                            "height": 768
+                        }
+                    ],
+                    "link": "/projects/coding/project2"
+                }
+            ]
+        },
+        {
+            "id": "art",
+            "title": "Art Projects",
+            "projects": [
+                {
+                    "id": "mural",
+                    "title": "VARLAB Augmented Reality Mural",
+                    "description": "Varlab Mural",
+                    "headerPhoto": "/assets/photos/projects/varlabwalloffame_header.jpg",
+                    "headerPhotoWidth": 800,
+                    "headerPhotoHeight": 600,
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/mural.jpg",
+                            "width": 800,
+                            "height": 600
+                        },
+                        {
+                            "url": "/assets/photos/projects/test.jpg",
+                            "width": 1024,
+                            "height": 768
+                        }
+                    ],
+                    "link": "/projects/art/mural"
+                }
+            ]
+        }
+    ]
+}

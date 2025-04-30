@@ -1,0 +1,73 @@
+.project-page {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-color: #121212;
+    overflow: hidden;
+    overflow: visible;
+    min-height: 100vh; /* Makes sure there's enough space */
+  }
+  
+  .project-container {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .center-text-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    color: #ffffff;
+    font-size: 2rem;
+    pointer-events: none;
+  }
+  
+  /* Clickable areas covering the left and right sides */
+  .click-area {
+    position: absolute;
+    top: 0;
+    width: 20%;
+    height: 100%;
+    z-index: 15;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0); /* initially transparent */
+    transition: background-color 0.3s;
+    opacity: 0;
+  }
+  
+  .click-area.left {
+    left: 0;
+    border-top-right-radius: 50%;
+    border-bottom-right-radius: 50%;
+  }
+  
+  .click-area.right {
+    right: 0;
+    border-top-left-radius: 50%;
+    border-bottom-left-radius: 50%;
+  }
+  
+  .arrow {
+    font-size: 3rem;
+    color: #ffffff;
+    opacity: 0.8;
+    pointer-events: none;
+  }
+  
+  /* Black Overlay that covers the entire viewport */
+.black-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: black;
+  z-index: 999; /* Above all content */
+  opacity: 1;
+  pointer-events: none;
+}

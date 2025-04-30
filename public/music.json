@@ -1,0 +1,101 @@
+{
+    "albums": [
+    
+        {
+            "name": "Cycles",
+            "artist": "Ahmed Mansour",
+            "year": 2025,
+            "tracks": [
+                {
+                    "name": "Over The Horizon (Solo)",
+                    "file": "/assets/music/OverTheHorizon (Solo).wav"
+                },
+                {
+                    "name": "Over The Horizon",
+                    "file": "/assets/music/OverTheHorizon.wav"
+                },
+                {
+                    "name": "With Two Hands",
+                    "file": "/assets/music/WithTwoHands.wav"
+                },
+                {
+                    "name": "Rooftop Bar On The First Floor",
+                    "file": "/assets/music/RooftopBarOnTheFirstFloor.wav"
+                }
+            ],
+            "frontCover" : "/assets/photos/albums/Cycles/CyclesFront.png",
+            "backCover" : "/assets/photos/albums/Cycles/CyclesBack.png",
+            "skybox" : [
+                "/assets/photos/albums/Cycles/skybox/px.png",
+                "/assets/photos/albums/Cycles/skybox/nx.png",
+                "/assets/photos/albums/Cycles/skybox/py.png",
+                "/assets/photos/albums/Cycles/skybox/ny.png",
+                "/assets/photos/albums/Cycles/skybox/pz.png",
+                "/assets/photos/albums/Cycles/skybox/nz.png"
+            ]
+        },
+        {
+            "name": "Drafts And Stuff",
+            "artist": "Ahmed Mansour",
+            "year": 2025,
+            "tracks": [
+                {
+                    "name": "Dreaming Of",
+                    "file": "/assets/music/DraftsAndStuff/DreamingOf.mp3"
+                },
+                {
+                    "name": "Sentient Heat (Draft)",
+                    "file": "/assets/music/DraftsAndStuff/SentientHeat.wav"
+                },
+                {
+                    "name": "Cereal Box (Draft)",
+                    "file": "/assets/music/DraftsAndStuff/CerealBox.wav"
+                },
+                {
+                    "name": "Cardboard Box",
+                    "file": "/assets/music/DraftsAndStuff/CardboardBox.wav"
+                },
+                {
+                    "name": "Stay And Rest",
+                    "file": "/assets/music/DraftsAndStuff/StayAndRest.wav"
+                },
+                {
+                    "name": "Standing By",
+                    "file": "/assets/music/DraftsAndStuff/StandingBy.wav"
+                },
+                {
+                    "name": "Still Dreaming",
+                    "file": "/assets/music/DraftsAndStuff/StillDreaming.mp3"
+                }
+            ],
+            "frontCover" : "/assets/photos/albums/DraftsAndStuff/DraftsAndStuffFront.png",
+            "backCover" : "/assets/photos/albums/DraftsAndStuff/DraftsAndStuffFront.png"
+        },
+        {
+            "name": "Coneman: The Soundtrack",
+            "artist": "Ahmed Mansour",
+            "year": 2023,
+            "tracks": [
+                {
+                    "name": "Cone of Caution",
+                    "file": "/assets/music/Coneman/Cone Of Caution.wav"
+                },
+                {
+                    "name": "Safety Orange Rage",
+                    "file": "/assets/music/Coneman/Safety Orange Rage.wav"
+                },
+                {
+                    "name": "Coneman Appears",
+                    "file": "/assets/music/Coneman/Coneman Appears.wav"
+                },
+                {
+                    "name": "Under Construction",
+                    "file": "/assets/music/Coneman/Under Construction.wav"
+                }
+            ],
+            "frontCover" : "/assets/photos/albums/Coneman/ConemanFront.png",
+            "backCover" : "/assets/photos/albums/Coneman/ConemanFront.png"
+            
+        }
+        ]
+}

@@ -1,7 +1,7 @@
 import { SET_CAMERA_POSITION } from '../actions/cameraActions';
 
 const initialState = {
-    position: { x: -340, y: 0, z: 500 } // Default camera position
+    position: { x: 0, y: 0, z: 500 } // Default camera position
 };
 
 export const cameraReducer = (state = initialState, action) => {

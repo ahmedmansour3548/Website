@@ -1,0 +1,24 @@
+{
+    "menu": [
+        {
+            "text": "PROJECTS",
+            "url": "/projects",
+            "timelineLabel": "ProjectsMesh"
+        },
+        {
+            "text": "MUSIC",
+            "url": "/Music",
+            "timelineLabel": "MusicMesh"
+        },
+        {
+            "text": "WRITINGS",
+            "url": "/writings",
+            "timelineLabel": "WritingsMesh"
+        },
+        {
+            "text": "RESUME",
+            "url": "/resume",
+            "timelineLabel": "ResumeMesh"
+        }
+    ]
+}

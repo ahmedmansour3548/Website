@@ -1,7 +1,66 @@
-html
- {
-
+html, body {
     background: black;
+    overflow: hidden; /* Disable scrolling */
+    height: 100%; /* Ensure the body takes the full height of the viewport */
+    margin: 0; /* Remove default margin */
+    z-index: 1;
+}
+/* Custom Scrollbar with Tapered Ends */
+::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: black;
+    border-radius: 6px;
+    height: 50px;
+    position: relative;
+  }
+  
+  /* Adding Tapered Ends */
+  ::-webkit-scrollbar-thumb:before,
+  ::-webkit-scrollbar-thumb:after {
+    content: "";
+    display: block;
+    width: 6px;
+    height: 10px;
+    background: linear-gradient(to top, transparent, black);
+    position: absolute;
+  }
+  
+  ::-webkit-scrollbar-thumb:after {
+    background: linear-gradient(to bottom, transparent, black);
+    bottom: 0;
+  }
+
+#background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+ 
+canvas {
+    z-index: -1;
+}
+#background-container svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
+
+}
+
+#background-container svg path {
+    stroke: red;
+    stroke-width: 2;
+    fill: none;
+
 }
 
 body {
@@ -11,6 +70,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: black;
+    color: #ff7300;
+    font-family: 'Press Start 2P', cursive;
 }
 
 code {
@@ -18,6 +80,13 @@ code {
     monospace;
 }
 
+h1 {
+    color: white;
+}
+
+p {
+    color: white;
+}
 
 .toolbar {
     display: flex;

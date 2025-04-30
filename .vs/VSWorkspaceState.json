@@ -2,13 +2,11 @@
   "ExpandedNodes": [
     "",
     "\\public",
-    "\\public\\assets\\animation2",
     "\\src",
     "\\src\\actions",
     "\\src\\reducers",
-    "\\src\\store",
-    "\\src\\utils"
+    "\\src\\store"
   ],
-  "SelectedNode": "\\public\\favicon.ico",
+  "SelectedNode": "\\src\\Notes.js",
   "PreviewInSolutionExplorer": false
 }

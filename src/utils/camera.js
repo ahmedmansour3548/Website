@@ -4,10 +4,10 @@ class Camera {
     constructor() {
         // Camera setup
         const aspectRatio = window.innerWidth / window.innerHeight;
-        this.camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
+        this.camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 10000);
 
         // Initial camera position
-        this.camera.position.set(-340, 0, 500);
+        this.camera.position.set(0, 0, 500);
 
         // Handle window resize
         window.addEventListener('resize', this.onWindowResize);
