@@ -829,6 +829,12 @@ const Home = () => {
         });
       };
 
+      const handleMusicButtonClick = () => {
+        handleButtonClick(() => {
+            window.location.href = "/music";
+        });
+    };
+
     return (
         <div className="home-page">
 
@@ -844,6 +850,7 @@ const Home = () => {
                         <button className="homepage-button" onClick={handleAboutMeButtonClick}>Who I am</button>
                         <button className="homepage-button" onClick={handleProjectButtonClick}>Projects</button>
                         <button className="homepage-button" onClick={handleContactButtonClick}>Contact</button>
+                        <button className="homepage-button" onClick={handleMusicButtonClick}>Music</button>
                     </div>
                 </div>)}
         </div>
