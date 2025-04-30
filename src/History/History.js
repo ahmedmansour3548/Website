@@ -29,7 +29,7 @@ const History = () => {
             // Cleanup on component unmount
             if (controlsRef.current) controlsRef.current.dispose();
         };
-    }, []);
+    }, [initThreeJsScene]);
 
     const updateCharacterSpeed = () => {
         const currentTime = performance.now();
