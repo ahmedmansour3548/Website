@@ -17,6 +17,7 @@ import KnightHacks2020 from './Projects/coding/KnightHacks2020'; // <-- Import h
 import History from './History/History.js';
 import Music from './Music/Music.js';
 import Writings from './Writings/Writings.js';
+import Contact from './Contact/Contact.js';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -36,6 +37,7 @@ root.render(
                 <Route path="/PatternFactory" element={<PatternFactory />} />
                 <Route path="/About" element={<About />} />
                 <Route path="/History" element={<History />} />
+                <Route path="/contact" element={<Contact />} />
                 <Route path="*" element={<p>There is nothing here: 404!</p>} />
               </Routes>
             </AnimationControlProvider>

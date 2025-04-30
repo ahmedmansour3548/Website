@@ -261,7 +261,43 @@ const Home = () => {
                 }
 
             })
-
+            .addLabel("Contact")
+               // (tweak these props to your exact “contact‐ready” pattern state)
+               .to(patternProgressRef.current, {
+                 value: 200,
+                 deltaAngle: 0.5,
+                 opacity: 0.9,
+                 duration: 1.5,
+                 ease: "power2.inOut",
+                 onUpdate() {
+                   patternRef.current.regeneratePatternArea({
+                    maxVertices: patternProgressRef.current.value,
+                    xPos: 0,
+                    yPos: 0,
+                    zPos: patternProgressRef.current.value,
+                    xFunctionCode: 0,
+                    yFunctionCode: 1,
+                     xPhase: patternProgressRef.current.xAxis,
+                     yPhase: patternProgressRef.current.yAxis,
+                     deltaAngle: patternProgressRef.current.deltaAngle,
+                     opacity: patternProgressRef.current.opacity,
+                     /* …other parameters… */
+                   });
+                 },
+                 onComplete() {
+                   // Save the pattern state so Contact can pick it up
+                   const patternState = {
+                    value: patternProgressRef.current.value,
+                    xAxis: patternProgressRef.current.xAxis,
+                    yAxis: patternProgressRef.current.yAxis,
+                    deltaAngle: patternProgressRef.current.deltaAngle,
+                    opacity: patternProgressRef.current.opacity
+                  };
+                   sessionStorage.setItem("patternState", JSON.stringify(patternState));
+                   // Navigate once the transition finishes
+                   navigate("/contact");
+                 }
+               })
 
             // Projects
             .addLabel("Projects")
@@ -786,10 +822,12 @@ const Home = () => {
 
     const handleContactButtonClick = () => {
         optionSelected.current = "Contact";
+        repeatRotationRef.current = false;
         handleButtonClick(() => {
-            repeatRotationRef.current = false;
+          // this kicks GSAP off from the “Contact” label
+          timeline.current.play("Contact");
         });
-    };
+      };
 
     return (
         <div className="home-page">
