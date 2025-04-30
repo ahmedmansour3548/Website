@@ -831,7 +831,7 @@ const Home = () => {
 
       const handleMusicButtonClick = () => {
         handleButtonClick(() => {
-            window.location.href = "/music";
+            navigate("/music");
         });
     };
 
