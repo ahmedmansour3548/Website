@@ -1,4 +1,5 @@
-import Physics from 'physicsjs';
+// src/utils/Particles.js
+import Matter from 'matter-js';
 
 class Particles {
   constructor(posX = 0, posY = 0, width = 500, height = 500) {
@@ -7,86 +8,72 @@ class Particles {
     this.canvasWidth = width;
     this.canvasHeight = height;
 
-    // Initialize the Physics world
-    this.world = Physics();
+    // 1) Create engine and world
+    this.engine = Matter.Engine.create();
+    this.world  = this.engine.world;
+    // Give a slight gravity downwards
+    this.world.gravity.y = 0.00314;
 
-    // Add gravity to the world
-    const gravity = Physics.behavior('constant-acceleration', {
-      acc: { x: 0, y: 0.00314, z: 0 }
-    });
-    this.world.add(gravity);
-
-    // Create the renderer (canvas) with the id 'viewport'
-    const dummyRenderer = Physics.renderer('canvas', {
-      el: 'particles-canvas',
-      width: this.canvasWidth,
-      height: this.canvasHeight,
-      autoResize: false,
-      hidden: false // Canvas is visible
-    });
-    this.world.add(dummyRenderer);
-
-    // Store a reference to the canvas element so we can remove it later
-    this.canvasElement = dummyRenderer.el;
-
-    // Style the canvas so it's positioned on top as needed
-    if (this.canvasElement) {
-      this.canvasElement.style.position = 'absolute';
-      this.canvasElement.style.left = `${this.canvasPosX}px`;
-      this.canvasElement.style.top = `${this.canvasPosY}px`;
-      // Keep it on top while in use
-      this.canvasElement.style.zIndex = '0';
-    }
-
-    // Start the simulation
-    this.startSimulation();
-  }
-
-  addShard(x, y, vx, vy, finalColor) {
-    const width = 10; // Shard width
-    const height = 10; // Shard height
-    const shard = Physics.body('rectangle', {
-      x: x,
-      y: y,
-      vx: vx,
-      vy: vy,
-      width: width,
-      height: height,
-      restitution: 0.3, // Bounciness
-      cof: 0.8,         // Friction coefficient
-      styles: {
-        fillStyle: finalColor
+    // 2) Create renderer on your existing <div id="particles-canvas"></div>
+    this.render = Matter.Render.create({
+      element: document.getElementById('particles-canvas'),
+      engine: this.engine,
+      options: {
+        width: this.canvasWidth,
+        height: this.canvasHeight,
+        wireframes: false,      // fill shapes
+        background: 'transparent'
       }
     });
-    this.world.add(shard);
+    Matter.Render.run(this.render);
+
+    // 3) Create runner (stepper)
+    this.runner = Matter.Runner.create();
+    Matter.Runner.run(this.runner, this.engine);
+
+    // 4) Keep reference to the canvas for cleanup
+    this.canvasElement = this.render.canvas;
+    this.canvasElement.style.position = 'absolute';
+    this.canvasElement.style.left     = `${this.canvasPosX}px`;
+    this.canvasElement.style.top      = `${this.canvasPosY}px`;
+    this.canvasElement.style.zIndex   = '0';
   }
 
-  simulateShatter(finalColor) {
-    console.log("Simulating shatter with color:", finalColor);
-    for (let i = 0; i < 100; i++) { // Create 100 shards
-      let x = Math.random() * this.canvasWidth;
-      let y = Math.random() * this.canvasHeight;
-      let vx = (Math.random() - 0.5) * 2;
-      let vy = (Math.random() - 0.5) * 2;
-      this.addShard(x, y, vx, vy, finalColor);
-    }
-  }
-
-  startSimulation() {
-    // Render the world on each physics step
-    this.world.on('step', () => {
-      this.world.render();
+  addShard(x, y, vx, vy, fillColor) {
+    const size = 10;
+    const shard = Matter.Bodies.rectangle(x, y, size, size, {
+      restitution: 0.3,   // bounciness
+      friction: 0.2,
+      render: {
+        fillStyle: fillColor
+      }
     });
-    // Start the simulation ticker
-    Physics.util.ticker.on((time) => {
-      this.world.step(time);
-    }).start();
+    // set initial velocity
+    Matter.Body.setVelocity(shard, { x: vx, y: vy });
+    Matter.World.add(this.world, shard);
+  }
+
+  simulateShatter(fillColor) {
+    console.log('Shattering with color:', fillColor);
+    for (let i = 0; i < 100; i++) {
+      const x  = Math.random() * this.canvasWidth;
+      const y  = Math.random() * this.canvasHeight;
+      const vx = (Math.random() - 0.5) * 2;
+      const vy = (Math.random() - 0.5) * 2;
+      this.addShard(x, y, vx, vy, fillColor);
+    }
   }
 
   cleanup() {
-    // Stop the physics simulation
-    Physics.util.ticker.stop();
-    // Remove the canvas from the DOM so it doesn't block clicks on other pages
+    // Stop runner & renderer
+    Matter.Runner.stop(this.runner);
+    Matter.Render.stop(this.render);
+
+    // Clear world
+    Matter.World.clear(this.world, false);
+    Matter.Engine.clear(this.engine);
+
+    // Remove canvas DOM
     if (this.canvasElement && this.canvasElement.parentNode) {
       this.canvasElement.parentNode.removeChild(this.canvasElement);
     }
