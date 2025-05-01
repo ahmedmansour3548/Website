@@ -177,10 +177,13 @@ class Pattern {
   }
 
   cleanup() {
-    document.body.removeChild(this.renderer.domElement);
+    if (this.renderer && this.renderer.domElement && this.renderer.domElement.parentNode === document.body) {
+      document.body.removeChild(this.renderer.domElement);
+    }
     window.removeEventListener('mousemove', this.onMouseMove);
     window.removeEventListener('click', this.onClick);
   }
+  
 
   selectFunction(code) {
     switch (Math.floor(code)) {

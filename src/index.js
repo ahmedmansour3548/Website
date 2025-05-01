@@ -21,7 +21,7 @@ import Contact from './Contact/Contact.js';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <React.StrictMode>
+    //<React.StrictMode>
         <Provider store={store}>
           <Router>
             <AnimationControlProvider>
@@ -43,7 +43,7 @@ root.render(
             </AnimationControlProvider>
           </Router>
         </Provider>
-    </React.StrictMode>
+   // </React.StrictMode>
 );
 
 reportWebVitals();

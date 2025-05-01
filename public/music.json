@@ -69,7 +69,15 @@
                 }
             ],
             "frontCover" : "/assets/photos/albums/DraftsAndStuff/DraftsAndStuffFront.png",
-            "backCover" : "/assets/photos/albums/DraftsAndStuff/DraftsAndStuffFront.png"
+            "backCover" : "/assets/photos/albums/DraftsAndStuff/DraftsAndStuffFront.png",
+            "skybox" : [
+                "/assets/photos/albums/DraftsAndStuff/skybox/posx.jpg",
+                "/assets/photos/albums/DraftsAndStuff/skybox/negx.jpg",
+                "/assets/photos/albums/DraftsAndStuff/skybox/posy.jpg",
+                "/assets/photos/albums/DraftsAndStuff/skybox/negy.jpg",
+                "/assets/photos/albums/DraftsAndStuff/skybox/posz.jpg",
+                "/assets/photos/albums/DraftsAndStuff/skybox/negz.jpg"
+            ]
         },
         {
             "name": "Coneman: The Soundtrack",
@@ -94,7 +102,15 @@
                 }
             ],
             "frontCover" : "/assets/photos/albums/Coneman/ConemanFront.png",
-            "backCover" : "/assets/photos/albums/Coneman/ConemanFront.png"
+            "backCover" : "/assets/photos/albums/Coneman/ConemanFront.png",
+            "skybox" : [
+                "/assets/photos/albums/Coneman/skybox/posx.jpg",
+                "/assets/photos/albums/Coneman/skybox/negx.jpg",
+                "/assets/photos/albums/Coneman/skybox/posy.jpg",
+                "/assets/photos/albums/Coneman/skybox/negy.jpg",
+                "/assets/photos/albums/Coneman/skybox/posz.jpg",
+                "/assets/photos/albums/Coneman/skybox/negz.jpg"
+            ]
             
         }
         ]

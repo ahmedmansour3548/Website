@@ -1,6 +1,6 @@
 html, body {
     background: black;
-    overflow: hidden; /* Disable scrolling */
+    /*overflow-x :hidden;  Disable scrolling */
     height: 100%; /* Ensure the body takes the full height of the viewport */
     margin: 0; /* Remove default margin */
     z-index: 1;
@@ -71,7 +71,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: black;
-    color: #ff7300;
+    color: #00FF00;
     font-family: 'Press Start 2P', cursive;
 }
 

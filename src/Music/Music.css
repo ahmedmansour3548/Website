@@ -1,116 +1,162 @@
+/* src/Music/Music.css */
+
+/* adjust this to match your actual footer total height (incl. padding) */
+:root {
+  --footer-height: 80px;
+  --neon-primary: #0ff;
+  --neon-accent: #f0f;
+}
+
 .music-page {
   width: 100vw;
-  height: 100vh;
-  overflow: hidden;
+  min-height: calc(100vh + var(--footer-height));
+  margin: 0;
+  padding: 0;
+  background: #000;
   position: relative;
+  overflow-y: auto;
 }
 
+/* full-screen WebGL canvas underneath */
 .music-container {
-  width: 100%;
-  height: 100%;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
 }
 
-.music-options {
+/* PLAYBACK BAR */
+/* sits at bottom of initial viewport, then scrolls up with content */
+.player-footer {
   position: absolute;
-  bottom: 20px;
+  top: calc(100vh - var(--footer-height));
+  left: 0;
   width: 100%;
-  color: #fff;
+  height: var(--footer-height);
+  background: rgba(20, 20, 20, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  box-sizing: border-box;
   z-index: 10;
-  padding: 0 20px;
-  text-align: center;
+  pointer-events: auto;
+  font-family: 'Courier New', monospace;
 }
 
-/* Album Info & Switcher */
+/* RETRO NEON TEXT FOR ALBUM INFO */
 .album-info {
-  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+  text-shadow:
+    0 0 4px var(--neon-primary),
+    0 0 8px var(--neon-primary),
+    0 0 16px var(--neon-accent);
 }
 
 .album-info h2 {
   margin: 0;
-  font-size: 1.8rem;
+  font-size: 1.4rem;
 }
 
 .album-info p {
-  margin: 5px 0 10px 0;
-  font-size: 1.2rem;
+  margin: 0;
+  font-size: 1rem;
+  opacity: 0.8;
 }
 
-.album-switcher {
+/* GROUPED CONTROLS: arrows + play bar */
+.controls-group {
   display: flex;
-  justify-content: center;
   align-items: center;
   gap: 40px;
-  margin-bottom: 10px;
 }
 
-.album-switch-button {
-  background-color: transparent;
+/* album switcher arrows */
+.album-switcher {
+  display: flex;
+  gap: 20px;
+}
+
+.album-switcher button {
+  background: none;
   border: none;
-  color: #fff;
+  color: var(--neon-primary);
   cursor: pointer;
-  transition: transform 0.2s;
+  font-size: 1.6rem;
+  text-shadow:
+    0 0 4px var(--neon-primary),
+    0 0 8px var(--neon-accent);
 }
 
-.album-switch-button:hover {
-  transform: scale(1.1);
-}
-
-/* Music Player Control Bar */
+/* playback buttons */
 .music-player-bar {
   display: flex;
-  justify-content: center;
-  align-items: center;
   gap: 30px;
-  margin-bottom: 20px;
 }
 
-.control-button {
-  background-color: transparent;
+.music-player-bar button {
+  background: none;
   border: none;
-  color: #fff;
+  color: var(--neon-primary);
   cursor: pointer;
-  outline: none;
-  transition: transform 0.2s;
+  font-size: 2rem;
+  text-shadow:
+    0 0 4px var(--neon-primary),
+    0 0 8px var(--neon-accent);
 }
 
-.control-button:hover {
-  transform: scale(1.1);
+/* DETAILS PANEL */
+/* sits exactly one viewport down, scrolls up over the canvas */
+.album-details {
+  position: relative;
+  z-index: 5;
+  margin-top: 100vh;
+  padding: 40px 20px;
+  background: #111;
+  color: #fff;
+  pointer-events: auto;
 }
 
-/* Track List: Two-column grid */
+/* two-column track list */
 .track-list {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 20px;
-  text-align: left;
+  gap: 12px;
+  margin-bottom: 30px;
 }
 
 .track {
-  padding: 5px 10px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
   cursor: pointer;
-  border: 1px solid transparent;
-  border-radius: 5px;
-  transition: background-color 0.3s, border-color 0.3s;
+  transition: background 0.2s;
 }
 
-.track:hover,
-.track.highlight {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-color: #fff;
+.track:hover {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .track.active {
-  background-color: rgba(0, 123, 255, 0.3);
-  border-color: #007bff;
+  background: rgba(0, 150, 255, 0.3);
 }
 
-.track-number {
-  margin-right: 5px;
-  font-weight: bold;
+/* album description */
+.album-description {
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.5;
+  opacity: 0.9;
 }
 
-.track-name {
-  vertical-align: middle;
-  font-size: 1rem;
+.album-description h3 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.album-description p {
+  margin: 0;
 }

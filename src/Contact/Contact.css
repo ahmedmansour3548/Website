@@ -1,88 +1,116 @@
+/* src/Contact/Contact.css */
+
 /* Full-screen black background with pattern behind */
 .contact-container {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    background: #000;
-  }
-  
-  /* Card centered with neon outline, more transparent for pattern visibility */
-  .contact-card {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.4); /* more transparent */
-    padding: 2rem 3rem;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(255, 0, 200, 0.6), 0 0 40px rgba(0, 255, 255, 0.4);
-    border: 2px solid;
-    border-image: linear-gradient(45deg, #ff00c8, #00ffe0) 1;
-    text-align: center;
-    z-index: 10;
-  }
-  
-  .contact-card h1 {
-    margin: 0 0 1rem;
-    font-size: 2.5rem;
-    color: #fff;
-    text-shadow: 0 0 8px #ff00c8, 0 0 8px #00ffe0;
-  }
-  
-  .contact-card p {
-    margin-bottom: 1.5rem;
-    font-size: 1.1rem;
-    color: #ececec;
-  }
-  
-  /* Email box with animated rainbow glow */
-  .contact-email {
-    display: inline-flex;
-    background: rgba(0, 0, 0, 0.2); /* translucent to see pattern */
-    border-radius: 4px;
-    overflow: hidden;
-    border: 1px solid #444;
-    position: relative;
-    z-index: 11;
-    animation: hueShift 8s linear infinite;
-  }
-  
-  .contact-email::before {
-    content: '';
-    position: absolute;
-    top: -4px;
-    left: -4px;
-    right: -4px;
-    bottom: -4px;
-    border-radius: 6px;
-    background: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet);
-    z-index: -1;
-    filter: blur(8px);
-    animation: hueShift 8s linear infinite;
-  }
-  
-  .contact-email code {
-    padding: 0.6rem 1rem;
-    font-family: 'Courier New', monospace;
-    color: #0ff;
-    user-select: all;
-    margin-top: 0.35rem;
-  }
-  
-  .contact-email button {
-    padding: 0.6rem 1rem;
-    background: #222;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  
-  .contact-email button:hover {
-    background: #333;
-  }
-  
-  @keyframes hueShift {
-    to { filter: hue-rotate(360deg); }
-  }
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Target the canvas injected by Pattern (it gets class="contact-pattern") */
+.contact-pattern {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 1 !important;         /* Behind all UI */
+  pointer-events: none !important; /* Let clicks go through */
+}
+
+/* Card centered with neon outline */
+.contact-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.4);
+  padding: 2rem 3rem;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(255,0,200,0.6), 0 0 40px rgba(0,255,255,0.4);
+  border: 2px solid;
+  border-image: linear-gradient(45deg, #ff00c8, #00ffe0) 1;
+  text-align: center;
+  z-index: 10;
+}
+
+.contact-card h1 {
+  margin: 0 0 1rem;
+  font-size: 2.5rem;
+  color: #fff;
+  text-shadow: 0 0 8px #ff00c8, 0 0 8px #00ffe0;
+}
+
+.contact-card p {
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  color: #ececec;
+}
+
+/* Email box with animated rainbow glow */
+.contact-email {
+  display: inline-flex;
+  background: rgba(0,0,0,0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #444;
+  position: relative;
+  z-index: 11;
+  animation: hueShift 8s linear infinite;
+}
+
+.contact-email::before {
+  content: '';
+  position: absolute;
+  top: -4px; left: -4px; right: -4px; bottom: -4px;
+  border-radius: 6px;
+  background: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet);
+  z-index: -1;
+  filter: blur(8px);
+  animation: hueShift 8s linear infinite;
+}
+
+.contact-email code {
+  padding: 0.6rem 1rem;
+  font-family: 'Courier New', monospace;
+  color: #0ff;
+  user-select: all;
+  margin-top: 0.35rem;
+}
+
+.contact-email button {
+  padding: 0.6rem 1rem;
+  background: #222;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.contact-email button:hover {
+  background: #333;
+}
+
+@keyframes hueShift {
+  to { filter: hue-rotate(360deg); }
+}
+
+/* Back to Home button */
+.back-home {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5rem 1rem;
+  background: #fff;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 1rem;
+  z-index: 12;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: background 0.2s;
+}
+.back-home:hover {
+  background: #f0f0f0;
+}

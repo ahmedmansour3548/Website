@@ -14,7 +14,6 @@ import cameraInstance from '../utils/camera';
 import Pattern from '../utils/Pattern';
 
 const Music = () => {
-  const musicContainerRef = useRef(null);
   const sceneRef = useRef(new THREE.Scene());
   const camera = cameraInstance.getCamera();
   const rendererRef = useRef(null);
@@ -64,7 +63,6 @@ const Music = () => {
     renderer.domElement.style.top = '0';
     renderer.domElement.style.left = '0';
     renderer.domElement.style.zIndex = '0';
-    musicContainerRef.current.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
     // Retrieve pattern state from sessionStorage.
@@ -81,7 +79,7 @@ const Music = () => {
         xFunctionCode: 0,
         yFunctionCode: 1,
         deltaAngle: patternState.deltaAngle,
-        scale: 1,
+        scale: 2,
         xAngularFreq: 1,
         yAngularFreq: 1,
         xPhase: patternState.xAxis,
@@ -191,9 +189,9 @@ const Music = () => {
       requestAnimationFrame(animate);
       
       // Rotate the skybox slowly
-      if (skyboxRef.current) {
-        skyboxRef.current.rotation.y += 0.0005; // Adjust speed as needed
-      }
+      // if (skyboxRef.current) {
+      //   skyboxRef.current.rotation.y += 0.0005; // Adjust speed as needed
+      // }
       
       rendererRef.current.render(sceneRef.current, camera);
     };
@@ -202,13 +200,14 @@ const Music = () => {
 
   // --- Skybox Helper Functions using CubeTextureLoader ---
   const loadSkybox = (urls, fadeInDuration = 1) => {
-    // Use CubeTextureLoader to load the cube texture.
     const cubeLoader = new THREE.CubeTextureLoader();
     cubeLoader.load(urls, (cubeTexture) => {
-      // Use the built-in cube shader.
       const shader = THREE.ShaderLib["cube"];
       const uniforms = THREE.UniformsUtils.clone(shader.uniforms);
       uniforms["tCube"].value = cubeTexture;
+      cubeTexture.magFilter = THREE.LinearFilter;
+      cubeTexture.minFilter = THREE.LinearMipMapLinearFilter;
+      
       const skyboxMaterial = new THREE.ShaderMaterial({
         fragmentShader: shader.fragmentShader,
         vertexShader: shader.vertexShader,
@@ -218,39 +217,38 @@ const Music = () => {
         transparent: true,
         opacity: 0
       });
+  
       const skyboxGeometry = new THREE.BoxGeometry(5000, 5000, 5000);
-      const skyboxMesh = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
-      // Remove any existing skybox.
-      if (skyboxRef.current) {
-        sceneRef.current.remove(skyboxRef.current);
-        skyboxRef.current = null;
-      }
-      sceneRef.current.add(skyboxMesh);
-      skyboxRef.current = skyboxMesh;
-      gsap.to(skyboxMesh.material, {
+      const newSkybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
+  
+      // Add the new skybox first before fading
+      sceneRef.current.add(newSkybox);
+  
+      // Fade in the new one
+      gsap.to(newSkybox.material, {
         opacity: 1,
         duration: fadeInDuration,
         ease: "power2.inOut"
       });
-    });
-  };
-
-  const fadeOutSkybox = (fadeOutDuration = 0.5, onComplete) => {
-    if (!skyboxRef.current) {
-      if (onComplete) onComplete();
-      return;
-    }
-    gsap.to(skyboxRef.current.material, {
-      opacity: 0,
-      duration: fadeOutDuration,
-      ease: "power2.inOut",
-      onComplete: () => {
-        sceneRef.current.remove(skyboxRef.current);
-        skyboxRef.current = null;
-        if (onComplete) onComplete();
+  
+      // Fade out the old one, then remove it
+      if (skyboxRef.current) {
+        const oldSkybox = skyboxRef.current;
+        gsap.to(oldSkybox.material, {
+          opacity: 0,
+          duration: 0.5,
+          ease: "power2.inOut",
+          onComplete: () => {
+            sceneRef.current.remove(oldSkybox);
+          }
+        });
       }
+  
+      // Update current skybox ref
+      skyboxRef.current = newSkybox;
     });
   };
+  
 
 const setAllPatternToColor = (colorHex) => {
   if (
@@ -300,8 +298,6 @@ const setPatternToGreenPercent = (greenPercent) => {
   // --- Album Switching Functions using continuous globalOffset ---
   const handleAlbumNext = () => {
     if (!albums.length) return;
-    // Fade out the current skybox.
-    fadeOutSkybox(0.3);
     // Set the pattern override: force all vertices to red.
     patternOverrideRef.current = true;
     setAllPatternToColor(0xFF0000);
@@ -355,7 +351,6 @@ const setPatternToGreenPercent = (greenPercent) => {
 
   const handleAlbumPrevious = () => {
     if (!albums.length) return;
-    fadeOutSkybox(0.3);
     // Set the pattern override: force all vertices to red.
     patternOverrideRef.current = true;
     // Set the pattern override: force all vertices to red.
@@ -546,50 +541,48 @@ const setPatternToGreenPercent = (greenPercent) => {
 
   return (
     <div className="music-page">
-      <div className="music-container" ref={musicContainerRef}></div>
-      <div className="music-options">
-        {albums.length > 0 && (
-          <>
-            <div className="album-info">
-              <h2>{albums[currentAlbumIndex].name}</h2>
-              <p>{albums[currentAlbumIndex].artist} ({albums[currentAlbumIndex].year})</p>
+
+      {/* Fixed footer with album info & playback controls */}
+      <div className="player-footer">
+        <div className="album-info">
+          <h2>{albums[currentAlbumIndex]?.name}</h2>
+          <p>{albums[currentAlbumIndex]?.artist} ({albums[currentAlbumIndex]?.year})</p>
+        </div>
+        <div className="album-switcher">
+          <button onClick={handleAlbumPrevious}><FaChevronLeft /></button>
+          <button onClick={handleAlbumNext}><FaChevronRight /></button>
+        </div>
+        <div className="music-player-bar">
+          <button onClick={handlePrevious}><FaStepBackward /></button>
+          <button onClick={handlePlayPause}>
+            {isPlaying ? <FaPause /> : <FaPlay />}
+          </button>
+          <button onClick={handleNext}><FaStepForward /></button>
+        </div>
+      </div>
+
+      {/* Scrollable details area (tracks, album description, etc.) */}
+      <div className="album-details">
+        <div className="track-list">
+          {albums[currentAlbumIndex]?.tracks.map((track, index) => (
+            <div
+              key={index}
+              className={`track ${index === currentTrackIndex ? 'active' : ''}`}
+              onClick={() => handleTrackClick(track, index)}
+            >
+              <span className="track-number">{index + 1}.</span>
+              <span className="track-name">{track.name}</span>
             </div>
-            <div className="album-switcher">
-              <button className="album-switch-button" onClick={handleAlbumPrevious}>
-                <FaChevronLeft size={28} />
-              </button>
-              <button className="album-switch-button" onClick={handleAlbumNext}>
-                <FaChevronRight size={28} />
-              </button>
-            </div>
-            <div className="music-player-bar">
-              <button className="control-button" onClick={handlePrevious}>
-                <FaStepBackward size={24} />
-              </button>
-              <button className="control-button" onClick={handlePlayPause}>
-                {isPlaying ? <FaPause size={30} /> : <FaPlay size={30} />}
-              </button>
-              <button className="control-button" onClick={handleNext}>
-                <FaStepForward size={24} />
-              </button>
-            </div>
-            <div className="track-list">
-              {albums[currentAlbumIndex].tracks &&
-                albums[currentAlbumIndex].tracks.map((track, index) => (
-                  <div
-                    key={index}
-                    className={`track ${index === currentTrackIndex ? 'active' : ''}`}
-                    onMouseEnter={(e) => e.currentTarget.classList.add("highlight")}
-                    onMouseLeave={(e) => e.currentTarget.classList.remove("highlight")}
-                    onClick={() => handleTrackClick(track, index)}
-                  >
-                    <span className="track-number">{index + 1}.</span>
-                    <span className="track-name">{track.name}</span>
-                  </div>
-                ))}
-            </div>
-          </>
-        )}
+          ))}
+        </div>
+        {/* You can add more below: album description, credits, etc. */}
+        <div className="album-description">
+          <h3>About this album</h3>
+          <p>
+            {/* Replace with real data from your JSON */}
+            {albums[currentAlbumIndex]?.description || 'No description available.'}
+          </p>
+        </div>
       </div>
     </div>
   );

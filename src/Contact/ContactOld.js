@@ -172,6 +172,7 @@ const Contact = () => {
           geom.attributes.color.needsUpdate = true;
         },
         onComplete: () => {
+          pattern.cleanup();
           navigate("/");
         }
       }, 0);
