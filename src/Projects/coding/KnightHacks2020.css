@@ -97,10 +97,10 @@
 }
 
 /* Tech-Used (thin card) */
-.tech-used-section {
+.section-2 {
   min-height: 40vh;
 }
-.tech-used-section .section-card {
+.section-2 .section-card {
   flex-direction: column; gap: 1rem;
 }
 .tech-grid {
