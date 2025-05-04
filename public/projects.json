@@ -28,7 +28,22 @@
                             "height": 768
                         }
                     ],
-                    "link": "/projects/coding/knighthacks2020"
+                    "link": "/projects/coding/knighthacks2020",
+                    "dateCompleted": "10/7/2020",
+                    "softwareUsed": "Unity",
+                    "hardware": "Meta Quest 2",
+                    "teamMembers": ["Javier Aguilar","Jeff Fortune","Timothy Jinks","Jacob Powers"],
+                    "sponsors": ["Dr. Ryan McMahan","Dr. Michael Kolodrubetz"],
+                    "techUsed": [
+                        "threejs",
+                        "unity",
+                        "reactjs"
+                    ],
+                    "repoUrl": "https://github.com/you/knighthacks2020",
+                    "downloadUrl": "/assets/zips/knighthacks2020.zip",
+                    "liveUrl": "https://yourgamehost.com/knighthacks2020"
+                      
+                      
                 }
             ,
         

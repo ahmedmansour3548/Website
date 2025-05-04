@@ -32,8 +32,12 @@ const Home = () => {
     value: 0,
     xAxis: 0,
     yAxis: 0,
+    xPos: 0,
+    yPos: 0,
+    zPos: 0,
     deltaAngle: 0,
-    opacity: 0
+    opacity: 0,
+    scale: 4
   });
 
   // read skip-entry flag once
@@ -62,10 +66,10 @@ const Home = () => {
     const pp = p.current;
     patternRef.current.regeneratePatternArea({
       maxVertices: pp.value,
-      xPos: 0, yPos: 0,
+      xPos: pp.xPos, yPos: pp.yPos, zPos: pp.zPos,
       xFunctionCode: 0, yFunctionCode: 1,
       deltaAngle: pp.deltaAngle,
-      scale: 2,
+      scale: pp.scale,
       xAngularFreq: 1, yAngularFreq: 1,
       xPhase: pp.xAxis, yPhase: pp.yAxis,
       loopVertex: 1000,
@@ -89,6 +93,7 @@ const Home = () => {
       { r:0.58,g:0, b:0.83}
     ];
     const len = colors.length;
+    const hue = { value: 0 };
 
     // 1) ENTRY
     const entryTL = gsap.timeline({ paused: true });
@@ -134,7 +139,7 @@ const Home = () => {
           const r = THREE.MathUtils.lerp(c0.r, c1.r, t);
           const g = THREE.MathUtils.lerp(c0.g, c1.g, t);
           const b = THREE.MathUtils.lerp(c0.b, c1.b, t);
-          patternRef.current.updateMaterialColor(r, g, b);
+          patternRef.current.updateMaterialColor(0, 0, 1);
           regen();
         }
       });
@@ -142,10 +147,9 @@ const Home = () => {
 
     // 3) ABOUT
     const aboutTL = gsap.timeline({ paused: true })
-      .to(p.current, { value:100, deltaAngle:1.1, duration:0.5, ease:'linear', onUpdate:regen })
-      .to(p.current, { value:0, duration:0 })
+      .to(p.current, { value:100, deltaAngle:1.8, xAxis:0, duration:1.5, ease:'linear', onUpdate:regen })
       .to(p.current, {
-        value:1000, opacity:0.8, duration:1, ease:'expo.inOut',
+        zPos:1000, opacity:0, duration:2, ease:'expo.inOut',
         onUpdate:regen,
         onComplete: () => navigate('/about')
       });
@@ -153,31 +157,19 @@ const Home = () => {
 
     // 4) PROJECTS
     const projectsTL = gsap.timeline({ paused: true })
-      .to(p.current, { value:0, duration:0, onUpdate:regen })
-      .call(() => {
-        const frac = (p.current.xAxis % (2 * Math.PI)) / (2 * Math.PI);
-        const idx = Math.floor(frac * len) % len;
-        const fc = colors[idx];
-        particlesRef.current.simulateShatter(
-          `rgb(${fc.r*255},${fc.g*255},${fc.b*255})`
-        );
-      })
-      .to({}, { duration:1 })
+      .to(p.current, { value:41, deltaAngle:1.83, xAxis:0, scale: 2, duration:2, ease:'power2.inOut', onUpdate:regen })
       .to(p.current, {
-        value:1000, opacity:0, duration:0.5, ease:'linear', onUpdate:regen,
-        onComplete: () => radialMenuRef.current.updateMeshes({ opacity:0 })
-      })
-      .to(p.current, { xRotation:-Math.PI/2.5, yPos:-500, duration:3, ease:'linear', onUpdate:regen })
-      .to(p.current, {
-        value:800, duration:1, ease:'linear', onUpdate:regen,
+        value:40, opacity:1, duration:0.5, ease:'linear', onUpdate:regen,
         onComplete: () => navigate('/projects')
-      });
+      })
+      .to(p.current, {duration:3, ease:'linear', onUpdate:regen });
+
     timelines.current.projects = projectsTL;
 
     // 5) CONTACT
     const contactTL = gsap.timeline({ paused: true })
       .to(p.current, {
-        value:200, deltaAngle:0.5, opacity:0.9, xAxis:0,
+        value:200, deltaAngle:0.5, opacity:0.9, xAxis:0, scale: 2,
         duration:2, ease:'power2.inOut', onUpdate: regen
       })
       .to({}, {
@@ -327,11 +319,11 @@ const Home = () => {
       </div>
       {uiVisible && (
         <div className="homepage-button-container" style={{ opacity: 0 }}>
-          <button onClick={() => handleClick('about')}>Who I am</button>
-          <button onClick={() => handleClick('projects')}>Projects</button>
-          <button onClick={() => handleClick('contact')}>Contact</button>
-          <button onClick={() => handleClick('music')}>Music</button>
-          <button onClick={() => handleClick('writings')}>Writings</button>
+          <button className="homepage-button" onClick={() => handleClick('about')}>Who I am</button>
+          <button className="homepage-button" onClick={() => handleClick('projects')}>Projects</button>
+          <button className="homepage-button" onClick={() => handleClick('contact')}>Contact</button>
+          <button className="homepage-button" onClick={() => handleClick('music')}>Music</button>
+          <button className="homepage-button" onClick={() => handleClick('writings')}>Writings</button>
         </div>
       )}
     </div>

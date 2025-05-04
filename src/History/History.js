@@ -144,7 +144,7 @@ const History = () => {
     };
     
     return (
-        <div className="about-page">
+        <div className="history-page">
             <div className="text-section">
                 <h1>About Me</h1>
                 <p>{yearTexts[year]}</p>

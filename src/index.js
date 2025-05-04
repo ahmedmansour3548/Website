@@ -3,7 +3,7 @@ import reportWebVitals from './reportWebVitals';
 import { Routes, Route, BrowserRouter as Router } from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
 import React from 'react';
-import Physics from './Physics/Physics.js';
+//import Physics from './Physics/Physics.js';
 import Home from './Home/Home.js';
 import Thoughts from './Thoughts/Thoughts.js';
 import Ascii from './ASCII/Ascii.js';
@@ -30,7 +30,7 @@ root.render(
                 <Route exact path="/projects" element={<Projects />} />
                 <Route path="/projects/coding/:id" element={<KnightHacks2020 />} />
                 <Route exact path="/music" element={<Music />} />
-                <Route path="/physics" element={<Physics />} />
+                {/* <Route path="/physics" element={<Physics />} /> */}
                 <Route path="/thoughts" element={<Thoughts />} />
                 <Route path="/writings" element={<Writings />} />
                 <Route path="/ascii" element={<Ascii />} />

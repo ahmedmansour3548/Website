@@ -53,11 +53,11 @@ const Contact = () => {
 
 
     // ** Re-parent the canvas into our section container **
-    const canvas = pattern.renderer.domElement;
-    if (canvas.parentNode === document.body && containerRef.current) {
-      document.body.removeChild(canvas);
-      containerRef.current.insertBefore(canvas, containerRef.current.firstChild);
-    }
+    // const canvas = pattern.renderer.domElement;
+    // if (canvas.parentNode === document.body && containerRef.current) {
+    //   document.body.removeChild(canvas);
+    //   containerRef.current.insertBefore(canvas, containerRef.current.firstChild);
+    // }
 
     patternRef.current = pattern;
 
@@ -121,17 +121,31 @@ const Contact = () => {
       deltaAngle: 1.05,
       opacity: 1,
       xAxis: 0,
-      yAxis: 0
+      yAxis: 0,
+      scale: 4
     };
-
+    patternRef.current.scale = 2;
     const backTL = gsap.timeline();
-    backTL
+    // 1) Quick spring/fade‐out of the contact card
+    backTL.to(".contact-card", {
+        opacity: 0,
+        scale: 0.8,
+        duration: 0.3,
+        ease: "back.in(1.7)"
+    }, 0)
+    .to(".back-home", {
+      opacity: 0,
+      scale: 0.8,
+      duration: 0.3,
+      ease: "back.in(1.7)"
+  }, 0)
       .to(patternRef.current, {
         value: to.value,
         deltaAngle: to.deltaAngle,
         opacity: to.opacity,
         xAxis: to.xAxis,
         yAxis: to.yAxis,
+        scale: to.scale,
         duration: 2,
         ease: "power2.inOut",
         onUpdate: () => {
@@ -146,7 +160,7 @@ const Contact = () => {
             xPos: 0, yPos: 0,
             xFunctionCode: 0, yFunctionCode: 1,
             deltaAngle: patternRef.current.deltaAngle,
-            scale: 2,
+            scale: patternRef.current.scale,
             xAngularFreq: 1,
             yAngularFreq: 1,
             xPhase: patternRef.current.xAxis,
@@ -189,9 +203,7 @@ const Contact = () => {
           </button>
         </div>
       </div>
-      <button className="back-home" onClick={goBackHome}>
-        ← Back to Home
-      </button>
+      <button className="back-home" onClick={goBackHome}></button>
     </section>
   );
 };

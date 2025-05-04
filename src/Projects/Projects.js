@@ -1,138 +1,161 @@
-// src/Projects/Projects.js
 import "./Projects.css";
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import HexagonMenu3D from "../utils/HexagonMenu3D";
-import gsap from "gsap";
-import * as THREE from 'three';
-import Pattern from '../utils/Pattern';
-import cameraInstance from '../utils/camera';
+import { useNavigate }      from "react-router-dom";
+import HexagonMenu3D        from "../utils/HexagonMenu3D";
+import gsap                 from "gsap";
+import * as THREE           from "three";
+import Pattern              from "../utils/Pattern";
+import cameraInstance       from "../utils/camera";
+
+// Define per-page pattern settings
+const PAGE_SETTINGS = [
+  { deltaAngle: 0.2, xAxisLoop: false, rotationLoop: false },
+  { deltaAngle: 0.3, xAxisLoop: true,  rotationLoop: true  },
+  { deltaAngle: 0.5, xAxisLoop: false, rotationLoop: false },
+  { deltaAngle: 1.0, xAxisLoop: true,  rotationLoop: false },
+  { deltaAngle: 0.7, xAxisLoop: false, rotationLoop: false },
+  { deltaAngle: 1.5, xAxisLoop: true,  rotationLoop: false }
+];
+
 const Projects = () => {
-  // Instead of storing a flat projects array, we store the full categories array.
   const [categories, setCategories] = useState([]);
   const containerRef = useRef(null);
-  const menu3DRef = useRef(null);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const sceneRef = useRef(null);
-  const patternRef = useRef();
-const patternProgressRef = useRef({
-  xRotation: 0,
-  yPos: 0,
-  value: 1000,
-  deltaAngle: 0.785398163,
-  xAxis: 0, // Set these if needed
-  yAxis: 0  // Set these if needed
-    });
+  const menu3DRef    = useRef(null);
+  const patternRef   = useRef(null);
+  const navigate     = useNavigate();
+
+  const savedState = useRef({
+    xAxis:      0,
+    yAxis:      0,
+    deltaAngle: 1,
+    value:      1000,
+    opacity:    1
+  }).current;
+
+  // Load categories
   useEffect(() => {
     fetch("/projects.json")
-      .then((response) => response.json())
-      .then((data) => {
-        // Set the state to the array of categories.
+      .then(res => res.json())
+      .then(data => {
         setCategories(data.categories);
         gsap.set(".click-area", { opacity: 0 });
         gsap.to(".click-area", { opacity: 1, duration: 1, delay: 2.5 });
       })
-      .catch((error) => console.error("Error fetching projects:", error));
+      .catch(console.error);
   }, []);
 
+  // Init Three.js + Pattern + Menu
   useEffect(() => {
-    if (categories.length > 0 && containerRef.current) {
-      // Pass the full category data to HexagonMenu3D.
-      menu3DRef.current = new HexagonMenu3D(
-        containerRef.current,
-        categories,
-        navigate
-      );
-      sceneRef.current = new THREE.Scene();
-      const sharedCamera = cameraInstance.getCamera();
-      //patternRef.current = new Pattern(sceneRef.current, sharedCamera, false, 1, "projects-pattern", 0xFF0000);
-          
-          
-          // // Animate the pattern into its final state so that it matches the home page.
-          // gsap.fromTo(
-          //   patternProgressRef.current,
-          //   { xRotation: 0, yPos: 0, value: 1000, deltaAngle: 0.785398163 },
-          //   {
-          //     xRotation: -Math.PI / 2.5,
-          //     yPos: -500,
-          //     value: 1000, // value remains the same if that’s desired
-          //     duration: 0,
-          //     ease: "linear",
-          //     immediateRender: false,
-          //     onUpdate: () => {
-          //       // Regenerate the pattern with the current tween values.
-          //       patternRef.current.regeneratePatternArea({
-          //         maxVertices: patternProgressRef.current.value,
-          //         xPos: 0,
-          //         yPos: patternProgressRef.current.yPos,
-          //         xFunctionCode: 0,
-          //         yFunctionCode: 1,
-          //         deltaAngle: patternProgressRef.current.deltaAngle,
-          //         scale: 1,
-          //         xAngularFreq: 1,
-          //         yAngularFreq: 1,
-          //         xPhase: patternProgressRef.current.xAxis,
-          //         yPhase: patternProgressRef.current.yAxis,
-          //         xRotation: patternProgressRef.current.xRotation,
-          //         loopVertex: 1000,
-          //         paramsToAdjust: [],
-          //         adjustAmounts: []
-          //       });
-          //     },
-          //     onComplete: () => {
-          //       console.log("Pattern animation complete");
-          //       // At this point, the pattern is in the final state (i.e. rotated and lowered to the ground)
-          //     }
-          //   }
-          // );
-    }
-  });
+    if (!containerRef.current || categories.length === 0) return;
 
-  // Fade out the black overlay on mount.
+    const scene  = new THREE.Scene();
+    const camera = cameraInstance.getCamera();
+
+    const pattern = new Pattern(
+      scene,
+      camera,
+      /*transparent*/ true,
+      savedState.opacity,
+      "projects-pattern",
+      0x00ffff
+    );
+    patternRef.current = pattern;
+
+    function regenPattern(pageIndex, meshCount) {
+      const setting = PAGE_SETTINGS[pageIndex % PAGE_SETTINGS.length];
+      const newDA   = setting.deltaAngle;
+      const newVal  = meshCount * 100;
+
+      // reset loops
+      gsap.killTweensOf(savedState, "xAxis");
+      savedState.xAxis = 0;
+      gsap.killTweensOf(pattern.group.rotation, "z");
+      pattern.group.rotation.z = 0;
+
+      // tween
+      gsap.to(savedState, {
+        duration: 0.6,
+        ease: "power2.inOut",
+        deltaAngle: newDA,
+        value:      newVal,
+        onUpdate: () => {
+          pattern.regeneratePatternArea({
+            maxVertices:   Math.round(savedState.value),
+            xPos:          0,
+            yPos:          savedState.yAxis,
+            xFunctionCode: 0,
+            yFunctionCode: 1,
+            deltaAngle:    savedState.deltaAngle,
+            scale:         2,
+            xAngularFreq:  1,
+            yAngularFreq:  1,
+            xPhase:        savedState.xAxis,
+            yPhase:        savedState.yAxis,
+            zPos:          0
+          });
+        },
+        onComplete: () => {
+          if (setting.xAxisLoop) {
+            gsap.to(savedState, {
+              xAxis: "+=" + (Math.PI * 2),
+              duration: 20,
+              ease: "none",
+              repeat: -1,
+              onUpdate: () => {
+                pattern.regeneratePatternArea({ /* same params */ });
+              }
+            });
+          }
+          if (setting.rotationLoop) {
+            gsap.killTweensOf(pattern.group.rotation, "z");
+            gsap.to(pattern.group.rotation, {
+              z: "+=" + (Math.PI * 2),
+              duration: 20,
+              ease: "power2.inOut",
+              repeat: -1
+            });
+          }
+        }
+      });
+    }
+
+    regenPattern(0, categories[0].projects.length);
+
+    const menu = new HexagonMenu3D(
+      containerRef.current,
+      categories,
+      navigate
+    );
+    menu.onPageChange = regenPattern;
+    menu3DRef.current = menu;
+
+    return () => {
+      pattern.cleanup();
+      menu.dispose();
+    };
+  }, [categories, navigate]);
+
+  // Fade away black overlay on mount (after navigate)
   useEffect(() => {
-    gsap.to(".black-overlay", {
-      opacity: 0,
-      duration: 0.5,
-      ease: "power4.inOut",
-      onComplete: () => {
-        const overlay = document.querySelector(".black-overlay");
-        if (overlay) overlay.parentNode.removeChild(overlay);
-      },
-    });
+    const ov = document.querySelector(".mesh-cover-overlay");
+    if (ov) {
+      gsap.to(ov, {
+        opacity: 0,
+        duration: 0.5,
+        ease: "power2.inOut",
+        onComplete: () => ov.remove()
+      });
+    }
   }, []);
-
-  const handleRotateLeft = () => {
-    if (menu3DRef.current) {
-      menu3DRef.current.slideLeft();
-    }
-  };
-
-  const handleRotateRight = () => {
-    if (menu3DRef.current) {
-      menu3DRef.current.slideRight();
-    }
-  };
 
   return (
-    <div className="project-page">
-      {/* Black overlay to fade out on page load */}
+    <div className="projects-page">
       <div className="black-overlay"></div>
-      
-      <div
-        className="project-container"
-        ref={containerRef}
-        style={{ width: "100%", height: "100vh" }}
-      ></div>
-      {/* Center text box for hovered project title */}
+      <div id="projects-pattern" className="pattern-container"></div>
+      <div className="projects-container" ref={containerRef}></div>
       <div id="center-text-box" className="center-text-box"></div>
-      {/* Clickable areas on left and right sides */}
-      <div className="click-area left" onClick={handleRotateLeft}>
-        <span className="arrow">&larr;</span>
-      </div>
-      <div className="click-area right" onClick={handleRotateRight}>
-        <span className="arrow">&rarr;</span>
-      </div>
+      <div className="click-area left"  onClick={() => menu3DRef.current?.slideLeft()}><span className="arrow">←</span></div>
+      <div className="click-area right" onClick={() => menu3DRef.current?.slideRight()}><span className="arrow">→</span></div>
     </div>
   );
 };

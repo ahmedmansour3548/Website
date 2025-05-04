@@ -6,7 +6,7 @@ html, body {
     z-index: 1;
 }
 /* Custom Scrollbar with Tapered Ends */
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
     width: 6px;
   }
   
@@ -31,7 +31,7 @@ html, body {
   ::-webkit-scrollbar-thumb:after {
     background: linear-gradient(to bottom, transparent, black);
     bottom: 0;
-  }
+  } */
 
 #background-container {
     position: fixed;
@@ -43,9 +43,7 @@ html, body {
     z-index: 1;
 }
  
-canvas {
-    z-index: -1;
-}
+
 #background-container svg {
     position: absolute;
     top: 0;

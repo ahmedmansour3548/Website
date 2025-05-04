@@ -8,7 +8,6 @@
   overflow: hidden;
 }
 
-/* Target the canvas injected by Pattern (it gets class="contact-pattern") */
 .contact-pattern {
   position: absolute !important;
   top: 0 !important;
@@ -42,22 +41,32 @@
   text-shadow: 0 0 8px #ff00c8, 0 0 8px #00ffe0;
 }
 
+/* “Reach me at:” text box */
 .contact-card p {
-  margin-bottom: 1.5rem;
+  margin: 0 0 1rem;
   font-size: 1.1rem;
   color: #ececec;
+  background: rgba(0, 0, 0, 0.6);
+  display: block;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  width: max-content;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Email box with animated rainbow glow */
 .contact-email {
-  display: inline-flex;
-  background: rgba(0,0,0,0.2);
+  display: flex;
+  justify-content: center;
+  background: rgba(0,0,0,0.6);
   border-radius: 4px;
   overflow: hidden;
   border: 1px solid #444;
   position: relative;
   z-index: 11;
   animation: hueShift 8s linear infinite;
+  margin: 0 auto;
 }
 
 .contact-email::before {
@@ -74,9 +83,10 @@
 .contact-email code {
   padding: 0.6rem 1rem;
   font-family: 'Courier New', monospace;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 2px;
   color: #0ff;
   user-select: all;
-  margin-top: 0.35rem;
 }
 
 .contact-email button {
@@ -95,22 +105,30 @@
   to { filter: hue-rotate(360deg); }
 }
 
-/* Back to Home button */
+/* Back to Home as large thick arrow */
 .back-home {
   position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 0.5rem 1rem;
-  background: #fff;
+  top: 1.5rem;
+  left: 1.5rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  padding: 0;
+  background: transparent;
   border: none;
-  border-radius: 0.25rem;
   cursor: pointer;
-  font-size: 1rem;
   z-index: 12;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  transition: background 0.2s;
 }
-.back-home:hover {
-  background: #f0f0f0;
+
+.back-home::before {
+  content: "←";
+  display: block;
+  font-size: 3.5rem;
+  font-weight: bold;
+  color: #fff;
+  line-height: 1;
+  transition: transform 0.2s;
+}
+
+.back-home:hover::before {
+  transform: scale(1.2);
 }

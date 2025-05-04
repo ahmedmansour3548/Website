@@ -35,7 +35,7 @@
     left: 50%;
     transform: translateX(-50%);
     font-size: 48px; /* Adjust as needed */
-    color: rgba(97, 97, 97, 0.5); /* Low opacity white */
+    color: rgba(155, 155, 155, 0.5); /* Low opacity white */
     font-family: 'Courier New', Courier, monospace; /* Code editor-like font */
 }
 
@@ -82,7 +82,7 @@
     display: grid;
 }
 
-button {
+.homepage-button {
     font-family: 'Press Start 2P', cursive;
     background-color: black;
     color: #00FF00;
@@ -93,7 +93,7 @@ button {
     transition: background-color 0.3s;
 }
 
-button:hover {
+.homepage-button:hover {
     background-color: #ff9900;
     color: black;
 }

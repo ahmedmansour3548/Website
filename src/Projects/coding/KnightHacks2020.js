@@ -1,296 +1,225 @@
+// src/Projects/KnightHacks2020.js
 import React, { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import "./KnightHacks2020.css";
 
-gsap.registerPlugin(ScrollTrigger);
-
-const KnightHacks2020 = () => {
+export default function KnightHacks2020() {
   const { id } = useParams();
   const [project, setProject] = useState(null);
   const navigate = useNavigate();
-  const contentRef = useRef(null);
+  const sectionRefs = useRef([]);
 
+  // 1) fetch data
   useEffect(() => {
     fetch("/projects.json")
-      .then((response) => response.json())
-      .then((data) => {
-        const projectData = data.categories
-          .flatMap((category) => category.projects)
-          .find((proj) => proj.id === id);
-        setProject(projectData);
+      .then(r => r.json())
+      .then(data => {
+        const found = data.categories
+          .flatMap(c => c.projects)
+          .find(p => p.id === id);
+        setProject(found);
       })
-      .catch((error) => console.error("Error fetching project data:", error));
+      .catch(console.error);
   }, [id]);
 
+  // 2) remove any leftover cover overlay
   useEffect(() => {
-    if (project) {
-      requestAnimationFrame(() => {
-        // Fade in project title first
-        gsap.fromTo(
-          ".project-title",
-          { opacity: 0, y: -20 },
-          { opacity: 1, y: 0, duration: 1, ease: "power2.out" }
-        );
-
-        // Fade in header image after title animation
-        gsap.fromTo(
-          ".header-photo",
-          { opacity: 0, y: -20 },
-          { opacity: 1, y: 0, duration: 1, delay: 1, ease: "power2.out" }
-        );
-
-        // Fade in the rest of the content after the header image
-        gsap.fromTo(
-          ".project-details-content",
-          { opacity: 0 },
-          { opacity: 1, duration: 1, delay: 2 }
-        );
-
-        // Fade in key takeaways
-        gsap.fromTo(
-          ".key-takeaways",
-          { opacity: 0, y: -20 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 2,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: ".key-takeaways",
-              start: "top 90%",
-            },
-          }
-        );
-
-        // Fade in content blocks on scroll
-        gsap.utils.toArray(".content-block").forEach((block) => {
-          gsap.fromTo(
-            block,
-            { opacity: 0, y: 50 },
-            {
-              opacity: 1,
-              y: 0,
-              duration: 2,
-              scrollTrigger: {
-                trigger: block,
-                start: "top 80%",
-                toggleActions: "play none none none",
-                scroller: ".project-page",
-              },
-            }
-          );
-        });
-
-        // Fade in images on scroll
-        gsap.utils.toArray(".content-image").forEach((img, index) => {
-          gsap.fromTo(
-            img,
-            { opacity: 0, x: index % 2 === 0 ? -50 : 50 },
-            {
-              opacity: 1,
-              x: 0,
-              duration: 2,
-              scrollTrigger: {
-                trigger: img,
-                start: "top 80%",
-                toggleActions: "play none none none",
-                scroller: ".project-page",
-              },
-            }
-          );
-        });
-
-        ScrollTrigger.refresh();
-      });
+    const ov = document.querySelector(".mesh-cover-overlay");
+    if (ov) {
+      ov.style.transition = "opacity 0.5s";
+      ov.style.opacity = 0;
+      setTimeout(() => ov.remove(), 500);
     }
+  }, []);
+
+  // 3) Intersection Observer to add .visible
+  useEffect(() => {
+    if (!project) return;
+    const obs = new IntersectionObserver((entries, obsr) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add("visible");
+          obsr.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: "0px 0px -10% 0px" });
+
+    sectionRefs.current.forEach(el => el && obs.observe(el));
+    return () => obs.disconnect();
   }, [project]);
 
-  const handleBack = () => {
-    navigate("/projects", { state: { reverseProjectId: id } });
-  };
+  if (!project) return <div className="project-loading">Loading…</div>;
 
-  if (!project) return <p>Loading...</p>;
+  const goBack = () => navigate("/projects");
+
+  // map techUsed -> svg filenames
+  const techUsed = Array.isArray(project.techUsed)
+    ? project.techUsed.map(t => ({
+        file: `${t}.svg`,
+        label: t[0].toUpperCase() + t.slice(1),
+        url: `/projects/${t}`
+      }))
+    : [];
 
   return (
-    <div className="project-page">
-      <button className="back-button" onClick={handleBack}>
-        Back
-      </button>
+    <div className="knight-page about-page">
+      <button className="back-home" onClick={goBack}></button>
 
-      <div className="project-details">
-        {/* Header Image */}
-        <div className="header-container">
-          <img
-            src={project.headerPhoto}
-            alt={project.title}
-            className="header-photo"
-          />
-          <div className="header-overlay">
-            <h1 className="project-title">{project.title}</h1>
-            <p className="header-caption">
-              {project.headerPhotoCaption || "Project Overview"}
-            </p>
+      {/* Hero */}
+      <section
+        className="hero"
+        style={{ background: `url(${project.headerPhoto}) center/cover no-repeat` }}
+        ref={el => (sectionRefs.current[0] = el)}
+      >
+        <div className="hero-text">
+          <h1>{project.title}</h1>
+          <p>{project.headerPhotoCaption || ""}</p>
+        </div>
+        <div
+          className="scroll-arrow"
+          onClick={() => window.scrollBy({ top: window.innerHeight, behavior: "smooth" })}
+        >
+          <img src="/assets/icons/chevron-icon-down-white.png" alt="Scroll Down" />
+        </div>
+      </section>
+
+      {/* Quick Facts */}
+      <section
+        className="content-section section-3"
+        ref={el => (sectionRefs.current[1] = el)}
+      >
+        <div className="section-card quick-facts">
+          <h2>Quick Facts</h2>
+          <div className="facts-grid">
+            <div className="fact">📅 {project.dateCompleted}</div>
+            <div className="fact">🖥️ {project.softwareUsed}</div>
+            <div className="fact">🔧 {project.hardware}</div>
+            <div className="fact">👥 {project.teamMembers.join(", ")}</div>
+            <div className="fact">🤝 {project.sponsors.join(", ")}</div>
           </div>
         </div>
+      </section>
 
-        {/* Key Takeaways */}
-        <div className="key-takeaways">
-          <h2>Key Takeaways</h2>
-          <ul>
-            {project.keyTakeaways.map((takeaway, index) => (
-              <li key={index}>{takeaway}</li>
+      {/* Technologies Used */}
+      <section
+        className="content-section section-2"
+        ref={el => (sectionRefs.current[2] = el)}
+      >
+        <div className="section-card">
+          <h2>Technologies Used in This Project</h2>
+          <div className="tech-grid primary">
+            {techUsed.map((tech, i) => (
+              <Link to={tech.url} className="tech-item" key={i}>
+                <img src={`/assets/icons/${tech.file}`} alt={tech.label} />
+                <span>{tech.label}</span>
+              </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Overview */}
+      <section
+        className="content-section section-1"
+        ref={el => (sectionRefs.current[3] = el)}
+      >
+        <div className="section-card split-layout">
+          <div className="text-block">
+            <h2>Overview</h2>
+            <p>{project.description || "No overview available."}</p>
+          </div>
+          <div className="image-block">
+            <img src={project.headerPhoto} alt={project.title} />
+          </div>
+        </div>
+      </section>
+
+      {/* Section 5A: What I Learned */}
+      <section
+        className="content-section section-5a"
+        ref={el => (sectionRefs.current[4] = el)}
+      >
+        <div className="section-card split-learn">
+          <div className="learn-quotes">
+            <blockquote>
+              “Real-time sync challenges taught me to think in events, not requests.”
+            </blockquote>
+            <blockquote>
+              “User feedback loops are as critical as code optimizations.”
+            </blockquote>
+          </div>
+          <ul className="learn-bullets">
+            <li>Architected a WebSocket-based pub/sub layer.</li>
+            <li>Improved UX by adding optimistic UI updates.</li>
+            <li>Learned to monitor & throttle API calls under load.</li>
           </ul>
         </div>
+      </section>
 
-        {/* Content Blocks */}
-        <div ref={contentRef} className="content-section">
-          <div className="section-divider"></div>
-
-          <div className="content-block">
-            <h2>Section 1</h2>
-            <div className="content-layout">
-              <div className="content-text">
-                <p>
-                  AAALorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Proin ac tincidunt mi.
-                </p>
-                <p>
-                  Sed ut perspiciatis unde omnis iste natus error sit
-                  voluptatem accusantium.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="section-divider"></div>
-
-          <div className="content-block">
-            <h2>Section 1</h2>
-            <div className="content-layout">
-              {project.photos[0] && (
-                <div className="image-container">
-                  <img
-                    src={project.photos[0].url}
-                    alt={`Project visual 1`}
-                    className="content-image"
-                    height={project.photos[0].height}
-                    width={project.photos[0].width}
-                  />
-                  <p className="image-caption">
-                    {project.photos[0].caption || `Figure 1`}
-                  </p>
-                </div>
-              )}
-              <div className="content-text">
-                <p>
-                  AAALorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Proin ac tincidunt mi.
-                </p>
-                <p>
-                  Sed ut perspiciatis unde omnis iste natus error sit
-                  voluptatem accusantium.
-                </p>
-              </div>
-            </div>
-
-            <div className="section-divider"></div>
-          </div>
-
-          <div className="content-block">
-            <h2>Section 2</h2>
-            <div
-              className="content-layout"
-              style={{ flexDirection: "column", alignItems: "center" }}
-            >
-              {project.photos[1] && (
-                <div className="image-container">
-                  <img
-                    src={project.photos[1].url}
-                    alt={`Project visual 2`}
-                    className="content-image"
-                    height={project.photos[1].height}
-                    width={project.photos[1].width}
-                    style={{ width: "100%", height: "auto" }}
-                  />
-                  <p className="image-caption">
-                    {project.photos[1].caption || `Figure 2`}
-                  </p>
-                </div>
-              )}
-              <div
-                className="content-text"
-                style={!project.photos[1] ? { width: "100%" } : {}}
-              >
-                <p>
-                  AAALorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Proin ac tincidunt mi.
-                </p>
-                <p>
-                  Sed ut perspiciatis unde omnis iste natus error sit
-                  voluptatem accusantium.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Facts Section */}
-          <div className="quick-facts">
-            <h2>Quick Facts</h2>
-            <div className="facts-grid">
-              <div className="fact">
-                <h3>
-                  <span role="img" aria-label="Date Completed">
-                    📅
-                  </span>{" "}
-                  Date Completed
-                </h3>
-                <p>10/7/2020</p>
-              </div>
-              <div className="fact">
-                <h3>
-                  <span role="img" aria-label="Software Used">
-                    🖥️
-                  </span>{" "}
-                  Software Used
-                </h3>
-                <p>Unity</p>
-              </div>
-              <div className="fact">
-                <h3>
-                  <span role="img" aria-label="Hardware">
-                    🔧
-                  </span>{" "}
-                  Hardware
-                </h3>
-                <p>Meta Quest 2</p>
-              </div>
-              <div className="fact">
-                <h3>
-                  <span role="img" aria-label="Team Members">
-                    👥
-                  </span>{" "}
-                  Team Members
-                </h3>
-                <p>Javier Aguilar, Jeff Fortune, Timothy Jinks, Jacob Powers</p>
-              </div>
-              <div className="fact">
-                <h3>
-                  <span role="img" aria-label="Sponsors">
-                    🤝
-                  </span>{" "}
-                  Sponsors
-                </h3>
-                <p>Dr. Ryan McMahan, Dr. Michael Kolodrubetz</p>
-              </div>
-            </div>
+      {/* Demo Video */}
+      <section
+        className="content-section section-4"
+        ref={el => (sectionRefs.current[5] = el)}
+      >
+        <div className="section-card">
+          <h2>Demo Video</h2>
+          <div className="video-container">
+            <iframe
+              src="https://www.youtube.com/embed/⟨YOUR_VIDEO_ID⟩"
+              title="Demo Video"
+              frameBorder="0"
+              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
           </div>
         </div>
-      </div>
+      </section>
+
+{/* Resources */}
+<section
+  className="content-section section-resources"
+  ref={el => (sectionRefs.current[6] = el)}   // adjust index if needed
+>
+  <div className="section-card">
+    <h2>Resources</h2>
+    <div className="resources-grid">
+      {project.repoUrl && (
+        <a
+          href={project.repoUrl}
+          className="resource-item"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src="/assets/icons/github.svg" alt="GitHub Repo" />
+          <span>GitHub</span>
+        </a>
+      )}
+      {project.downloadUrl && (
+        <a
+          href={project.downloadUrl}
+          className="resource-item"
+          download
+        >
+          <img src="/assets/icons/download.svg" alt="Download ZIP" />
+          <span>Download ZIP</span>
+        </a>
+      )}
+      {project.liveUrl && (
+        <a
+          href={project.liveUrl}
+          className="resource-item"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src="/assets/icons/external-link.svg" alt="Play Live" />
+          <span>Play Live</span>
+        </a>
+      )}
+      {/* add more as needed */}
+    </div>
+  </div>
+</section>
+
     </div>
   );
-};
-
-export default KnightHacks2020;
+}

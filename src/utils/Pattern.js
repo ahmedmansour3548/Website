@@ -1,6 +1,6 @@
 // src/utils/Pattern.js
 import * as THREE from 'three';
-
+import gsap from 'gsap';
 class Pattern {
   constructor(scene, camera, transparent = false, opacity = 1, className = '', initalColor = 0xffffff) {
     this.maxVertices = 5000;
@@ -20,7 +20,10 @@ class Pattern {
     this.className = className;
     this.initalColor = initalColor;
 
-    // NEW: Initialize custom properties for animation.
+    // Our container group for the entire pattern
+    this.group = new THREE.Group();
+    this.scene.add(this.group);
+
     this.xRotation = 0;  // rotation about world X-axis (in radians)
     this.yRotation = 0;  // rotation about world Y-axis (in radians)
     this.zRotation = 0;  // rotation about world Z-axis (in radians)
@@ -33,25 +36,28 @@ class Pattern {
   }
 
   init() {
-    // Use vertexColors: true so that the "color" attribute is used.
     this.material = new THREE.LineBasicMaterial({
       vertexColors: true,
-      side: THREE.DoubleSide,
       transparent: true,
       opacity: this.opacity
     });
     this.geometry = new THREE.BufferGeometry();
+
+    // Our line mesh
+    this.line = new THREE.Line(this.geometry, this.material);
+    this.group.add(this.line);
+
+    // Renderer setup
+    this.renderer = new THREE.WebGLRenderer({ alpha: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.domElement.style.position = 'absolute';
-    this.renderer.domElement.style.top = '0';
-    this.renderer.domElement.style.left = '0';
-    this.renderer.domElement.style.zIndex = '0';
+    this.renderer.domElement.style.top      = '0';
+    this.renderer.domElement.style.left     = '0';
+    this.renderer.domElement.style.zIndex   = '0';
     if (this.className) {
       this.renderer.domElement.classList.add(this.className);
     }
     document.body.appendChild(this.renderer.domElement);
-    // Create a line that will use both the position and color attributes.
-    this.scene.add(new THREE.Line(this.geometry, this.material));
 
     this.animate();
   }
@@ -67,102 +73,52 @@ class Pattern {
    * should be colored red.
    */
   regeneratePatternArea(params) {
-    let newParams = { ...params };
-    // Default rotation values if not provided.
-    newParams.xRotation = newParams.xRotation || 0;
-    newParams.yRotation = newParams.yRotation || 0;
-    newParams.zRotation = newParams.zRotation || 0;
+    const p = { 
+      deltaAngle: this.deltaAngle,
+      xAxis:      this.xAxis,
+      value:      this.value,
+      ...params
+    };
 
-    // Use newParams.maxVertices if provided, else fall back to this.maxVertices.
-    const maxVerts = newParams.maxVertices || this.maxVertices;
-
-    // Allocate color buffer matching the number of vertices.
-    const colors = new Float32Array(maxVerts * 3);
+    const maxVerts = p.maxVertices || this.maxVertices;
     const positions = this.positionsArray;
-    
-    const functionX = this.selectFunction(newParams.xFunctionCode);
-    const functionY = this.selectFunction(newParams.yFunctionCode);
+    const colors    = new Float32Array(maxVerts * 3);
 
-    // Ensure paramsToAdjust and adjustAmounts are arrays
-    if (!Array.isArray(newParams.paramsToAdjust)) {
-      newParams.paramsToAdjust = [newParams.paramsToAdjust];
-    }
-    if (!Array.isArray(newParams.adjustAmounts)) {
-      newParams.adjustAmounts = [newParams.adjustAmounts];
-    }
+    const fnX = this.selectFunction(p.xFunctionCode);
+    const fnY = this.selectFunction(p.yFunctionCode);
 
-    // Create an Euler from the rotation parameters.
-    const euler = new THREE.Euler(newParams.xRotation, newParams.yRotation, newParams.zRotation, 'XYZ');
-
-    let vertexCount = 0;
-    let angle = 0;
-    // We'll loop until we reach maxVerts vertices.
+    let vertexCount = 0, angle = 0;
     while (vertexCount < maxVerts) {
-      const scaleFactor = (angle / 180) * Math.PI * newParams.scale;
-      const newX = newParams.xPos + angle * functionX((angle * newParams.xAngularFreq) + newParams.xPhase) * scaleFactor;
-      const newY = newParams.yPos + angle * functionY((angle * newParams.yAngularFreq) + newParams.yPhase) * scaleFactor;
-      const newZ = (newParams.zPos === undefined) ? 0 : newParams.zPos;
-      
-      // Create a vector and apply the Euler rotation.
-      let v = new THREE.Vector3(newX, newY, newZ);
-      v.applyEuler(euler);
-      
-      // Set position data for this vertex.
-      positions[vertexCount * 3] = v.x;
-      positions[vertexCount * 3 + 1] = v.y;
-      positions[vertexCount * 3 + 2] = v.z;
-      
-      // Determine the color for this vertex.
-      // Default to the initial color.
-      let assignedColor = this.initalColor;
-      if (newParams.vertexColorRanges && Array.isArray(newParams.vertexColorRanges)) {
-        // If the current vertex index falls within any specified range, override.
-        for (let range of newParams.vertexColorRanges) {
-          if (vertexCount >= range.start && vertexCount <= range.end) {
-            assignedColor = range.color;
-            break;
-          }
-        }
-      }
-      // Convert the hex color to normalized RGB values.
-      const r = ((assignedColor >> 16) & 0xff) / 255;
-      const g = ((assignedColor >> 8) & 0xff) / 255;
-      const b = (assignedColor & 0xff) / 255;
-      
-      colors[vertexCount * 3] = r;
-      colors[vertexCount * 3 + 1] = g;
-      colors[vertexCount * 3 + 2] = b;
-      
+      const scaleF = (angle/180) * Math.PI * p.scale;
+      const x = p.xPos + angle * fnX(angle * p.xAngularFreq + p.xPhase) * scaleF;
+      const y = p.yPos + angle * fnY(angle * p.yAngularFreq + p.yPhase) * scaleF;
+      const z = p.zPos || 0;
+
+      positions[vertexCount*3  ] = x;
+      positions[vertexCount*3+1] = y;
+      positions[vertexCount*3+2] = z;
+
+      // color each vertex same initial color
+      const c = this.initalColor;
+      colors[vertexCount*3  ] = ((c>>16)&0xff)/255;
+      colors[vertexCount*3+1] = ((c>> 8)&0xff)/255;
+      colors[vertexCount*3+2] =  (c      &0xff)/255;
+
       vertexCount++;
-      
-      // Apply adjustments, if any.
-      if (newParams.loopVertex && vertexCount % Math.floor(newParams.loopVertex) === 0) {
-      for (let i = 0; i < newParams.paramsToAdjust.length; i++) {
-        const param = newParams.paramsToAdjust[i];
-        const amt = newParams.adjustAmounts[i];
-        if (
-          newParams[param] !== undefined &&
-          typeof amt === 'number'
-        ) {
-          newParams[param] += amt;
-        }
-      }
-      angle = 0;
+      angle += p.deltaAngle;
     }
-      
-      angle += newParams.deltaAngle;
-    }
-    // Set the attributes for position and color.
+
     this.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    this.geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    this.geometry.setAttribute('color',    new THREE.BufferAttribute(colors,    3));
     this.geometry.attributes.position.needsUpdate = true;
-    this.geometry.attributes.color.needsUpdate = true;
-    // Set draw range based on the actual number of vertices generated.
+    this.geometry.attributes.color.needsUpdate    = true;
     this.geometry.setDrawRange(0, vertexCount);
   }
 
   updateMaterialColor(r, g, b) {
-    this.material.color.setRGB(r, g, b);
+    //this.material.color.setRGB(r, g, b);
+    this.geometry.setAttribute('color', new THREE.BufferAttribute({r, g, b}, 3));
+    this.geometry.attributes.color.needsUpdate = true;
   }
 
   animate() {

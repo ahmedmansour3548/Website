@@ -2,209 +2,137 @@
 import * as THREE from 'three';
 import gsap from 'gsap';
 
-// Helper: Create a text sprite from a canvas.
 function createTextSprite(message, parameters = {}) {
-  const fontface = parameters.fontface || 'Arial';
-  const fontsize = parameters.fontsize || 24;
+  const fontface        = parameters.fontface        || 'Arial';
+  const fontsize        = parameters.fontsize        || 24;
   const borderThickness = parameters.borderThickness || 4;
-  const textColor = parameters.textColor || 'white';
+  const textColor       = parameters.textColor       || 'white';
 
-  const canvas = document.createElement('canvas');
-  const context = canvas.getContext('2d');
-  context.font = `${fontsize}px ${fontface}`;
-  const textWidth = context.measureText(message).width;
-  canvas.width = textWidth + borderThickness * 2;
+  const canvas  = document.createElement('canvas');
+  const ctx     = canvas.getContext('2d');
+  ctx.font      = `${fontsize}px ${fontface}`;
+  const textW   = ctx.measureText(message).width;
+  canvas.width  = textW + borderThickness * 2;
   canvas.height = fontsize * 1.4 + borderThickness * 2;
-  context.font = `${fontsize}px ${fontface}`;
-  context.fillStyle = textColor;
-  context.textAlign = "center";
-  context.textBaseline = "middle";
-  context.fillText(message, canvas.width / 2, canvas.height / 2);
+
+  ctx.font         = `${fontsize}px ${fontface}`;
+  ctx.fillStyle    = textColor;
+  ctx.textAlign    = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(message, canvas.width/2, canvas.height/2);
+
   const texture = new THREE.CanvasTexture(canvas);
   texture.needsUpdate = true;
-  const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
-  const sprite = new THREE.Sprite(spriteMaterial);
-  sprite.scale.set(canvas.width / 10, canvas.height / 10, 1.0);
+  const material = new THREE.SpriteMaterial({ map: texture });
+  const sprite   = new THREE.Sprite(material);
+  sprite.scale.set(canvas.width/10, canvas.height/10, 1);
   return sprite;
 }
 
 class HexagonMenu3D {
   constructor(container, categoriesData, navigate) {
-    this.container = container;
-    // Save the full categories data.
+    this.container      = container;
     this.categoriesData = categoriesData;
-    this.navigate = navigate;
-    this.isClickCooldown = false;
-    
-    // Process categories into menu groups.
-    // Each menu group holds up to maxPerGroup projects.
-    const maxPerGroup = 6;
+    this.navigate       = navigate;
+
+    // paginate into pages of up to 6 projects
+    const maxPer = 6;
     this.menuGroupData = [];
-    categoriesData.forEach(category => {
-      const projs = category.projects;
-      // For each category, split projects into chunks.
-      for (let i = 0; i < projs.length; i += maxPerGroup) {
-        const chunk = projs.slice(i, i + maxPerGroup);
-        // Also store the category title with each chunk.
-        this.menuGroupData.push({ category, projects: chunk });
+    categoriesData.forEach(cat => {
+      for (let i = 0; i < cat.projects.length; i += maxPer) {
+        this.menuGroupData.push({
+          category: cat,
+          projects: cat.projects.slice(i, i + maxPer)
+        });
       }
     });
-    this.totalPages = this.menuGroupData.length;
-    this.currentPage = 0;
-    this.pageSpacing = 600; // Adjust this value to set the gap between pages.
-    
-    // --- Scene Setup ---
-    this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      1,
-      2000
-    );
-    
-    // --- Camera Setup ---
-    // Start the camera at the center of the first page.
-    this.camera.position.set(this.currentPage * this.pageSpacing, 0, 300);
-    this.updateCameraLookAt();
-    
-    this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    this.totalPages   = this.menuGroupData.length;
+    this.currentIndex = 0;
+
+    // hexagon constants
+    this.hexRadius = 600;
+    this.angleStep = Math.PI * 2 / 6;
+    this.camOffset = 300;
+
+    // track the camera’s cumulative angle (radians)
+    this.angleObj = { angle: 0 };
+
+    // three.js boilerplate
+    this.scene    = new THREE.Scene();
+    this.camera   = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 1, 2000);
+    this.renderer = new THREE.WebGLRenderer({ alpha:true, antialias:true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.domElement.style.position = 'fixed';
-    this.renderer.domElement.style.top = '0';
-    this.renderer.domElement.style.left = '0';
-    this.renderer.domElement.style.zIndex = '0';
+    Object.assign(this.renderer.domElement.style, {
+      position:'fixed', top:'0', left:'0', zIndex:'0'
+    });
     container.appendChild(this.renderer.domElement);
-    
-    // --- Create Menu Groups ---
-    this.menuGroups = [];
+
+    // build each page as a group at hexagon vertices
+    this.menuGroups      = [];
     this.clickableMeshes = [];
     for (let i = 0; i < this.totalPages; i++) {
       const group = new THREE.Group();
-      // Position each group linearly along the x-axis.
-      group.position.x = i * this.pageSpacing;
-      group.position.y = 0;
-      group.position.z = 0;
-      this.createMenuGroupContent(group, this.menuGroupData[i]);
+      const angle = i * this.angleStep;
+      group.position.set(
+        this.hexRadius * Math.cos(angle),
+        0,
+        this.hexRadius * Math.sin(angle)
+      );
+      group.lookAt(new THREE.Vector3(0, 0, 0)); // face the origin
+
+      this._buildGroupContent(group, this.menuGroupData[i]);
       this.scene.add(group);
       this.menuGroups.push(group);
     }
-    
-    // --- Create a Center Mesh for the Category Title ---
-    this.centerMesh = this.createCenterMesh();
-    this.scene.add(this.centerMesh);
-    this.updateCenterMesh();
-    
-    // --- Raycaster Setup ---
+
+    // start camera at index 0 (angle 0)
+    this._updateCamera();
+
+    // interactions
     this.raycaster = new THREE.Raycaster();
-    this.mouse = new THREE.Vector2();
-    
-    // --- Event Listeners ---
-    window.addEventListener('resize', this.onWindowResize.bind(this), false);
-    this.container.addEventListener('click', this.onClick.bind(this), false);
-    this.container.addEventListener('mousemove', this.onMouseMove.bind(this), false);
+    this.mouse     = new THREE.Vector2();
+    window.addEventListener('resize', this._onWindowResize.bind(this));
+    container.addEventListener('click',    this._onClick.bind(this));
+    container.addEventListener('mousemove',this._onMouseMove.bind(this));
+    window.addEventListener('keydown',     this._onKeyDown.bind(this));
 
     this.animate();
-    this.startRandomSpinTimer();
+    this._startRandomSpinTimer();
   }
-  
-  updateCameraLookAt() {
-    // Have the camera look at the center of the current page.
-    const targetX = this.currentPage * this.pageSpacing;
-    this.camera.lookAt(new THREE.Vector3(targetX, 0, 0));
-  }
-  
-  // Slide the camera to the specified page index.
-  slideToPage(targetPage) {
-    const startX = this.camera.position.x;
-    const targetX = targetPage * this.pageSpacing;
-    const obj = { x: startX };
-    gsap.to(obj, {
-      x: targetX,
-      duration: 0.5,
-      ease: "power2.inOut",
-      onUpdate: () => {
-        this.camera.position.x = obj.x;
-        this.updateCameraLookAt();
-      },
-      onComplete: () => {
-        this.currentPage = targetPage;
-        this.updateCenterMesh();
-      }
-    });
-  }
-  
-  slideLeft() {
-    const newPage = (this.currentPage - 1 + this.totalPages) % this.totalPages;
-    this.slideToPage(newPage);
-  }
-  
-  slideRight() {
-    const newPage = (this.currentPage + 1) % this.totalPages;
-    this.slideToPage(newPage);
-  }
-  
-  createCenterMesh() {
-    const geometry = new THREE.CircleGeometry(50, 32);
-    const material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.2 });
-    const circle = new THREE.Mesh(geometry, material);
-    circle.position.set(0, 0, -20);
-    const sprite = createTextSprite("", { fontsize: 36, textColor: "white" });
-    sprite.position.set(0, 0, 1);
-    circle.add(sprite);
-    circle.userData.titleSprite = sprite;
-    return circle;
-  }
-  
-  updateCenterMesh() {
-    if (this.centerMesh && this.centerMesh.userData.titleSprite) {
-      const activeGroupData = this.menuGroupData[this.currentPage];
-      const title = activeGroupData ? activeGroupData.category.title : "";
-      // Replace the text sprite.
-      this.centerMesh.remove(this.centerMesh.userData.titleSprite);
-      const newSprite = createTextSprite(title, { fontsize: 36, textColor: "white" });
-      newSprite.position.set(0, 0, 1);
-      this.centerMesh.add(newSprite);
-      this.centerMesh.userData.titleSprite = newSprite;
-    }
-  }
-  
-  createMenuGroupContent(group, groupData) {
-    const loader = new THREE.TextureLoader();
-    const projectsArray = groupData.projects;
-    const count = projectsArray.length;
+
+  _buildGroupContent(group, { projects }) {
+    const loader     = new THREE.TextureLoader();
     const itemRadius = 175;
-    for (let i = 0; i < count; i++) {
-      const project = projectsArray[i];
-      const aspectRatio = project.aspectRatio || (project.headerPhotoWidth / project.headerPhotoHeight) || 1;
-      const width = 75 * aspectRatio;
-      const height = 75;
-      const depth = 5;
-      const geometry = new THREE.BoxGeometry(width, height, depth);
-      const texture = loader.load(project.headerPhoto);
-      const blackMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
-      const imageMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
-      const materials = [
-        blackMaterial,
-        blackMaterial,
-        blackMaterial,
-        blackMaterial,
-        imageMaterial, // back (local -Z)
-        blackMaterial
+
+    projects.forEach((proj, i) => {
+      const aspect = proj.aspectRatio ||
+                     (proj.headerPhotoWidth/proj.headerPhotoHeight) ||
+                     1;
+      const w = 75*aspect, h = 75, d = 5;
+      const geo = new THREE.BoxGeometry(w, h, d);
+      const tex = loader.load(proj.headerPhoto);
+      const mats = [
+        new THREE.MeshBasicMaterial({ color:0x000 }),
+        new THREE.MeshBasicMaterial({ color:0x000 }),
+        new THREE.MeshBasicMaterial({ color:0x000 }),
+        new THREE.MeshBasicMaterial({ color:0x000 }),
+        new THREE.MeshBasicMaterial({ map:tex, transparent:true }),
+        new THREE.MeshBasicMaterial({ color:0x000 })
       ];
-      const mesh = new THREE.Mesh(geometry, materials);
-      // Position items in a circular layout within the page.
-      const angle = (i / count) * Math.PI * 2;
-      mesh.position.x = itemRadius * Math.cos(angle);
-      mesh.position.y = itemRadius * Math.sin(angle);
-      mesh.position.z = 0;
-      mesh.userData = { project };
-      mesh.userData.initial = {
-        position: mesh.position.clone(),
-        rotation: mesh.rotation.clone(),
-        scale: mesh.scale.clone()
-      };
+      const mesh = new THREE.Mesh(geo, mats);
+
+      // place in the group’s XY plane
+      const a = (i / projects.length) * Math.PI * 2;
+      mesh.position.set(
+        itemRadius * Math.cos(a),
+        itemRadius * Math.sin(a),
+        0
+      );
+
+      mesh.userData = { project: proj };
       group.add(mesh);
       this.clickableMeshes.push(mesh);
+
       gsap.to(mesh.position, {
         y: mesh.position.y + 15,
         duration: 3,
@@ -212,175 +140,156 @@ class HexagonMenu3D {
         repeat: -1,
         ease: "sine.inOut"
       });
+    });
+  }
+
+  // move the camera based on angleObj.angle, and look at the current group center
+  _updateCamera() {
+    // camera on circle of radius = hexRadius+camOffset
+    const a   = this.angleObj.angle;
+    const gp  = new THREE.Vector3(
+      this.hexRadius * Math.cos(a),
+      0,
+      this.hexRadius * Math.sin(a)
+    );
+    const dir = gp.clone().normalize().negate();
+    const cp  = gp.clone().add(dir.multiplyScalar(this.camOffset));
+    this.camera.position.copy(cp);
+    this.camera.lookAt(gp);
+  }
+
+  // find next non-empty page index in direction
+  _getNextIndex(dir) {
+    for (let i = 1; i <= this.totalPages; i++) {
+      const offset = dir === 'right' ? i : -i;
+      const nxt    = (this.currentIndex + offset + this.totalPages) % this.totalPages;
+      if (this.menuGroupData[nxt].projects.length > 0) return nxt;
+    }
+    return this.currentIndex;
+  }
+
+  slideRight() {
+    const next      = this._getNextIndex('right');
+    const steps     = (next - this.currentIndex + this.totalPages) % this.totalPages;
+    if (steps === 0) return;
+    const oldAngle  = this.angleObj.angle;
+    const newAngle  = oldAngle + steps * this.angleStep;
+    gsap.to(this.angleObj, {
+      angle: newAngle,
+      duration: 0.6,
+      ease: "power2.inOut",
+      onUpdate: () => this._updateCamera(),
+      onComplete: () => {
+        this.currentIndex = next;
+        if (typeof this.onPageChange === 'function') {
+          const meshCount = this.menuGroupData[next].projects.length;
+          this.onPageChange(next, meshCount);
+        }
+      }
+    });
+  }
+
+  slideLeft() {
+    const next      = this._getNextIndex('left');
+    const steps     = (this.currentIndex - next + this.totalPages) % this.totalPages;
+    if (steps === 0) return;
+    const oldAngle  = this.angleObj.angle;
+    const newAngle  = oldAngle - steps * this.angleStep;
+    gsap.to(this.angleObj, {
+      angle: newAngle,
+      duration: 0.6,
+      ease: "power2.inOut",
+      onUpdate: () => this._updateCamera(),
+      onComplete: () => {
+        this.currentIndex = next;
+        if (typeof this.onPageChange === 'function') {
+          const meshCount = this.menuGroupData[next].projects.length;
+          this.onPageChange(next, meshCount);
+        }
+      }
+    });
+  }
+
+  _onKeyDown(e) {
+    if (e.key === "ArrowLeft")  this.slideLeft();
+    if (e.key === "ArrowRight") this.slideRight();
+  }
+
+  _onMouseMove(e) {
+    const r = this.renderer.domElement.getBoundingClientRect();
+    this.mouse.x = ((e.clientX - r.left) / r.width)  * 2 - 1;
+    this.mouse.y = -((e.clientY - r.top) / r.height) * 2 + 1;
+
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+    const hits = this.raycaster.intersectObjects(this.clickableMeshes, false);
+    const centerText = document.getElementById("center-text-box");
+    if (centerText) {
+      centerText.innerText = hits.length
+        ? hits[0].object.userData.project.title
+        : "";
     }
   }
-  
-  startRandomSpinTimer() {
-    const delay = Math.random() * 5 + 5;
-    this.randomSpinTimeout = setTimeout(() => {
-      this.doRandomSpin();
-    }, delay * 1000);
-  }
-  
-  doRandomSpin() {
-    const activeGroup = this.menuGroups[this.currentPage];
-    if (!activeGroup || activeGroup.children.length === 0) {
-      this.startRandomSpinTimer();
-      return;
+
+  _onClick() {
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+    const hits = this.raycaster.intersectObjects(this.clickableMeshes, false);
+    if (hits.length) {
+      const proj = hits[0].object.userData.project;
+      if (proj && this.navigate) {
+        this.navigate(proj.link, { state: { projectId: proj.id } });
+      }
     }
-    const randomIndex = Math.floor(Math.random() * activeGroup.children.length);
-    const mesh = activeGroup.children[randomIndex];
-    const spinDegrees = Math.random() < 0.5 ? 360 : -360;
-    const initialRotationZ = mesh.rotation.z;
+  }
+
+  _startRandomSpinTimer() {
+    const delay = Math.random()*5 + 5;
+    this._spinTO = setTimeout(()=>this._doRandomSpin(), delay*1000);
+  }
+  _doRandomSpin() {
+    const group = this.menuGroups[this.currentIndex];
+    if (!group || !group.children.length) {
+      return this._startRandomSpinTimer();
+    }
+    const mesh = group.children[Math.floor(Math.random()*group.children.length)];
+    const spin = (Math.random()<0.5 ? 1 : -1)*360;
+    const init = mesh.rotation.z;
     gsap.to(mesh.rotation, {
-      z: mesh.rotation.z + THREE.MathUtils.degToRad(spinDegrees),
+      z: init + THREE.MathUtils.degToRad(spin),
       duration: 5.5,
       ease: "back.inOut(1.1)",
       onComplete: () => {
         gsap.to(mesh.rotation, {
-          z: initialRotationZ,
+          z: init,
           duration: 1,
           ease: "power2.inOut",
-          onComplete: () => {
-            this.startRandomSpinTimer();
-          }
+          onComplete: ()=>this._startRandomSpinTimer()
         });
       }
     });
   }
-  
+
   animate() {
     requestAnimationFrame(this.animate.bind(this));
     this.renderer.render(this.scene, this.camera);
   }
-  
-  onWindowResize() {
-    this.camera.aspect = window.innerWidth / window.innerHeight;
+
+  _onWindowResize() {
+    this.camera.aspect = window.innerWidth/window.innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
-  
-  onMouseMove(event) {
-    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    this.raycaster.setFromCamera(this.mouse, this.camera);
-    const intersects = this.raycaster.intersectObjects(this.clickableMeshes);
-    const centerTextBox = document.getElementById("center-text-box");
-    if (intersects.length > 0 && !this.isClickCooldown) {
-      const hoveredProject = intersects[0].object.userData.project;
-      if (centerTextBox) {
-        centerTextBox.innerText = hoveredProject.title;
-      }
-    } else {
-      if (centerTextBox) {
-        centerTextBox.innerText = "";
-      }
-    }
-  }
-  
-  onClick(event) {
-    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    this.raycaster.setFromCamera(this.mouse, this.camera);
-    const intersects = this.raycaster.intersectObjects(this.clickableMeshes);
-    if (intersects.length > 0 && !this.isClickCooldown) {
-      const clickedMesh = intersects[0].object;
-      const project = clickedMesh.userData.project;
-      const targetPosition = this.camera.position.clone();
-      const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(this.camera.quaternion);
-      targetPosition.add(forward.multiplyScalar(50));
-      
-      gsap.to(".click-area", { opacity: 0, duration: 0.15 });
-      
-      gsap.to(clickedMesh.position, {
-        x: targetPosition.x,
-        y: targetPosition.y,
-        z: targetPosition.z,
-        duration: 0.8,
-        ease: "power2.inOut"
-      });
-      gsap.to(clickedMesh.rotation, {
-        x: clickedMesh.rotation.x + Math.PI,
-        duration: 0.8,
-        ease: "power2.inOut"
-      });
-      gsap.to(clickedMesh.scale, {
-        x: 10,
-        y: 10,
-        z: 10,
-        duration: 0.8,
-        ease: "power2.inOut",
-        onComplete: () => {
-          window.lastProjectFinalTransforms = window.lastProjectFinalTransforms || {};
-          window.lastProjectFinalTransforms[project.id] = {
-            position: {
-              x: clickedMesh.position.x,
-              y: clickedMesh.position.y,
-              z: clickedMesh.position.z
-            },
-            rotation: {
-              x: clickedMesh.rotation.x,
-              y: clickedMesh.rotation.y,
-              z: clickedMesh.rotation.z
-            },
-            scale: {
-              x: clickedMesh.scale.x,
-              y: clickedMesh.scale.y,
-              z: clickedMesh.scale.z
-            }
-          };
-          this.navigate(project.link, { state: { lastProjectId: project.id } });
-        }
-      });
-    }
-  }
-  
-  reverseAnimation(projectId) {
-    this.isClickCooldown = true;
-    const mesh = this.clickableMeshes.find(m => m.userData.project.id === projectId);
-    if (mesh && mesh.userData.initial) {
-      const finalTransform = window.lastProjectFinalTransforms && window.lastProjectFinalTransforms[projectId];
-      if (finalTransform) {
-        mesh.position.set(
-          finalTransform.position.x,
-          finalTransform.position.y,
-          finalTransform.position.z
-        );
-        mesh.rotation.set(
-          finalTransform.rotation.x,
-          finalTransform.rotation.y,
-          finalTransform.rotation.z
-        );
-        mesh.scale.set(
-          finalTransform.scale.x,
-          finalTransform.scale.y,
-          finalTransform.scale.z
-        );
-      }
-      gsap.to(mesh.position, {
-        x: mesh.userData.initial.position.x,
-        y: mesh.userData.initial.position.y,
-        z: mesh.userData.initial.position.z,
-        duration: 1,
-        ease: "power2.inOut"
-      });
-      gsap.to(mesh.rotation, {
-        x: mesh.userData.initial.rotation.x,
-        y: mesh.userData.initial.rotation.y,
-        z: mesh.userData.initial.rotation.z,
-        duration: 2,
-        ease: "power2.inOut"
-      });
-      gsap.to(mesh.scale, {
-        x: mesh.userData.initial.scale.x,
-        y: mesh.userData.initial.scale.y,
-        z: mesh.userData.initial.scale.z,
-        duration: 2,
-        ease: "power4.inOut",
-        onComplete: () => {
-          this.isClickCooldown = false;
-        }
-      });
+
+  dispose() {
+    clearTimeout(this._spinTO);
+    window.removeEventListener('resize', this._onWindowResize.bind(this));
+    this.container.removeEventListener('click',    this._onClick.bind(this));
+    this.container.removeEventListener('mousemove',this._onMouseMove.bind(this));
+    window.removeEventListener('keydown',           this._onKeyDown.bind(this));
+    this.scene.clear();
+    this.clickableMeshes.length = 0;
+    this.renderer.dispose();
+    if (this.renderer.domElement.parentNode) {
+      this.renderer.domElement.parentNode.removeChild(this.renderer.domElement);
     }
   }
 }
