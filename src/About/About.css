@@ -20,7 +20,7 @@ html, body, #root {
     position: relative;
     width: 100vw;
     height: 100vh;
-    background: url('/public/assets/photos/Me_Hero_AI.jpg') center/cover no-repeat;
+    background: url('/public/assets/photos/Me_Hero_AI.jpg') center / cover no-repeat;
     z-index: 10;
   }
   .hero-text {
@@ -143,12 +143,12 @@ html, body, #root {
     height: auto;
     display: block;
     object-fit: cover;
-    border-radius: 1rem;           /* rounded corners */
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);  /* black shadow */
+    border-radius: 1rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
     transition: transform 0.3s ease, scale 0.3s ease;
   }
   .section-1 .image-block img:hover {
-    transform:  rotate(2deg) scale(1.05); /* extra 5deg + scale up */
+    transform:  rotate(2deg) scale(1.05);
   }
   
   @media (max-width: 512px) {
@@ -188,7 +188,6 @@ html, body, #root {
     cursor: pointer;
     z-index: 999;
   
-    /* make the pseudo-arrow inherit your color and animate it */
     color: #fff;                /* start white */
     transition: color 0.3s ease; /* smooth 0.3s fade */
   }
@@ -196,10 +195,8 @@ html, body, #root {
   .back-home::before {
     content: "←";
     font-size: 3rem;
-    /* no need to re-specify color here; it inherits */
   }
 
-  /* once scrolled past 50% */
   .back-home.scrolled {
     color: #000; /* fade to black */
   }
@@ -235,17 +232,16 @@ html, body, #root {
     cursor: pointer;
     text-decoration: none; /* remove underline */
     color: #333; /* default text color */
-    /* these ensure a smooth scale and shadow on hover */
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
   
-/* Make sure the <img> transforms around its center */
+
 .tech-item img {
   display: block;
   width: 100%;
   height: auto;
   margin-bottom: 0.5rem;
-  transform-origin: center center; /* <-- crucial */
+  transform-origin: center center;
   
 }
 
@@ -341,11 +337,9 @@ html, body, #root {
     font-size: 1.2rem;
     color: #888;
     margin-top: 1rem;
-    /* ensure children can be translated */
     display: inline-block;
   }
   .tech-grid-hint span {
     display: inline-block;
-    /* prevents letters wrapping mid-animation */
     white-space: pre;
   }

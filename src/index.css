@@ -31,7 +31,7 @@ html, body {
   ::-webkit-scrollbar-thumb:after {
     background: linear-gradient(to bottom, transparent, black);
     bottom: 0;
-  } */
+  } 
 
 #background-container {
     position: fixed;
