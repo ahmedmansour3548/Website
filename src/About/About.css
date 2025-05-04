@@ -179,27 +179,6 @@ html, body, #root {
   }
   
   
-  .back-home {
-    position: absolute;
-    top: 1.5rem;
-    left: 1.5rem;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    z-index: 999;
-  
-    color: #fff;                /* start white */
-    transition: color 0.3s ease; /* smooth 0.3s fade */
-  }
-
-  .back-home::before {
-    content: "←";
-    font-size: 3rem;
-  }
-
-  .back-home.scrolled {
-    color: #000; /* fade to black */
-  }
     
   .about-pattern {
     position: absolute !important;

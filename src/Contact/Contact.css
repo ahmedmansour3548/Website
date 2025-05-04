@@ -104,31 +104,3 @@
 @keyframes hueShift {
   to { filter: hue-rotate(360deg); }
 }
-
-/* Back to Home as large thick arrow */
-.back-home {
-  position: absolute;
-  top: 1.5rem;
-  left: 1.5rem;
-  width: 3.5rem;
-  height: 3.5rem;
-  padding: 0;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  z-index: 12;
-}
-
-.back-home::before {
-  content: "←";
-  display: block;
-  font-size: 3.5rem;
-  font-weight: bold;
-  color: #fff;
-  line-height: 1;
-  transition: transform 0.2s;
-}
-
-.back-home:hover::before {
-  transform: scale(1.2);
-}

@@ -63,7 +63,7 @@ export default function KnightHacks2020() {
 
   return (
     <div className="knight-page about-page">
-      <button className="back-home" onClick={goBack}></button>
+      
 
       {/* Hero */}
       <section
@@ -219,7 +219,7 @@ export default function KnightHacks2020() {
     </div>
   </div>
 </section>
-
+  <button className="back-home" onClick={goBack}></button>
     </div>
   );
 }
