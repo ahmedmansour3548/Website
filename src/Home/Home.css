@@ -1,20 +1,7 @@
+/* src/Home/Home.css */
 .home-page {
     position: relative; /* Ensures it's positioned relative to your viewport */
     z-index: 1; /* Ensures it sits above the canvas */
-}
-
-.homepage-button-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Two columns */
-    grid-template-rows: repeat(2, auto); /* Two rows */
-    gap: 40px;
-    justify-items: center; /* Center grid items horizontally */
-    align-items: center; /* Center grid items vertically */
-    position: fixed; /* Anchor to the viewport */
-    bottom: 30px; /* Adjust as needed */
-    left: 50%;
-    transform: translateX(-50%);
-    transition: opacity 0.5s ease-in-out;
 }
 
 .homepage-button-container.fade-out {
@@ -28,29 +15,38 @@
     color: white;
 }
 
-
 .centered-text {
-    position: absolute;
-    top: 120px; /* Adjust as needed */
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 48px; /* Adjust as needed */
-    color: rgba(155, 155, 155, 0.5); /* Low opacity white */
-    font-family: 'Courier New', Courier, monospace; /* Code editor-like font */
+  position: absolute;
+  top: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 60px;
+  color: rgba(155, 155, 155, 0.5);
+  font-family: 'Blockbrokers'; /* fallback default */
+  line-height: 1;
+  display: flex;
+  align-items: baseline;
+  opacity: 0;
 }
 
 .blinking-cursor {
-    animation: blink 1s step-end infinite;
+  display: inline-block;
+  width: 0.6em;
+  height: 1em;
+  right: 300px;
+  margin-left: -10px;
+  vertical-align: baseline;
+  /* only blink — remove fadeIn */
+  animation: blink 1s step-end infinite;
+  margin-top: -2px;;
 }
 
 @keyframes blink {
-    from, to {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0;
-    }
+  50% {
+    opacity: 0;
+  }
 }
+
 .progressBarContainer {
     background: #333333;
     border: 2px solid red;
@@ -69,8 +65,6 @@
     z-index: 1;
 }
 
-
-
 .progressBarLabel {
     color: white;
 }
@@ -82,18 +76,51 @@
     display: grid;
 }
 
-.homepage-button {
-    font-family: 'Press Start 2P', cursive;
-    background-color: black;
-    color: #00FF00;
-    border: 2px solid #ff9900;
-    padding: 10px;
-    margin: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+.home-category-tabs.home-bottom {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  grid-template-rows: repeat(2,auto);
+  gap: 40px;
+  opacity: 0;             /* start hidden */
+  transition: opacity .5s ease-in-out;
+  z-index: 2;
 }
 
-.homepage-button:hover {
-    background-color: #ff9900;
-    color: black;
+.home-tab {
+  background: transparent;
+  border: 2px solid var(--tab-color, #00ffea);
+  color: var(--tab-color, #00ffea);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-family: 'Speculum';
+  font-size: 2rem;
+}
+
+.home-tab:hover,
+.home-tab.active {
+  background: var(--tab-color, #00ffea);
+  color: #000;
+}
+/* ───────────────────────────────────────────────────────────────
+   Keep home buttons in bottom 25% on short viewports
+──────────────────────────────────────────────────────────────── */
+@media (max-height: 700px) {
+  .home-category-tabs.home-bottom {
+    /* anchor to 75% down instead of a fixed 30px from bottom */
+    top: 75vh;
+    bottom: auto;
+    /* keep centered */
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .home-category-tabs.home-bottom .home-tab {
+    /* shrink with viewport height */
+    font-size: 2.5vh;
+    padding: 0.5vh 1vh;
+  }
 }

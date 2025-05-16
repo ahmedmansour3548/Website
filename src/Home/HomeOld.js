@@ -87,7 +87,7 @@ const Home = () => {
             ease: "linear",
             onUpdate: () => {
                 if (patternRef.current) {
-                    patternRef.current.regeneratePatternArea({
+                    patternRef.current.regenerate({
                         maxVertices: patternProgressRef.current.value,
                         xPos: 0,
                         yPos: 0,
@@ -142,7 +142,7 @@ const Home = () => {
                 // Apply the color to the material
                 patternRef.current.updateMaterialColor(r, g, b);
 
-                patternRef.current.regeneratePatternArea({
+                patternRef.current.regenerate({
                     maxVertices: patternProgressRef.current.value,
                     xPos: 0,
                     yPos: 0,
@@ -211,7 +211,7 @@ const Home = () => {
             duration: 0.5,
             ease: "linear",
             onUpdate: () => {
-                patternRef.current.regeneratePatternArea({
+                patternRef.current.regenerate({
                     maxVertices: patternProgressRef.current.value,
                     xPos: 0,
                     yPos: 0,
@@ -243,7 +243,7 @@ const Home = () => {
             duration: 1,
             ease: "expo.inOut",
             onUpdate() {
-                patternRef.current.regeneratePatternArea({
+                patternRef.current.regenerate({
                     maxVertices: 100,
                     xPos: 0,
                     yPos: 0,
@@ -280,7 +280,7 @@ const Home = () => {
             duration: 5,
             ease: "power2.inOut",
             onUpdate: () => {
-                patternRef.current.regeneratePatternArea({
+                patternRef.current.regenerate({
                 maxVertices: patternProgressRef.current.value,
                 xPos: 0, yPos: 0,
                 xFunctionCode: 0, yFunctionCode: 1,
@@ -334,7 +334,7 @@ const Home = () => {
                 value: 0,
                 duration: 0,
                 ease: "linear",
-                onUpdate: () => patternRef.current.regeneratePatternArea({
+                onUpdate: () => patternRef.current.regenerate({
                     maxVertices: patternProgressRef.current.value,
                     xPos: 0,
                     yPos: 0,
@@ -371,7 +371,7 @@ const Home = () => {
                 duration: 0.5,
                 ease: "linear",
                 onUpdate() {
-                    patternRef.current.regeneratePatternArea({
+                    patternRef.current.regenerate({
                         maxVertices: patternProgressRef.current.value,
                         xPos: 0,
                         yPos: 0,
@@ -466,7 +466,7 @@ const Home = () => {
                     onUpdate: () => {
                         if (meshSelected.current && meshSelected.current.userData.timelineLabel === "MusicMesh") {
                         console.log("pattern update", patternProgressRef.current.value);
-                        patternRef.current.regeneratePatternArea({
+                        patternRef.current.regenerate({
                             maxVertices: patternProgressRef.current.value,
                             xPos: 0,
                             yPos: 0,
@@ -498,7 +498,7 @@ const Home = () => {
                     immediateRender: false,
                     onUpdate: () => {
                         if (meshSelected.current && meshSelected.current.userData.timelineLabel === "MusicMesh") {
-                        patternRef.current.regeneratePatternArea({
+                        patternRef.current.regenerate({
                             maxVertices: patternProgressRef.current.value,
                             xPos: 0,
                             yPos: 0,
@@ -563,7 +563,7 @@ const Home = () => {
                     immediateRender: false,
                     onUpdate: () => {
                         console.log("pattern update", patternProgressRef.current.value);
-                        patternRef.current.regeneratePatternArea({
+                        patternRef.current.regenerate({
                             maxVertices: patternProgressRef.current.value,
                             xPos: 0,
                             yPos: patternProgressRef.current.yPos,
@@ -593,7 +593,7 @@ const Home = () => {
                     duration: 1,
                     ease: "linear",
                     immediateRender: false,
-                    onUpdate: () => patternRef.current.regeneratePatternArea({
+                    onUpdate: () => patternRef.current.regenerate({
                         maxVertices: patternProgressRef.current.value,
                         xPos: 0,
                         yPos: patternProgressRef.current.yPos,
@@ -636,7 +636,7 @@ const Home = () => {
                     duration: 2,
                     ease: "linear",
                     immediateRender: false,
-                    onUpdate: () => patternRef.current.regeneratePatternArea({
+                    onUpdate: () => patternRef.current.regenerate({
                         maxVertices: patternProgressRef.current.value,
                         xPos: 0,
                         yPos: patternProgressRef.current.yPos,
@@ -674,7 +674,7 @@ const Home = () => {
                 value: 0,
                 duration: 1,
                 ease: "linear",
-                onUpdate: () => patternRef.current.regeneratePatternArea({
+                onUpdate: () => patternRef.current.regenerate({
                     maxVertices: patternProgressRef.current.value,
                     xPos: 0,
                     yPos: 0,

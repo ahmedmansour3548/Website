@@ -4,71 +4,11 @@
             "id": "coding",
             "title": "Coding Projects",
             "projects": [
-                {
-                    "id": "knighthacks2020",
-                    "title": "Knight Hacks 2020",
-                    "description": "Description of Project 2...",
-                    "headerPhoto": "/assets/photos/projects/knighthacks2020_header.png",
-                    "headerPhotoWidth": 1204,
-                    "headerPhotoHeight": 660,
-                    "keyTakeaways": [
-                        "Improved real-time collaboration skills",
-                        "Learned how to handle API rate limits effectively",
-                        "Gained experience with WebSockets for real-time updates"
-                    ],
-                    "photos": [
-                        {
-                            "url": "/assets/photos/projects/test.jpg",
-                            "width": 1024,
-                            "height": 768
-                        },
-                        {
-                            "url": "/assets/photos/projects/test.jpg",
-                            "width": 1024,
-                            "height": 768
-                        }
-                    ],
-                    "link": "/projects/coding/knighthacks2020",
-                    "dateCompleted": "10/7/2020",
-                    "softwareUsed": "Unity",
-                    "hardware": "Meta Quest 2",
-                    "teamMembers": ["Javier Aguilar","Jeff Fortune","Timothy Jinks","Jacob Powers"],
-                    "sponsors": ["Dr. Ryan McMahan","Dr. Michael Kolodrubetz"],
-                    "techUsed": [
-                        "threejs",
-                        "unity",
-                        "reactjs"
-                    ],
-                    "repoUrl": "https://github.com/you/knighthacks2020",
-                    "downloadUrl": "/assets/zips/knighthacks2020.zip",
-                    "liveUrl": "https://yourgamehost.com/knighthacks2020"
-                      
-                      
-                }
-            ,
-        
-                {
-                    "id": "qubitvr",
-                    "title": "QubitVR",
-                    "description": "Description of Project 2...",
-                    "headerPhoto": "/assets/photos/projects/qubitvr_header.png",
-                    "headerPhotoWidth": 1911,
-                    "headerPhotoHeight": 905,
-                    "photos": [
-                        {
-                            "url": "/assets/photos/projects/test.jpg",
-                            "width": 1024,
-                            "height": 768
-                        }
-                    ],
-                    "link": "/projects/coding/project2"
-                }
-            ,
-            
+                
                 {
                     "id": "subvrine",
                     "title": "SubVRine",
-                    "description": "Description of Project 2...",
+                    "description": "Underwater VR exploration experience with procedural marine life.",
                     "headerPhoto": "/assets/photos/projects/subvrine_header.png",
                     "headerPhotoWidth": 1779,
                     "headerPhotoHeight": 880,
@@ -79,14 +19,32 @@
                             "height": 768
                         }
                     ],
-                    "link": "/projects/coding/project2"
-                }
-            ,
-            
+                    "link": "/projects/coding/subvrine",
+                    "techUsed": [
+                        {
+                            "label": "Unity",
+                            "icon": "unity.svg",
+                            "url": "/projects/unity",
+                            "bullets": [
+                                "Generated procedural fish shoals via compute shaders",
+                                "Created ocean physics with custom buoyancy scripts"
+                            ]
+                        },
+                        {
+                            "label": "Shader Graph",
+                            "icon": "shadergraph.svg",
+                            "url": "/projects/shadergraph",
+                            "bullets": [
+                                "Authored realistic water and caustics shaders",
+                                "Optimized for mobile VR performance"
+                            ]
+                        }
+                    ]
+                },
                 {
                     "id": "solitudevr",
                     "title": "SolitudeVR",
-                    "description": "Description of Project 2...",
+                    "description": "A meditative VR environment combining soundscapes and visuals.",
                     "headerPhoto": "/assets/photos/projects/solitudevr_header.png",
                     "headerPhotoWidth": 1605,
                     "headerPhotoHeight": 880,
@@ -97,13 +55,31 @@
                             "height": 768
                         }
                     ],
-                    "link": "/projects/coding/project2"
-                }
-                ,
+                    "link": "/projects/coding/solitudevr",
+                    "techUsed": [
+                        {
+                            "label": "Unity",
+                            "icon": "unity.svg",
+                            "url": "/projects/unity",
+                            "bullets": [
+                                "Designed interactive environmental triggers",
+                                "Layered spatial audio for immersive meditation"
+                            ]
+                        },
+                        {
+                            "label": "FMOD",
+                            "icon": "fmod.svg",
+                            "url": "/projects/fmod",
+                            "bullets": [
+                                "Created dynamic music transitions based on user movement"
+                            ]
+                        }
+                    ]
+                },
                 {
                     "id": "longboardvr",
                     "title": "LongboardVR",
-                    "description": "Description of Project 2...",
+                    "description": "Fast-paced VR longboarding simulator.",
                     "headerPhoto": "/assets/photos/projects/longboardvr_header.png",
                     "headerPhotoWidth": 1605,
                     "headerPhotoHeight": 880,
@@ -114,41 +90,18 @@
                             "height": 768
                         }
                     ],
-                    "link": "/projects/coding/project2"
-                }
-                ,
-                {
-                    "id": "battletetris",
-                    "title": "BattleTetris",
-                    "description": "Description of Project 2...",
-                    "headerPhoto": "/assets/photos/projects/battletetris_header.png",
-                    "headerPhotoWidth": 799,
-                    "headerPhotoHeight": 629,
-                    "photos": [
+                    "link": "/projects/coding/longboardvr",
+                    "techUsed": [
                         {
-                            "url": "/assets/photos/projects/test.jpg",
-                            "width": 1024,
-                            "height": 768
+                            "label": "Unity",
+                            "icon": "unity.svg",
+                            "url": "/projects/unity",
+                            "bullets": [
+                                "Modeled realistic physics for board dynamics",
+                                "Implemented VR locomotion without motion sickness"
+                            ]
                         }
-                    ],
-                    "link": "/projects/coding/project2"
-                }
-                ,
-                {
-                    "id": "concentriccircle",
-                    "title": "Concentric Circles",
-                    "description": "Description of Project 2...",
-                    "headerPhoto": "/assets/photos/projects/concentriccircle_header.png",
-                    "headerPhotoWidth": 799,
-                    "headerPhotoHeight": 629,
-                    "photos": [
-                        {
-                            "url": "/assets/photos/projects/test.jpg",
-                            "width": 1024,
-                            "height": 768
-                        }
-                    ],
-                    "link": "/projects/coding/project2"
+                    ]
                 }
             ]
         },
@@ -158,8 +111,8 @@
             "projects": [
                 {
                     "id": "mural",
-                    "title": "VARLAB Augmented Reality Mural",
-                    "description": "Varlab Mural",
+                    "title": "VARLAB AR Mural",
+                    "description": "An evolving Augmented Reality mural that reflects lab members’ digital identities.",
                     "headerPhoto": "/assets/photos/projects/varlabwalloffame_header.jpg",
                     "headerPhotoWidth": 800,
                     "headerPhotoHeight": 600,
@@ -175,7 +128,289 @@
                             "height": 768
                         }
                     ],
-                    "link": "/projects/art/mural"
+                    "link": "/projects/art/mural",
+                    "techUsed": [
+                        {
+                            "label": "ARKit",
+                            "icon": "arkit.svg",
+                            "url": "/projects/arkit",
+                            "bullets": [
+                                "Anchored digital assets on physical surfaces",
+                                "Managed multi-user sync across devices"
+                            ]
+                        },
+                        {
+                            "label": "Blender",
+                            "icon": "blender.svg",
+                            "url": "/projects/blender",
+                            "bullets": [
+                                "Modeled 3D avatars and props for integration"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "research",
+            "title": "Research Projects",
+            "projects": [
+                {
+                    "id": "varlab",
+                    "title": "VARLAB Research",
+                    "description": "Research on the intersection of virtual reality and art.",
+                    "headerPhoto": "/assets/photos/projects/varlab_header.jpg",
+                    "headerPhotoWidth": 800,
+                    "headerPhotoHeight": 600,
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/test.jpg",
+                            "width": 1024,
+                            "height": 768
+                        }
+                    ],
+                    "link": "/projects/research/varlab",
+                    "techUsed": [
+                        {
+                            "label": "Unity",
+                            "icon": "unity.svg",
+                            "url": "/projects/unity",
+                            "bullets": [
+                                "Developed interactive VR installations for art exhibitions"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "qubitvr",
+                    "title": "QubitVR",
+                    "description": "An educational VR app to visualize quantum states in 3D.",
+                    "headerPhoto": "/assets/photos/projects/qubitvr_header.png",
+                    "headerPhotoWidth": 1911,
+                    "headerPhotoHeight": 905,
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/test.jpg",
+                            "width": 1024,
+                            "height": 768
+                        }
+                    ],
+                    "link": "/projects/coding/qubitvr",
+                    "techUsed": [
+                        {
+                            "label": "Unity",
+                            "icon": "unity.svg",
+                            "url": "/projects/unity",
+                            "bullets": [
+                                "Visualized Bloch spheres with custom materials",
+                                "Implemented hand-tracking interactions",
+                                "Optimized shader performance for VR"
+                            ]
+                        },
+                        {
+                            "label": "C#",
+                            "icon": "csharp.svg",
+                            "url": "/projects/csharp",
+                            "bullets": [
+                                "Wrote clean, modular code for quantum state transitions",
+                                "Used async patterns to load resources on demand"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "toys",
+            "title": "Toys",
+            "projects": [
+                {
+                    "id": "patternfactory",
+                    "title": "Pattern Factory",
+                    "description": "A generative art toy that creates unique geometric patterns.",
+                    "headerPhoto": "/assets/photos/projects/toys_header.jpg",
+                    "headerPhotoWidth": 800,
+                    "headerPhotoHeight": 600,
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/test.jpg",
+                            "width": 1024,
+                            "height": 768
+                        }
+                    ],
+                    "link": "/projects/toys/patternfactory",
+                    "techUsed": [
+                        {
+                            "label": "three.js",
+                            "icon": "threejs.svg",
+                            "url": "/projects/threejs",
+                            "bullets": [
+                                "Created generative art pieces using code"
+                            ]
+                        }
+                    ]
+                },
+                                {
+                    "id": "concentriccircle",
+                    "title": "Concentric Circles",
+                    "description": "An audio-visualizer that paints concentric rings to music.",
+                    "headerPhoto": "/assets/photos/projects/concentriccircle_header.png",
+                    "headerPhotoWidth": 799,
+                    "headerPhotoHeight": 629,
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/test.jpg",
+                            "width": 1024,
+                            "height": 768
+                        }
+                    ],
+                    "link": "/projects/coding/concentriccircle",
+                    "techUsed": [
+                        {
+                            "label": "p5.js",
+                            "icon": "p5js.svg",
+                            "url": "/projects/p5js",
+                            "bullets": [
+                                "Drew dynamic concentric rings synced to audio FFT",
+                                "Experimented with color harmonies based on frequency bands"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "battletetris",
+                    "title": "BattleTetris",
+                    "description": "Multiplayer competitive Tetris clone with power-ups.",
+                    "headerPhoto": "/assets/photos/projects/battletetris_header.png",
+                    "headerPhotoWidth": 799,
+                    "headerPhotoHeight": 629,
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/test.jpg",
+                            "width": 1024,
+                            "height": 768
+                        }
+                    ],
+                    "link": "/projects/coding/battletetris",
+                    "techUsed": [
+                        {
+                            "label": "React",
+                            "icon": "reactjs.svg",
+                            "url": "/projects/reactjs",
+                            "bullets": [
+                                "Built game UI with hooks and context",
+                                "Synced state across clients via WebSockets"
+                            ]
+                        },
+                        {
+                            "label": "Node.js",
+                            "icon": "nodejs.svg",
+                            "url": "/projects/nodejs",
+                            "bullets": [
+                                "Authored real-time server for matchmaking and power-ups"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "archive",
+            "title": "Archived Projects",
+            "projects": [
+                {
+                    "id": "escapevroom",
+                    "title": "EscapeVRoom",
+                    "description": "My Senior Design team wanted to improve our skills developing for Virtual Reality, so we decided to participate in Knight Hacks, a hackathon hosted by the University of Central Florida. We had some time before work began on our final project, so we saw the hackathon as the perfect opportunity to challenge ourselves in a fast-paced, collaborative environment. With a weekend to build something from scratch, we focused on designing an immersive escape room experience in Unity.\n\nEscapeVRoom is a single-level escape room filled with interactive items, environmental puzzles, and game scripts to guide the player toward unlocking the final door. We divided responsibilities among the team based on interest and experience: I focused on scripting major mechanics like the bookshelf and fireplace puzzle, while also integrating everyone’s code into a unified project. Javier designed the environment and puzzle logic, and Jacob set up item interactions and built core functionality like the silver key and chest. Working closely as a team, we were able to teach each other new tools and quickly adapt to the challenges of Unity development.\n\nThis project helped me gain hands-on experience using the full range of Unity’s development tools—from animation and scripting to environment design and interaction systems. It was also a great opportunity to deepen my C# skills and practice building a functional VR experience under a time constraint.",
+                    "headerPhoto": "/assets/photos/projects/escapevroom/header.png",
+                    "keyTakeaways": [
+                        "Improved real-time collaboration skills",
+                        "Learned how to handle API rate limits effectively",
+                        "Gained experience with WebSockets for real-time updates"
+                    ],
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/escapevroom/1.png"
+                        }
+                    ],
+                    "link": "/projects/coding/escapevroom",
+                    "dateCompleted": "October 7th, 2020",
+                    "softwareUsed": "Unity",
+                    "hardware": "Meta Quest 2",
+                    "teamMembers": [
+                        "Javier Aguilar",
+                        "Jeff Fortune",
+                        "Timothy Jinks",
+                        "Jacob Powers"
+                    ],
+                    "sponsors": [
+                        "Dr. Ryan McMahan",
+                        "\nDr. Michael Kolodrubetz"
+                    ],
+                    "techUsed": [
+                        {
+                            "label": "Unity",
+                            "icon": "unity.svg",
+                            "url": "/projects/unity",
+                            "bullets": [
+                                "Built core 3D environment and physics interactions",
+                                "Utilized Unity's XR Toolkit for VR interactions"
+                            ]
+                        }
+                    ],
+                    "repoUrl": "https://github.com/you/knighthacks2020",
+                    "downloadUrl": "/assets/zips/knighthacks2020.zip",
+                    "liveUrl": "https://yourgamehost.com/knighthacks2020"
+                }
+            ]
+        },
+        {
+            "id": "placeholder",
+            "title": "Ph Projects",
+            "projects": [
+                {
+                    "id": "escapevroom",
+                    "title": "EscapeVRoom",
+                    "description": "My Senior Design team wanted to improve our skills developing for Virtual Reality, so we decided to participate in Knight Hacks, a hackathon hosted by the University of Central Florida. We had some time before work began on our final project, so we saw the hackathon as the perfect opportunity to challenge ourselves in a fast-paced, collaborative environment. With a weekend to build something from scratch, we focused on designing an immersive escape room experience in Unity.\n\nEscapeVRoom is a single-level escape room filled with interactive items, environmental puzzles, and game scripts to guide the player toward unlocking the final door. We divided responsibilities among the team based on interest and experience: I focused on scripting major mechanics like the bookshelf and fireplace puzzle, while also integrating everyone’s code into a unified project. Javier designed the environment and puzzle logic, and Jacob set up item interactions and built core functionality like the silver key and chest. Working closely as a team, we were able to teach each other new tools and quickly adapt to the challenges of Unity development.\n\nThis project helped me gain hands-on experience using the full range of Unity’s development tools—from animation and scripting to environment design and interaction systems. It was also a great opportunity to deepen my C# skills and practice building a functional VR experience under a time constraint.",
+                    "headerPhoto": "/assets/photos/projects/escapevroom/header.png",
+                    "keyTakeaways": [
+                        "Improved real-time collaboration skills",
+                        "Learned how to handle API rate limits effectively",
+                        "Gained experience with WebSockets for real-time updates"
+                    ],
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/escapevroom/1.png"
+                        }
+                    ],
+                    "link": "/projects/coding/escapevroom",
+                    "dateCompleted": "October 7th, 2020",
+                    "softwareUsed": "Unity",
+                    "hardware": "Meta Quest 2",
+                    "teamMembers": [
+                        "Javier Aguilar",
+                        "Jeff Fortune",
+                        "Timothy Jinks",
+                        "Jacob Powers"
+                    ],
+                    "sponsors": [
+                        "Dr. Ryan McMahan",
+                        "\nDr. Michael Kolodrubetz"
+                    ],
+                    "techUsed": [
+                        {
+                            "label": "Unity",
+                            "icon": "unity.svg",
+                            "url": "/projects/unity",
+                            "bullets": [
+                                "Built core 3D environment and physics interactions",
+                                "Utilized Unity's XR Toolkit for VR interactions"
+                            ]
+                        }
+                    ],
+                    "repoUrl": "https://github.com/you/knighthacks2020",
+                    "downloadUrl": "/assets/zips/knighthacks2020.zip",
+                    "liveUrl": "https://yourgamehost.com/knighthacks2020"
                 }
             ]
         }

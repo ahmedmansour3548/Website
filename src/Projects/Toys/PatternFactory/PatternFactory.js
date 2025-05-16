@@ -1,160 +1,151 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
-import cameraInstance from '../utils/camera';
-import Pattern from '../utils/Pattern';
+﻿import React, { useState, useEffect, useContext } from 'react';
+import cameraInstance from '../../../utils/camera';
+import { PatternContext } from "../../../index";
 import { gsap } from 'gsap';
 import './PatternFactory.css';
 import * as THREE from 'three';
 
 const PatternFactory = () => {
-    const canvasRef = useRef(null);
-    const patternRef = useRef();
-    const sceneRef = useRef(new THREE.Scene());
-    const [patternParams, setPatternParameters] = useState({
-        maxVertices: 100,
-        xPos: 0,
-        yPos: 0,
-        xFunctionCode: 0,
-        yFunctionCode: 1,
-        deltaAngle: 1,
-        scale: 1,
-        xAngularFreq: 1,
-        yAngularFreq: 1,
-        xPhase: 0,
-        yPhase: 0,
-        loopVertex: 200,
-        paramsToAdjust: ['deltaAngle'],
-        adjustAmounts: [1]
+  const patternRef = useContext(PatternContext);
+  const [patternParams, setPatternParameters] = useState({
+    maxVertices: 100,
+    xPos: 0,
+    yPos: 0,
+    zPos: 0,
+    xFunctionCode: 0,
+    yFunctionCode: 1,
+    deltaAngle: 1,
+    scale: 1,
+    xAngularFreq: 1,
+    yAngularFreq: 1,
+    xAxis: 0,
+    yAxis: 0,
+    xPhase: 0,
+    yPhase: 0,
+    loopVertex: 200,
+    paramsToAdjust: ['deltaAngle'],
+    adjustAmounts: [1]
+  });
+  const [changeRates, setChangeRates] = useState({
+    maxVertices: 0,
+    xPos: 0,
+    yPos: 0,
+    xFunctionCode: 0,
+    yFunctionCode: 0,
+    deltaAngle: 0,
+    scale: 0,
+    xAngularFreq: 0,
+    yAngularFreq: 0,
+    xPhase: 0,
+    yPhase: 0,
+    loopVertex: 0
+  });
+  const [isRunning, setIsRunning] = useState({});
+  const intervals = React.useRef({});
+
+
+ // handle rate-based adjustments
+  useEffect(() => {
+    Object.entries(changeRates).forEach(([param, rate]) => {
+      if (rate !== 0 && isRunning[param]) {
+        startChangingParameter(param, rate);
+      }
     });
-    const [changeRates, setChangeRates] = useState({
-        maxVertices: 0,
-        xPos: 0,
-        yPos: 0,
-        xFunctionCode: 0,
-        yFunctionCode: 0,
-        deltaAngle: 0,
-        scale: 0,
-        xAngularFreq: 0,
-        yAngularFreq: 0,
-        xPhase: 0,
-        yPhase: 0,
-        loopVertex: 0,
-        paramsToAdjust: ['deltaAngle'],
-        adjustAmounts: [1]
+    return () => {
+      Object.values(intervals.current).forEach(clearInterval);
+    };
+  }, [isRunning, changeRates]);
+
+ // ─── Draw *once* after the provider is definitely ready ───
+ useEffect(() => {
+   const frame = requestAnimationFrame(() => {
+     const pattern = patternRef.current;
+     if (!pattern) return;
+     pattern.material.opacity = 1;
+     pattern.setAllVerticesColor(0xFF0000);
+     pattern.regenerate(patternParams);
+   });
+   return () => cancelAnimationFrame(frame);
+ }, [patternRef]);  // run this once on mount
+
+ useEffect(() => {
+    const pattern = patternRef.current;
+    if (!pattern) return;
+
+    // make sure it's visible
+    pattern.material.opacity = 1;
+    pattern.setAllVerticesColor(0xFF0000);
+
+    // draw it
+    pattern.regenerate(patternParams);
+  }, [patternRef, patternParams]);
+
+
+  const handleParameterChange = e => {
+    const { name, value } = e.target;
+    if (!isNaN(parseFloat(value)) || value === '' || value === '-') {
+      setPatternParameters(prev => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleRateChangeInput = e => {
+    const { name, value } = e.target;
+    const param = name.replace('-change-rate', '');
+    if (!isNaN(parseFloat(value)) || value === '' || value === '-') {
+      setChangeRates(prev => ({ ...prev, [param]: parseFloat(value) || 0 }));
+    }
+  };
+
+  const updateParameter = (param, delta, isInt = false) => {
+    setPatternParameters(prev => {
+      const oldVal = parseFloat(prev[param]);
+      const newVal = isInt ? Math.round(oldVal + delta) : oldVal + delta;
+      return { ...prev, [param]: newVal };
     });
-    const [isRunning, setIsRunning] = useState({}); // Updated to use useState for re-rendering
-    const intervals = useRef({});
+  };
 
-    useEffect(() => {
-        const sharedCamera = cameraInstance.getCamera();
-        patternRef.current = new Pattern(sceneRef.current, sharedCamera, false, 1, "music-pattern", 0xFF0000);
+  const handleRateChange = (param, amount) => {
+    setChangeRates(prev => ({ ...prev, [param]: prev[param] + amount }));
+  };
 
-        return () => {
-            patternRef.current.cleanup();
-        };
-    }, []);
+  const toggleInterval = param => {
+    setIsRunning(prev => ({ ...prev, [param]: !prev[param] }));
+    if (!isRunning[param]) {
+      startChangingParameter(param, changeRates[param]);
+    } else {
+      stopChangingParameter(param);
+    }
+  };
 
-    useEffect(() => {
-        let effectIntervals = intervals.current
-        Object.entries(changeRates).forEach(([param, rate]) => {
-            if (rate !== 0 && isRunning[param]) {
-                startChangingParameter(param, rate);
-            }
-        });
+  const startChangingParameter = (param, rate) => {
+    clearInterval(intervals.current[param]);
+    intervals.current[param] = setInterval(() => {
+      setPatternParameters(prev => ({
+        ...prev,
+        [param]: prev[param] + rate
+      }));
+    }, 10);
+  };
 
-        return () => {
+  const stopChangingParameter = param => {
+    clearInterval(intervals.current[param]);
+    intervals.current[param] = null;
+  };
 
-            Object.keys(effectIntervals).forEach(stopChangingParameter);
-        };
-    }, [isRunning, changeRates]);
+  const isValid = val => val === '' || val === '-' || !isNaN(parseFloat(val));
 
-    useEffect(() => {
-        updatePattern();
-    }, [patternParams]);
+  // UI Component for rate inputs
+  const ChangeRateInput = ({ param }) => (
+    <input
+      type="text"
+      id={`${param}-change-rate`}
+      name={`${param}-change-rate`}
+      value={changeRates[param]}
+      onChange={handleRateChangeInput}
+      style={{ borderColor: isValid(changeRates[param]) ? undefined : 'red' }}
+    />
+  );
 
-    const handleParameterChange = (e) => {
-        const { name, value } = e.target;
-        const isChangeRate = name.endsWith('-change-rate');
-        const paramName = isChangeRate ? name.replace('-change-rate', '') : name;
-        console.log("adjusting param rate");
-        if (value === "-" || !isNaN(parseFloat(value)) || value === "") {
-            if (isChangeRate) {
-                setChangeRates(prev => ({ ...prev, [paramName]: parseFloat(value) }));
-            } else {
-                setPatternParameters(prev => ({ ...prev, [name]: value }));
-            }
-        }
-    };
-
-    const updateParameter = (param, delta, isInteger = false) => {
-        setPatternParameters(prevParams => {
-            console.log("updating");
-            const oldValue = parseFloat(prevParams[param]);
-            const newValue = isInteger ? Math.round(oldValue + delta) : oldValue + delta;
-            return { ...prevParams, [param]: newValue };
-        });
-    };
-
-    const handleRateChangeInput = (e) => {
-        const { name, value } = e.target;
-        const paramName = name.replace('-change-rate', '');
-        setChangeRates(prev => ({ ...prev, [paramName]: value }));
-    };
-
-    const handleRateChange = (param, amount) => {
-        setChangeRates((prevRates) => ({
-            ...prevRates,
-            [param]: prevRates[param] + amount
-        }));
-    };
-
-    const toggleInterval = (param) => {
-        setIsRunning(prevState => ({
-            ...prevState,
-            [param]: !prevState[param]
-        }));
-        if (!isRunning[param]) {
-            startChangingParameter(param, changeRates[param]);
-        } else {
-            stopChangingParameter(param);
-        }
-    };
-
-    const startChangingParameter = (param, rate) => {
-        if (intervals.current[param]) clearInterval(intervals.current[param]); // Clear existing interval
-        intervals.current[param] = setInterval(() => {
-            setPatternParameters(prevParams => ({
-                ...prevParams,
-                [param]: prevParams[param] + rate
-            }));
-        }, 10);
-    };
-
-    const stopChangingParameter = (param) => {
-        clearInterval(intervals.current[param]);
-        intervals.current[param] = null;
-    };
-
-    const updatePattern = () => {
-        if (patternRef.current) {
-            patternRef.current.regeneratePatternArea(patternParams);
-        }
-    };
-
-    const isValidValue = (value) => {
-        return value === "-" || value === "" || !isNaN(parseFloat(value));
-    };
-
-    const ChangeRateInput = ({ param }) => (
-        <input
-            type="text"
-            id={`${param}-change-rate`}
-            name={`${param}-change-rate`}
-            value={changeRates[param]}
-            onChange={handleRateChangeInput}
-            placeholder={`Change rate for ${param}`}
-            style={{ borderColor: isValidValue(changeRates[param]) ? 'inherit' : 'red' }}
-        />
-    );
 
     return (
         <div className="controls-container">

@@ -1,8 +1,8 @@
 // src/About/About.js
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import './About.css';
 import * as THREE from 'three';
-import Pattern from "../utils/Pattern";
+import { PatternContext } from '../index';
 import { gsap } from "gsap";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -28,8 +28,10 @@ const otherTech = [
 const socialLinks = [
   { file: 'linkedin.svg', url: 'https://www.linkedin.com/in/yourprofile', label: 'LinkedIn' },
   { file: 'github.svg', url: 'https://github.com/yourusername', label: 'GitHub' },
-  { file: 'resume.svg', url: '/assets/resume.pdf', label: 'Resume' }
+  { file: 'resume.svg', url: '/assets/resume.pdf', label: 'Resume' },
+  { file: 'soundcloud.svg', url: '/assets/soundcloud.pdf', label: 'Soundcloud' }
 ];
+
 const sections = [
   {
     title: 'Who am I?',
@@ -55,17 +57,16 @@ export default function About() {
   const navigate = useNavigate();
   const sectionRefs = useRef([]);
   const techGridRef = useRef(null);
-  const patternRef = useRef(null);
   const heroTextRef = useRef(null);
   const scrollImgRef = useRef(null);
   const heroSectionRef = useRef(null);
 
+  const patternRef = useContext(PatternContext);
+  const pattern = patternRef ? patternRef.current : null;
 
   useEffect(() => {
-    const hint = document.querySelector('.tech-grid-hint');
+    const hint = document.querySelector('.about-tech-grid-hint');
     if (!hint) return;
-  
-    // 1) split text into spans
     const text = hint.textContent.trim();
     hint.innerHTML = '';  
     text.split('').forEach(char => {
@@ -73,182 +74,213 @@ export default function About() {
       span.textContent = char;
       hint.appendChild(span);
     });
-  
-    // 2) animate with GSAP
-    gsap.to('.tech-grid-hint span', {
-      y: -15,
+    gsap.to('.about-tech-grid-hint span', {
+      y: -16,
       duration: 2,
       repeat: -1,
       yoyo: true,
       ease: 'sine.inOut',
-      stagger: 0.01
+      stagger: 0.005
     });
   }, []);
 
-  // HERO enter animation
   useEffect(() => {
-    const tl = gsap.timeline();
 
-    // 1) fade in the hero container (with its bg-image)
-    tl.from(heroSectionRef.current, {
-      opacity: 0,
-      duration: 6,
-      ease: "power3.out",
+        gsap.to('.about-gradient-overlay', {
+      opacity: 1,
+      duration: 1.5,
+      ease: 'power2.inOut',
+      delay: 0.2
     });
-
-    // 2) fade‐in & rise for the hero text
-    tl.from(heroTextRef.current, {
-      opacity: 0,
-      y: -30,
-      duration: 1,
-      ease: "power3.out",
-    }, "-=3"); // overlap so it starts 0.8s before step 1 ends
-
-    // 3) fade & rise the arrow
-    tl.from(scrollImgRef.current, {
-      opacity: 0,
-      y: -20,
+    
+    // start everything invisible
+    gsap.set('.about-page > *:not(.about-transition-overlay)', { opacity: 0 });
+    // then fade in hero, callout, sections in sequence
+    gsap.to('.about-hero', {
+      opacity: 1,
+      duration: 3.2,
+      delay: 0.2,
+      ease: 'power2.out'
+    });
+    gsap.to('.about-callout', {
+      opacity: 1,
+      duration: 1.0,
+      delay: 0.8,
+      ease: 'power2.out'
+    });
+    gsap.to('.about-content-section', {
+      opacity: 1,
+      duration: 1.0,
+      delay: 1.2,
+      stagger: 0.2,
+      ease: 'power2.out'
+    });
+    // also fade in the back button
+    gsap.to('.about-back-home', {
+      opacity: 1,
       duration: 0.8,
-      ease: "power3.out",
-    }, "-=2");
+      delay: 0.2,
+      ease: 'power2.out'
+    });
   }, []);
 
-  // one-time reveal observer
   useEffect(() => {
-    const obs = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          // tech grid animation
-          if (entry.target.classList.contains('section-2')) {
-            gsap.fromTo(
-              techGridRef.current.children,
-              { y: 30, opacity: 0 },
-              { y: 0, opacity: 1, stagger: 0.1, duration: 0.5, ease: 'power2.out' }
-            );
-          }
-          observer.unobserve(entry.target);
+    const callout = document.querySelector('.about-callout-text');
+    if (!callout) return;
+    const text = callout.textContent.trim();
+    callout.innerHTML = '';
+    text.split('').forEach(char => {
+      const span = document.createElement('span');
+      span.textContent = char;
+      callout.appendChild(span);
+    });
+    gsap.to('.about-callout-text span', {
+      y: -8,
+      duration: 1.5,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      stagger: 0.1
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!patternRef || !patternRef.current) return;
+    const pattern = patternRef.current;
+    const saved = JSON.parse(sessionStorage.getItem('patternState') || 'null');
+    const state = saved || { value: 100, xAxis: 0, yAxis: 0, deltaAngle: 1, opacity: 0 };
+    Object.assign(pattern, state);
+    pattern.material.opacity = state.opacity;
+    pattern.regenerate({
+      maxVertices: state.value,
+      xPos: 0, yPos: 0, zPos: 0,
+      xFunctionCode: 0, yFunctionCode: 1,
+      deltaAngle: state.deltaAngle,
+      scale: 1,
+      xAngularFreq: 1, yAngularFreq: 1,
+      xPhase: state.xAxis, yPhase: state.yAxis,
+      loopVertex: 1000, paramsToAdjust: [], adjustAmounts: []
+    });
+
+    const tl = gsap.timeline({ repeat: -1, yoyo: true, defaults: { ease: 'sine' } });
+    tl.to(pattern, { xAngularFreq: 0.001, opacity: 0, duration: 5, onUpdate: () => {
+      pattern.material.opacity = pattern.opacity;
+      pattern.regenerate({
+        maxVertices: state.value,
+        xPos: 0, yPos: 0, zPos: 0,
+        xFunctionCode: 0, yFunctionCode: 1,
+        deltaAngle: pattern.deltaAngle,
+        scale: 1,
+        xAngularFreq: pattern.xAngularFreq,
+        yAngularFreq: 1,
+        xPhase: pattern.xAxis, yPhase: pattern.yAxis,
+        loopVertex: 1000, paramsToAdjust: [], adjustAmounts: []
+      });
+    }});
+
+    return () => tl.kill();
+  }, [patternRef]);
+
+const goBackHome = () => {
+  const overlay = document.createElement('div');
+  overlay.classList.add('about-transition-overlay');
+  document.body.appendChild(overlay);
+
+  const pat = patternRef?.current;
+  const homeState = { value: 50, deltaAngle: 1.05, opacity: 0, xAxis: 0, yAxis: 0 };
+
+  const tl = gsap.timeline({
+    defaults: { ease: 'power2.inOut' },
+    onComplete: () => navigate('/')
+  });
+
+  tl.to(overlay, { opacity: 1, duration: 0.8 }, 0)
+    .to('.about-page > *:not(.pattern-background)', { opacity: 0, duration: 0.6 }, 0)
+    .to(homeState, {
+      duration: 1,
+      onUpdate: () => {
+        if (!pat) return;
+        Object.assign(pat, homeState);
+        pat.material.opacity = homeState.opacity;
+        pat.regenerate({
+          maxVertices: homeState.value,
+          xPos: 0, yPos: 0, zPos: 0,
+          xFunctionCode: 0, yFunctionCode: 1,
+          deltaAngle: pat.deltaAngle,
+          scale: 2,
+          xAngularFreq: 1, yAngularFreq: 1,
+          xPhase: pat.xAxis, yPhase: 0,
+          loopVertex: 1000, paramsToAdjust: [], adjustAmounts: []
+        });
+      }
+    }, 0.2)
+    // spring right a bit, then shoot left off screen
+      .to(".about-back-home", { x: 15, duration: 0.15, ease: "power2.out" }, 0)
+      .to(".about-back-home", { x: -200, duration: 0.5, ease: "power2.out" }, 0.15)
+      .to(".about-back-home", { opacity: 0, duration: 0.2, ease: "linear" }, '<')  // Fade out the back-home button at the same time;
+};
+
+
+  useEffect(() => {
+    const obs = new IntersectionObserver((entries, obsr) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add("visible");
+          obsr.unobserve(e.target);
         }
       });
-    }, { threshold: 0.15, rootMargin: '0px 0px -15% 0px' });
+    }, { threshold: 0.15, rootMargin: "0px 0px -10% 0px" });
 
     sectionRefs.current.forEach(el => el && obs.observe(el));
     return () => obs.disconnect();
   }, []);
 
-  // three.js background pattern
-  useEffect(() => {
-    const saved = JSON.parse(sessionStorage.getItem("patternState") || "null");
-    const state = saved || { value: 100, xAxis: 0, yAxis: 0, deltaAngle: 1, opacity: 0};
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 400;
-    const pattern = new Pattern(scene, camera, true, state.opacity, "about-pattern", 0x00ffff);
-    Object.assign(pattern, { ...state, xAngularFreq: 1, opacity: state.opacity });
-    pattern.material.opacity = state.opacity;
-    patternRef.current = pattern;
-    const tl = gsap.timeline({ repeat: -1, yoyo: true, defaults: { ease: "sine" } });
-    tl.to(state, {
-      xAngularFreq: 0.001, opacity: 0, duration: 5, onUpdate: () => {
-        pattern.xAngularFreq = state.xAngularFreq;
-        pattern.xAxis = state.xAxis;
-        pattern.regeneratePatternArea({
-          maxVertices: 1,
-          xPos: 0,
-          yPos: 0,
-          xFunctionCode: 5,
-          yFunctionCode: 1,
-          deltaAngle: state.deltaAngle,
-          scale: 1,
-          xAngularFreq: pattern.xAngularFreq,
-          yAngularFreq: 1,
-          xPhase: pattern.xAxis,
-          yPhase: pattern.yAxis,
-          loopVertex: 1000,
-          paramsToAdjust: [],
-          adjustAmounts: []
-        });
-      }
-    });
-    window.addEventListener('resize', pattern.onWindowResize.bind(pattern));
-    return () => {
-      pattern.cleanup();
-      window.removeEventListener('resize', pattern.onWindowResize.bind(pattern));
-    };
-  }, []);
-
-  const goBackHome = () => {
-    const pattern  = patternRef.current;
-    const homeState = { value: 50, deltaAngle: 1.05, opacity: 0, xAxis: 0, yAxis: 0 };
-
-    gsap.timeline({
-      defaults: { ease: "power2.inOut" },
-      onComplete: () => navigate("/")
-    })
-    // fade out everything except the pattern canvas
-    .to(".about-page > *:not(.about-pattern)", { opacity: 0, duration: 0.6 }, 0)
-    // fade + shrink back button
-    .to(".back-home", { opacity: 0, scale: 0.8, duration: 0.4 }, 0)
-    // background to black
-    .to(".about-page", { backgroundColor: "#000", duration: 0.8 }, 0)
-    // morph the Pattern to home state
-    .to(homeState, {
-      xAxis: homeState.xAxis,
-      deltaAngle: homeState.deltaAngle,
-      duration: 1.5,
-      onUpdate: () => {
-        Object.assign(pattern, {
-          xAxis: homeState.xAxis,
-          deltaAngle: homeState.deltaAngle,
-          opacity: homeState.opacity
-        });
-        pattern.material.opacity = homeState.opacity;
-        pattern.regeneratePatternArea({
-          maxVertices: homeState.value,
-          xPos: 0, yPos: 0,
-          xFunctionCode: 0, yFunctionCode: 1,
-          deltaAngle: homeState.deltaAngle,
-          scale: 2,
-          xAngularFreq: 1, yAngularFreq: 1,
-          xPhase: homeState.xAxis, yPhase: 0,
-          loopVertex: 1000, paramsToAdjust: [], adjustAmounts: []
-        });
-      }
-    }, 0.2);
-  };
 
   const scrollDown = () => window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
 
   return (
     <div className="about-page">
-      <section className="hero" ref={heroSectionRef}>
-        <div className="hero-text" ref={heroTextRef}>
+      <button className="about-back-home" onClick={goBackHome}>
+        <div className="about-back-icon" aria-hidden="true" alt="Back home"/>
+        To Home
+      </button>
+      
+      <div className="about-gradient-overlay" />
+      <section className="about-hero" ref={heroSectionRef}>
+        <div className="about-hero-text" ref={heroTextRef}>
           <h1>Ahmed Mansour</h1>
           <p>“Always learning by creating.”</p>
         </div>
-        <div className="scroll-arrow" onClick={scrollDown} >
-          <img src="/assets/icons/chevron-icon-down-white.png" alt="Scroll Down" ref={scrollImgRef} />
+        <div className="about-scroll-arrow">
+          <img
+            src="/assets/icons/chevron-icon-down-white.png"
+            alt="Scroll Down"
+            ref={scrollImgRef}
+            onClick={scrollDown}
+          />
         </div>
       </section>
 
-      <section className="callout">
-        <p className="callout-text">Merging code, sound, and philosophy to expand reality.</p>
+      <section className="about-callout">
+        <p className="about-callout-text">
+          Merging code, sound, and philosophy to expand reality.
+        </p>
       </section>
 
       {sections.map((sec, i) => (
         <section
           key={i}
-          className={`content-section section-${i + 1}`}
+          className={`about-content-section about-section-${i + 1}`}
           ref={el => (sectionRefs.current[i] = el)}
         >
-          <div className="section-card">
+          <div className="about-section-card">
             {i === 0 && (
-              <div className="split-layout">
-                <div className="text-block">
+              <div className="about-split-layout">
+                <div className="about-text-block">
                   <h2>{sec.title}</h2>
                   <p className="about-section-text">{sec.text}</p>
                 </div>
-                <div className="image-block">
+                <div className="about-image-block">
                   <img src={sec.img} alt={sec.title} />
                 </div>
               </div>
@@ -257,31 +289,29 @@ export default function About() {
             {i === 1 && (
               <>
                 <h2>{sec.title}</h2>
-                <p className="tech-grid-hint">Psst - Click on a tool to see how I've used it in a project! :)</p>
-                <div className="tech-grid primary" ref={techGridRef}>
+                <p className="about-tech-grid-hint">
+                  Psst - Click on a tool to see how I've used it in a project! :)
+                </p>
+                <div className="about-tech-grid about-primary" ref={techGridRef}>
                   {primaryTech.map((tech, idx) => (
-                    <Link
-                               to={tech.url}
-                               className="tech-item"
-                               key={idx}
-                             >
+                    <Link to={tech.url} className="about-tech-item" key={idx}>
                       <img src={`/assets/icons/${tech.file}`} alt={tech.label} />
                       <span>{tech.label}</span>
-                      </Link>
+                    </Link>
                   ))}
                 </div>
-                <hr className="divider" />
-                <h3 className="subheading">Other Technologies</h3>
-                <div className="tech-grid secondary">
+                <hr className="about-divider" />
+                <h3 className="about-subheading">Other Technologies</h3>
+                <div className="about-tech-grid about-secondary">
                   {otherTech.map((tech, idx) => (
                     <Link
-                               to={tech.url}
-                               className="tech-item secondary-item"
-                               key={idx}
-                             >
+                      to={tech.url}
+                      className="about-tech-item about-secondary-item"
+                      key={idx}
+                    >
                       <img src={`/assets/icons/${tech.file}`} alt={tech.label} />
                       <span>{tech.label}</span>
-                      </Link>
+                    </Link>
                   ))}
                 </div>
               </>
@@ -290,14 +320,14 @@ export default function About() {
             {i === 2 && (
               <>
                 <h2>{sec.title}</h2>
-                <div className="social-bar">
+                <div className="about-social-bar">
                   {socialLinks.map((link, idx) => (
                     <a
                       key={idx}
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="social-item"
+                      className="about-social-item"
                     >
                       <img src={`/assets/icons/${link.file}`} alt={link.label} />
                       <span>{link.label}</span>
@@ -309,11 +339,6 @@ export default function About() {
           </div>
         </section>
       ))}
-
-      <button
-        className="back-home"
-        onClick={goBackHome}
-      ></button>
-    </div>
+    </div>  
   );
 }

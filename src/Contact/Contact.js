@@ -1,108 +1,86 @@
 // src/Contact/Contact.js
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
 import { gsap } from "gsap";
-import Pattern from "../utils/Pattern";
-import cameraInstance from "../utils/camera";
-import * as THREE from "three";
 import { useNavigate } from "react-router-dom";
+import { PatternContext } from "../index";
 import "./Contact.css";
 
-const Contact = () => {
+export default function Contact() {
   const navigate = useNavigate();
   const containerRef = useRef(null);
-  const patternRef = useRef(null);
   const [copied, setCopied] = useState(false);
   const email = "contact@ahmedamansour.com";
 
-  // will hold the restored incoming state
-  const savedState = useRef();
+  // get pattern instance and style presets from context
+  const { pattern, styles } = useContext(PatternContext);
+
+  // mirror of Home’s animation state
+  const p = useRef({
+    value: 200,
+    xAxis: 0,
+    yAxis: 0,
+    deltaAngle: 0.5,
+    opacity: 1,
+    scale: 2
+  });
 
   useEffect(() => {
-    // 1) Restore pattern state from home
-    const saved = JSON.parse(sessionStorage.getItem("patternState") || "null");
-    const state = saved || {
-      value: 100,
-      xAxis: 0,
-      yAxis: 0,
-      deltaAngle: 1,
-      opacity: 1
-    };
-    savedState.current = { ...state };
+    if (!pattern) return;
 
-    // 2) Set up Three.js + Pattern
-    const scene = new THREE.Scene();
-    const camera = cameraInstance.getCamera();
-    const pattern = new Pattern(
-      scene,
-      camera,
-      true,            // transparent
-      state.opacity,   // initial opacity
-      "contact-pattern",
-      0xffffff         // initial line color
-    );
+    // initial chain configuration and geometry
+    pattern
+      .setLineWidth(1)
+      .setStyle(styles.SOLID)
+      .setOpacity(1)
+      .setColor(0xF9C74F);
 
-    // initialize the Pattern's internals
-    Object.assign(pattern, {
-      value: state.value,
-      xAxis: state.xAxis,
-      yAxis: state.yAxis,
-      deltaAngle: state.deltaAngle,
-      opacity: state.opacity
-    });
-    pattern.material.opacity = state.opacity;
-
-
-    // ** Re-parent the canvas into our section container **
-    // const canvas = pattern.renderer.domElement;
-    // if (canvas.parentNode === document.body && containerRef.current) {
-    //   document.body.removeChild(canvas);
-    //   containerRef.current.insertBefore(canvas, containerRef.current.firstChild);
-    // }
-
-    patternRef.current = pattern;
-
-    // 3) Subtle rotation loop
-    const tl = gsap.timeline({ repeat: -1, ease: "none" });
-    tl.to(state, {
-      xAxis: state.xAxis + Math.PI * 2,
+    // rotation animation
+    const rotationTL = gsap.to(p.current, {
+      xAxis: `+=${Math.PI * 2}`,
       duration: 30,
+      ease: "none",
+      repeat: -1,
       onUpdate: () => {
-        pattern.xAxis = state.xAxis;
-        pattern.regeneratePatternArea({
-          maxVertices: state.value,
+        pattern.regenerate({
+          maxVertices: p.current.value,
           xPos: 0,
           yPos: 0,
+          zPos: 0,
           xFunctionCode: 0,
           yFunctionCode: 1,
-          deltaAngle: state.deltaAngle,
-          scale: 2,
+          deltaAngle: p.current.deltaAngle,
+          scale: p.current.scale,
           xAngularFreq: 1,
           yAngularFreq: 1,
-          xPhase: pattern.xAxis,
-          yPhase: pattern.yAxis,
-          loopVertex: 1000,
-          paramsToAdjust: [],
-          adjustAmounts: []
+          xPhase: p.current.xAxis,
+          yPhase: p.current.yAxis
         });
       }
     });
+    // pulse animation
+   const pulseTL = gsap.to(pattern.material, {
+     linewidth: 2,
+     duration: 1,
+     ease: "sine.inOut",
+     yoyo: true,
+     repeat: -1,
+     onUpdate: () => {
+       pattern.material.needsUpdate = true; // assure WebGL upload
+     }
+   });
 
-    // 4) Card fade-in
+    // GSAP context for UI fades
     const ctx = gsap.context(() => {
-      gsap.from(".contact-card", {
-        opacity: 0,
-        scale: 0.8,
-        duration: 0.8,
-        ease: "back.out(1.7)"
-      });
+      gsap.from(".contact-back-home", { opacity: 0, duration: 0.6, ease: "power2.out", delay: 0.1 });
+      gsap.from(".contact-card", { opacity: 0, scale: 0.8, duration: 0.8, ease: "back.out(1.7)", delay: 0.2 });
     }, containerRef);
 
     return () => {
-      tl.kill();
+      rotationTL.kill();
+      pulseTL.kill();
       ctx.revert();
-      pattern.cleanup();
     };
-  }, []);
+  }, [pattern, styles]);
 
   const copyEmail = () => {
     navigator.clipboard.writeText(email).then(() => {
@@ -112,100 +90,52 @@ const Contact = () => {
   };
 
   const goBackHome = () => {
-    const pattern = patternRef.current;
-    
-    sessionStorage.setItem('skipEntry','true');
-    // hard-coded “home” target:
-    const to = {
-      value: 50,
-      deltaAngle: 1.05,
-      opacity: 1,
-      xAxis: 0,
-      yAxis: 0,
-      scale: 4
-    };
-    patternRef.current.scale = 2;
-    const backTL = gsap.timeline();
-    // 1) Quick spring/fade‐out of the contact card
-    backTL.to(".contact-card", {
+    if (!pattern) return;
+
+    const backTL = gsap.timeline({ defaults: { ease: "power2.inOut" } });
+    backTL.to(".contact-card", { opacity: 0, scale: 0.8, duration: 0.3 }, 0)
+      .to(".contact-back-home", { x: 15, duration: 0.15 }, 0)
+      .to(".contact-back-home", { x: -200, duration: 0.5 }, 0.15)
+      .to(".contact-back-home", { opacity: 0, duration: 0.5 }, 0)
+      .to(p.current, {
+        value: 0,
         opacity: 0,
-        scale: 0.8,
-        duration: 0.3,
-        ease: "back.in(1.7)"
-    }, 0)
-    .to(".back-home", {
-      opacity: 0,
-      scale: 0.8,
-      duration: 0.3,
-      ease: "back.in(1.7)"
-  }, 0)
-      .to(patternRef.current, {
-        value: to.value,
-        deltaAngle: to.deltaAngle,
-        opacity: to.opacity,
-        xAxis: to.xAxis,
-        yAxis: to.yAxis,
-        scale: to.scale,
-        duration: 2,
-        ease: "power2.inOut",
-        onUpdate: () => {
-          pattern.value     = patternRef.current.value;
-          pattern.deltaAngle = patternRef.current.deltaAngle;
-          pattern.opacity   = patternRef.current.opacity;
-          pattern.xAxis     = patternRef.current.xAxis;
-          pattern.yAxis     = patternRef.current.yAxis;
-          pattern.material.opacity = patternRef.current.opacity;
-          pattern.regeneratePatternArea({
-            maxVertices: patternRef.current.value,
-            xPos: 0, yPos: 0,
-            xFunctionCode: 0, yFunctionCode: 1,
-            deltaAngle: patternRef.current.deltaAngle,
-            scale: patternRef.current.scale,
+        duration: 1,
+        onUpdate() {
+          pattern.material.opacity = p.current.opacity;
+          pattern.regenerate({
+            maxVertices: p.current.value,
+            xPos: 0,
+            yPos: 0,
+            zPos: 0,
+            xFunctionCode: 0,
+            yFunctionCode: 1,
+            deltaAngle: p.current.deltaAngle,
+            scale: p.current.scale,
             xAngularFreq: 1,
             yAngularFreq: 1,
-            xPhase: patternRef.current.xAxis,
-            yPhase: patternRef.current.yAxis,
-            loopVertex: 1000,
-            paramsToAdjust: [],
-            adjustAmounts: []
+            xPhase: p.current.xAxis,
+            yPhase: p.current.yAxis
           });
         }
       }, 0)
-      .to({}, {
-        duration: 2,
-        ease: "power2.inOut",
-        onUpdate() {
-          const geom = pattern.geometry;
-          const arr  = geom.attributes.color.array;
-          const pr   = this.progress();
-          for (let i = 0; i < arr.length; i += 3) {
-            arr[i]   += (1 - arr[i])   * pr; // R→1
-            arr[i+1] += (0 - arr[i+1]) * pr; // G→0
-            arr[i+2] += (0 - arr[i+2]) * pr; // B→0
-          }
-          geom.attributes.color.needsUpdate = true;
-        },
-        onComplete: () => {
-          navigate("/");
-        }
-      }, 0);
+      .eventCallback("onComplete", () => navigate("/"));
   };
 
   return (
     <section className="contact-container" ref={containerRef}>
       <div className="contact-card">
-        <h1>Contact Me</h1>
+        <h1>Contact</h1>
         <p>Reach me at:</p>
         <div className="contact-email">
           <code>{email}</code>
-          <button onClick={copyEmail}>
-            {copied ? "✔ Copied" : "Copy"}
-          </button>
+          <button onClick={copyEmail}>{copied ? "✔ Copied" : "Copy"}</button>
         </div>
       </div>
-      <button className="back-home" onClick={goBackHome}></button>
+      <button className="contact-back-home" onClick={goBackHome}>
+        <div className="contact-back-icon" aria-hidden="true" alt="Back home" />
+        To Home
+      </button>
     </section>
   );
-};
-
-export default Contact;
+}

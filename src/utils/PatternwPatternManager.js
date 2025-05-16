@@ -43,7 +43,7 @@ class Pattern {
         this.animate();
     }
 
-    regeneratePatternArea(params) {
+    regenerate(params) {
         let newParams = { ...params };
         let index = 0;
         const positions = this.positionsArray;

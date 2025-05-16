@@ -27,9 +27,9 @@
   background: rgba(0,0,0,0.4);
   padding: 2rem 3rem;
   border-radius: 8px;
-  box-shadow: 0 0 20px rgba(255,0,200,0.6), 0 0 40px rgba(0,255,255,0.4);
+  box-shadow: 0 0 20px #f5b727, 0 0 40px #f9c64f42;
   border: 2px solid;
-  border-image: linear-gradient(45deg, #ff00c8, #00ffe0) 1;
+  border-image: linear-gradient(45deg, #f9c74f, #f9c74f) 1;
   text-align: center;
   z-index: 10;
 }
@@ -38,7 +38,8 @@
   margin: 0 0 1rem;
   font-size: 2.5rem;
   color: #fff;
-  text-shadow: 0 0 8px #ff00c8, 0 0 8px #00ffe0;
+  text-shadow: 0 0 8px #f9c74f, 0 0 8px #000000;
+  font-family: 'Speculum', monospace;
 }
 
 /* “Reach me at:” text box */
@@ -53,6 +54,7 @@
   width: max-content;
   margin-left: auto;
   margin-right: auto;
+  font-family: 'Speculum';
 }
 
 /* Email box with animated rainbow glow */
@@ -103,4 +105,44 @@
 
 @keyframes hueShift {
   to { filter: hue-rotate(360deg); }
+}
+
+/* back button */
+.contact-back-home {
+  position: fixed;
+  top: 2rem;
+  left: 1rem;
+  background: none;
+  border: 2px solid #f9c74f;
+  transition: background 0.3s;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Speculum';
+  font-size: 0.7rem;
+  color:  #f9c74f;
+  font-kerning: normal;
+  font-weight: 600;
+  z-index: 5;
+}
+.contact-back-icon {
+  width: 2rem;
+  height: 2rem;
+  background-color: #f9c74f;
+  mask: url('/public/assets/icons/arrow-left-white.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/arrow-left-white.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  margin-right: 0.5rem;
+}
+
+.contact-back-home:hover,
+.contact-back-home.active
+{
+  background: #f9c74f;
+  color: #000;
+}
+.contact-back-home:hover .contact-back-icon {
+filter: brightness(0);
 }

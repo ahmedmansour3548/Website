@@ -1,6 +1,5 @@
 {
     "albums": [
-    
         {
             "name": "Cycles",
             "artist": "Ahmed Mansour",
@@ -8,36 +7,80 @@
             "tracks": [
                 {
                     "name": "Over The Horizon (Solo)",
-                    "file": "/assets/music/OverTheHorizon (Solo).wav"
+                    "file": "/assets/music/OverTheHorizon (Solo).wav",
+                    "duration": "2:34",
+                    "parts": [
+                        {
+                            "instrument": "Violin I",
+                            "icon": "/assets/icons/violin.svg",
+                            "pdf": "/pdfs/opening-theme/violin1.pdf",
+                            "download": "downloads/intro.mp3"
+                        },
+                        {
+                            "instrument": "Piano",
+                            "icon": "/assets/icons/piano.svg",
+                            "pdf": "/pdfs/opening-theme/piano.pdf",
+                            "download": "downloads/intro.mp3"
+                        }
+                    ]
                 },
                 {
                     "name": "Over The Horizon",
-                    "file": "/assets/music/OverTheHorizon.wav"
+                    "file": "/assets/music/OverTheHorizon.wav",
+                    "duration": "2:01",
+                    "parts": [
+                        {
+                            "instrument": "Piano",
+                            "icon": "/assets/icons/piano.svg",
+                            "pdf": "/pdfs/opening-theme/piano.pdf",
+                            "download": "downloads/intro.mp3"
+                        }
+                    ]
                 },
                 {
                     "name": "With Two Hands",
-                    "file": "/assets/music/WithTwoHands.wav"
+                    "file": "/assets/music/WithTwoHands.wav",
+                    "duration": "2:00",
+                    "parts": [
+                        {
+                            "instrument": "Piano",
+                            "icon": "/assets/icons/piano.svg",
+                            "pdf": "/pdfs/opening-theme/piano.pdf",
+                            "download": "downloads/intro.mp3"
+                        }
+                    ]
                 },
                 {
                     "name": "Rooftop Bar On The First Floor",
-                    "file": "/assets/music/RooftopBarOnTheFirstFloor.wav"
+                    "file": "/assets/music/RooftopBarOnTheFirstFloor.wav",
+                    "duration": "2:00",
+                    "parts": [
+                        {
+                            "instrument": "Piano",
+                            "icon": "/assets/icons/piano.svg",
+                            "pdf": "/pdfs/opening-theme/piano.pdf",
+                            "download": "downloads/intro.mp3"
+                        }
+                    ]
                 }
             ],
-            "frontCover" : "/assets/photos/albums/Cycles/CyclesFront.png",
-            "backCover" : "/assets/photos/albums/Cycles/CyclesBack.png",
-            "skybox" : [
+            "frontCover": "/assets/photos/albums/Cycles/CyclesFront.png",
+            "backCover": "/assets/photos/albums/Cycles/CyclesBack.png",
+            "skybox": [
                 "/assets/photos/albums/Cycles/skybox/px.png",
                 "/assets/photos/albums/Cycles/skybox/nx.png",
                 "/assets/photos/albums/Cycles/skybox/py.png",
                 "/assets/photos/albums/Cycles/skybox/ny.png",
                 "/assets/photos/albums/Cycles/skybox/pz.png",
                 "/assets/photos/albums/Cycles/skybox/nz.png"
-            ]
+            ],
+            "albumZip": "/assets/music/Cycles.zip"
         },
         {
             "name": "Drafts And Stuff",
             "artist": "Ahmed Mansour",
             "year": 2025,
+            "description": "A collection of drafts and unfinished pieces.",
             "tracks": [
                 {
                     "name": "Dreaming Of",
@@ -68,9 +111,9 @@
                     "file": "/assets/music/DraftsAndStuff/StillDreaming.mp3"
                 }
             ],
-            "frontCover" : "/assets/photos/albums/DraftsAndStuff/DraftsAndStuffFront.png",
-            "backCover" : "/assets/photos/albums/DraftsAndStuff/DraftsAndStuffFront.png",
-            "skybox" : [
+            "frontCover": "/assets/photos/albums/DraftsAndStuff/DraftsAndStuffFront.png",
+            "backCover": "/assets/photos/albums/DraftsAndStuff/DraftsAndStuffFront.png",
+            "skybox": [
                 "/assets/photos/albums/DraftsAndStuff/skybox/posx.jpg",
                 "/assets/photos/albums/DraftsAndStuff/skybox/negx.jpg",
                 "/assets/photos/albums/DraftsAndStuff/skybox/posy.jpg",
@@ -99,11 +142,15 @@
                 {
                     "name": "Under Construction",
                     "file": "/assets/music/Coneman/Under Construction.wav"
+                },
+                {
+                    "name": "Test",
+                    "file": "/assets/music/Coneman/test.wav"
                 }
             ],
-            "frontCover" : "/assets/photos/albums/Coneman/ConemanFront.png",
-            "backCover" : "/assets/photos/albums/Coneman/ConemanFront.png",
-            "skybox" : [
+            "frontCover": "/assets/photos/albums/Coneman/ConemanFront.png",
+            "backCover": "/assets/photos/albums/Coneman/ConemanFront.png",
+            "skybox": [
                 "/assets/photos/albums/Coneman/skybox/posx.jpg",
                 "/assets/photos/albums/Coneman/skybox/negx.jpg",
                 "/assets/photos/albums/Coneman/skybox/posy.jpg",
@@ -111,7 +158,6 @@
                 "/assets/photos/albums/Coneman/skybox/posz.jpg",
                 "/assets/photos/albums/Coneman/skybox/negz.jpg"
             ]
-            
         }
-        ]
+    ]
 }

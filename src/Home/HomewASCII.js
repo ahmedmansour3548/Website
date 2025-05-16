@@ -71,7 +71,7 @@ const Home = () => {
             value: 50,
             duration: 1.5,
             ease: "linear",
-            onUpdate: () => patternRef.current.regeneratePatternArea({
+            onUpdate: () => patternRef.current.regenerate({
                 maxVertices: patternProgressRef.current.value,
                 xPos: 0,
                 yPos: 0,
@@ -116,7 +116,7 @@ const Home = () => {
                     // Apply the color to the material
                     patternRef.current.updateMaterialColor(r, g, b);
 
-                    patternRef.current.regeneratePatternArea({
+                    patternRef.current.regenerate({
                         maxVertices: patternProgressRef.current.value,
                         xPos: 0,
                         yPos: 0,
@@ -177,7 +177,7 @@ const Home = () => {
                 value: 0,
                 duration: 0,
                 ease: "linear",
-                onUpdate: () => patternRef.current.regeneratePatternArea({
+                onUpdate: () => patternRef.current.regenerate({
                     maxVertices: patternProgressRef.current.value,
                     xPos: 0,
                     yPos: 0,
@@ -218,7 +218,7 @@ const Home = () => {
                 duration: 4,
                 ease: "linear",
                 onUpdate() {
-                    patternRef.current.regeneratePatternArea({
+                    patternRef.current.regenerate({
                         maxVertices: patternProgressRef.current.value,
                         xPos: 0,
                         yPos: 0,

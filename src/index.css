@@ -1,9 +1,24 @@
+:root {
+  --navy: #101020;
+  --cyan: #2fe8ff;
+  --pink: #ff3ecc;
+  --lavender: #c899ff;
+  --white: #f0f0ff;
+  --card-bg: rgba(20,20,40,0.8);
+  --g-start: #0d1b2a;
+  --g-end:   #0d1b2a;
+}
+  
 html, body {
-    background: black;
+    background: var(--navy);
+    color: var(--white);
+    font-family: "Poppins", sans-serif;
+    overflow-x: hidden;
     /*overflow-x :hidden;  Disable scrolling */
     height: 100%; /* Ensure the body takes the full height of the viewport */
     margin: 0; /* Remove default margin */
     z-index: 1;
+
 }
 /* Custom Scrollbar with Tapered Ends */
 /* ::-webkit-scrollbar {
@@ -16,8 +31,89 @@ html, body {
     height: 50px;
     position: relative;
   }
+
   
+  */
+
+        @font-face {
+          font-family: 'Blockbrokers';
+          src: url('/public/assets/fonts/Blockbrokers.otf') format('opentype');
+      }
+      @font-face {
+          font-family: 'Montserrat';
+          src: url('/public/assets/fonts/Montserrat.ttf') format('opentype');
+      }
+      @font-face {
+          font-family: 'Montserrat-Italic';
+          src: url('/public/assets/fonts/Montserrat-Italic.ttf') format('opentype');
+      }
+      @font-face {
+          font-family: 'Novecento-Normal';
+          src: url('/public/assets/fonts/Novecentosanswide-Normal.otf') format('opentype');
+      }
+      @font-face {
+          font-family: 'Ground';
+          src: url('/public/assets/fonts/Ground.ttf') format('opentype');
+      }
+      @font-face {
+          font-family: 'Peforma';
+          src: url('/public/assets/fonts/Performa.ttf') format('opentype');
+      }
+      @font-face {
+          font-family: 'DOS';
+          src: url('/public/assets/fonts/DOS.ttf') format('opentype');
+      }
+      @font-face {
+          font-family: 'DOS3D';
+          src: url('/public/assets/fonts/DOS3D.ttf') format('opentype');
+      }
+      @font-face {
+          font-family: 'Eight-One';
+          src: url('/public/assets/fonts/Eight-One.ttf') format('opentype');
+      }
+      @font-face {
+          font-family: 'Robot';
+          src: url('/public/assets/fonts/Robot.otf') format('opentype');
+      }
+      @font-face {
+          font-family: 'Super-Quick-Formula';
+          src: url('/public/assets/fonts/Super-Quick-Formula.ttf') format('opentype');
+      }
+      @font-face {
+          font-family: 'Timeline';
+          src: url('/public/assets/fonts/Timeline.ttf') format('opentype');
+      }
+      @font-face {
+          font-family: 'Twitch';
+          src: url('/public/assets/fonts/twitch.ttf') format('opentype');
+      }
+      @font-face {
+          font-family: 'Ubuntu';
+          src: url('/public/assets/fonts/Ubuntu.ttf') format('opentype');
+      }
+      @font-face {
+          font-family: 'Schoolwork';
+          src: url('/public/assets/fonts/Schoolwork.ttf') format('opentype');
+      }
+      @font-face {
+          font-family: 'Wendell';
+          src: url('/public/assets/fonts/Wendell.ttf') format('opentype');
+      }
+      @font-face {
+          font-family: 'White-Rabbit';
+          src: url('/public/assets/fonts/whitrabt.ttf') format('opentype');
+      }
+      @font-face {
+          font-family: 'Speculum';
+          src: url('/public/assets/fonts/speculum.ttf') format('opentype');
+      }
+      @font-face {
+          font-family: 'Spongeboy';
+          src: url('/public/assets/fonts/Spongeboy.ttf') format('opentype');
+      }
+
   /* Adding Tapered Ends */
+
   ::-webkit-scrollbar-thumb:before,
   ::-webkit-scrollbar-thumb:after {
     content: "";
@@ -61,18 +157,6 @@ html, body {
 
 }
 
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: black;
-    color: #00FF00;
-    font-family: 'Press Start 2P', cursive;
-}
-
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -113,25 +197,23 @@ p {
     .toolbar-button:hover {
         background-color: #0056b3; /* Darker shade for hover effect */
     }
-
-    .back-home {
+      
+    .pattern-background,
+    .pattern-background canvas,
+    .global-pattern {
       position: fixed;
-      top: 1.5rem;
-      left: 1.5rem;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      z-index: 999;
-    
-      color: #fff;                /* start white */
-      transition: color 0.3s ease; /* smooth 0.3s fade */
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
     }
-  
-    .back-home::before {
-      content: "←";
-      font-size: 3rem;
-    }
-  
-    .back-home.scrolled {
-      color: #000; /* fade to black */
-    }
+
+/* Ensure each page’s container sits on top */
+.home-page,
+.about-page,
+.contact-container {
+  position: relative;
+  z-index: 1;
+}

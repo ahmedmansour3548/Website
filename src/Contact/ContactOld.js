@@ -68,7 +68,7 @@ const Contact = () => {
       duration: 30,
       onUpdate: () => {
         pattern.xAxis = state.xAxis;
-        pattern.regeneratePatternArea({
+        pattern.regenerate({
           maxVertices: state.value,
           xPos: 0,
           yPos: 0,
@@ -141,7 +141,7 @@ const Contact = () => {
           pattern.xAxis     = patternRef.current.xAxis;
           pattern.yAxis     = patternRef.current.yAxis;
           pattern.material.opacity = patternRef.current.opacity;
-          pattern.regeneratePatternArea({
+          pattern.regenerate({
             maxVertices: patternRef.current.value,
             xPos: 0, yPos: 0,
             xFunctionCode: 0, yFunctionCode: 1,
