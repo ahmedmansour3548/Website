@@ -124,25 +124,43 @@ export default function About() {
     });
   }, []);
 
-  useEffect(() => {
-    const callout = document.querySelector('.about-callout-text');
-    if (!callout) return;
-    const text = callout.textContent.trim();
-    callout.innerHTML = '';
-    text.split('').forEach(char => {
-      const span = document.createElement('span');
-      span.textContent = char;
-      callout.appendChild(span);
-    });
-    gsap.to('.about-callout-text span', {
-      y: -8,
-      duration: 1.5,
+useEffect(() => {
+  const callout = document.querySelector(".about-callout-text");
+  if (!callout) return;
+
+  /* 1️⃣  split while preserving spaces */
+  const raw = callout.textContent;          // no .trim() !
+  callout.innerHTML = "";
+  Array.from(raw).forEach((ch) => {
+    const span = document.createElement("span");
+    if (ch === " ") {
+      /* keep word spacing */
+      span.innerHTML = "&nbsp;";
+      span.classList.add("space");
+    } else {
+      span.textContent = ch;
+    }
+    callout.appendChild(span);
+  });
+
+  const spans = gsap.utils.toArray(".about-callout-text span");
+
+  /* 2️⃣  travelling wave:
+         each char rises & falls but their clocks are offset,
+         giving the illusion of a wave moving left→right   */
+  gsap.to(spans, {
+    yPercent: -10,
+    duration: 3,
+    ease: "sine.inOut",
+    repeat: -1,
+    yoyo: true,
+    stagger: {
+      each: 0.05,      // offset between letters
       repeat: -1,
-      yoyo: true,
-      ease: 'sine.inOut',
-      stagger: 0.1
-    });
-  }, []);
+      yoyo: true
+    }
+  });
+}, []);
 
   useEffect(() => {
     if (!patternRef || !patternRef.current) return;
@@ -180,6 +198,22 @@ export default function About() {
 
     return () => tl.kill();
   }, [patternRef]);
+
+   useEffect(() => {
+
+    /* SECTION 1 IMAGE: slow upward drift for a depth feel */
+    gsap.to(".about-image-block img", {
+      y: -80,
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".about-section-1",
+        start: "top bottom",
+        end: "bottom top",
+        scrub: true
+      }
+    });
+  }, []);
+
 
 const goBackHome = () => {
   const overlay = document.createElement('div');

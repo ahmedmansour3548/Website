@@ -1,0 +1,57 @@
+:root{
+  --menu-width : 11rem;        /* ← one place controls width for every left-rail button */
+}
+
+/* ─────────── Container ─────────── */
+.cat-menu{
+  position:fixed;
+  top:5.5rem; left:1rem; z-index:1;
+  width:var(--menu-width);
+  display:flex; flex-direction:column; gap:.75rem;
+  overflow:visible;
+  opacity:0;                      /* ← start invisible */
+}
+
+/* ─────────── Category toggle button ─────────── */
+.cat-btn{
+  width:100%;
+  padding:.45rem .8rem;
+  background:none;
+  border:2px solid var(--project-color);
+  color:var(--project-color);
+  font:600 clamp(.65rem,1.6vw,.8rem)/1 'Speculum';
+  text-align:left; cursor:pointer;
+  transition:background .25s, color .25s;
+}
+.cat-btn.open,
+.cat-btn:hover{ background:var(--project-color); color:#000; }
+
+/* ─────────── Project list (animated via GSAP) ─────────── */
+.proj-list{
+  margin:0; padding:0;
+  height:0; opacity:0; overflow:hidden;
+}
+.proj-list li{ margin:.3rem 0; }
+
+/* project links – slightly shorter, same left alignment */
+.proj-list a{
+  display:block;
+  width:calc(79%);     /* 4 px indent each side */
+  margin-left:8px;
+  padding:.4rem .8rem;
+  background:none;
+  border:2px solid var(--project-color);
+  color:var(--project-color);
+  font:600 clamp(.6rem,1.4vw,.75rem)/1 'Speculum';
+  text-decoration:none;
+  transition:background .25s, color .25s;
+
+  white-space:normal;         /* ← allow wrapping */
+  word-break:break-word;
+  overflow:visible;           /* no clipping */
+}
+.proj-list a:hover,
+.proj-list a.active{
+  background:var(--project-color);
+  color:#000;
+}

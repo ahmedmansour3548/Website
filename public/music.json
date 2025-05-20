@@ -1,81 +1,74 @@
 {
-    "albums": [
+  "albums":[
+    {
+      "name":"Cycles",
+      "artist":"Ahmed Mansour",
+      "year":2025,
+
+      "tracks":[
         {
-            "name": "Cycles",
-            "artist": "Ahmed Mansour",
-            "year": 2025,
-            "tracks": [
-                {
-                    "name": "Over The Horizon (Solo)",
-                    "file": "/assets/music/OverTheHorizon (Solo).wav",
-                    "duration": "2:34",
-                    "parts": [
-                        {
-                            "instrument": "Violin I",
-                            "icon": "/assets/icons/violin.svg",
-                            "pdf": "/pdfs/opening-theme/violin1.pdf",
-                            "download": "downloads/intro.mp3"
-                        },
-                        {
-                            "instrument": "Piano",
-                            "icon": "/assets/icons/piano.svg",
-                            "pdf": "/pdfs/opening-theme/piano.pdf",
-                            "download": "downloads/intro.mp3"
-                        }
-                    ]
-                },
-                {
-                    "name": "Over The Horizon",
-                    "file": "/assets/music/OverTheHorizon.wav",
-                    "duration": "2:01",
-                    "parts": [
-                        {
-                            "instrument": "Piano",
-                            "icon": "/assets/icons/piano.svg",
-                            "pdf": "/pdfs/opening-theme/piano.pdf",
-                            "download": "downloads/intro.mp3"
-                        }
-                    ]
-                },
-                {
-                    "name": "With Two Hands",
-                    "file": "/assets/music/WithTwoHands.wav",
-                    "duration": "2:00",
-                    "parts": [
-                        {
-                            "instrument": "Piano",
-                            "icon": "/assets/icons/piano.svg",
-                            "pdf": "/pdfs/opening-theme/piano.pdf",
-                            "download": "downloads/intro.mp3"
-                        }
-                    ]
-                },
-                {
-                    "name": "Rooftop Bar On The First Floor",
-                    "file": "/assets/music/RooftopBarOnTheFirstFloor.wav",
-                    "duration": "2:00",
-                    "parts": [
-                        {
-                            "instrument": "Piano",
-                            "icon": "/assets/icons/piano.svg",
-                            "pdf": "/pdfs/opening-theme/piano.pdf",
-                            "download": "downloads/intro.mp3"
-                        }
-                    ]
-                }
-            ],
-            "frontCover": "/assets/photos/albums/Cycles/CyclesFront.png",
-            "backCover": "/assets/photos/albums/Cycles/CyclesBack.png",
-            "skybox": [
-                "/assets/photos/albums/Cycles/skybox/px.png",
-                "/assets/photos/albums/Cycles/skybox/nx.png",
-                "/assets/photos/albums/Cycles/skybox/py.png",
-                "/assets/photos/albums/Cycles/skybox/ny.png",
-                "/assets/photos/albums/Cycles/skybox/pz.png",
-                "/assets/photos/albums/Cycles/skybox/nz.png"
-            ],
-            "albumZip": "/assets/music/Cycles.zip"
+          "name":"Over The Horizon (Solo)",
+          "file":"/assets/music/OverTheHorizon (Solo).wav",
+          "duration":"2:34",
+          "parts":[
+            {
+              "instrument":"Piano",
+              "icon":"/assets/icons/piano.svg",
+              "pdf":"/pdfs/oth-solo/piano.pdf"
+            },
+            { "instrument":"Violin I",  "icon":"/assets/icons/violin.svg", "pdf":"/pdfs/oth/violin1.pdf" }
+          ]
         },
+
+        {
+          "name":"Over The Horizon",
+          "file":"/assets/music/OverTheHorizon.wav",
+          "duration":"2:01",
+          "parts":[
+            { "instrument":"Piano",     "icon":"/assets/icons/piano.svg",  "pdf":"/pdfs/oth/piano1.pdf" },
+            { "instrument":"Piano",     "icon":"/assets/icons/piano.svg",  "pdf":"/pdfs/oth/piano2.pdf" },
+            { "instrument":"Violin I",  "icon":"/assets/icons/violin.svg", "pdf":"/pdfs/oth/violin1.pdf" },
+            { "instrument":"Violin II", "icon":"/assets/icons/violin.svg", "pdf":"/pdfs/oth/violin2.pdf" },
+            { "instrument":"Viola",     "icon":"/assets/icons/viola.svg",  "pdf":"/pdfs/oth/viola.pdf" },
+            { "instrument":"Cello",     "icon":"/assets/icons/cello.svg",  "pdf":"/pdfs/oth/cello.pdf" }
+          ]
+        },
+
+        {
+          "name":"With Two Hands",
+          "file":"/assets/music/WithTwoHands.wav",
+          "duration":"2:00",
+          "parts":[
+            { "instrument":"Piano",     "icon":"/assets/icons/piano.svg",  "pdf":"/pdfs/wth/piano1.pdf" },
+            { "instrument":"Piano",     "icon":"/assets/icons/piano.svg",  "pdf":"/pdfs/wth/piano2.pdf" },
+            { "instrument":"Piano",     "icon":"/assets/icons/piano.svg",  "pdf":"/pdfs/wth/piano3.pdf" },
+            { "instrument":"Violin I",  "icon":"/assets/icons/violin.svg", "pdf":"/pdfs/wth/violin1.pdf" },
+            { "instrument":"Violin I",  "icon":"/assets/icons/violin.svg", "pdf":"/pdfs/wth/violin2.pdf" },
+            { "instrument":"Violin II", "icon":"/assets/icons/violin.svg", "pdf":"/pdfs/wth/violinII1.pdf" },
+            { "instrument":"Cello",     "icon":"/assets/icons/cello.svg",  "pdf":"/pdfs/wth/cello.pdf" },
+            { "instrument":"Double Bass","icon":"/assets/icons/bass.svg",  "pdf":"/pdfs/wth/bass.pdf" }
+          ]
+        },
+
+        {
+          "name":"Rooftop Bar On The First Floor",
+          "file":"/assets/music/RooftopBarOnTheFirstFloor.wav",
+          "duration":"2:00",
+          "parts":[
+            { "instrument":"Flute",    "icon":"/assets/icons/flute.svg",   "pdf":"/pdfs/rb/flute.pdf" },
+            { "instrument":"Alto Sax", "icon":"/assets/icons/sax.svg",     "pdf":"/pdfs/rb/altoSax.pdf" },
+            { "instrument":"Trumpet",  "icon":"/assets/icons/trumpet.svg", "pdf":"/pdfs/rb/trumpet1.pdf" },
+            { "instrument":"Trumpet",  "icon":"/assets/icons/trumpet.svg", "pdf":"/pdfs/rb/trumpet2.pdf" },
+            { "instrument":"Drum Set", "icon":"/assets/icons/drums.svg",   "pdf":"/pdfs/rb/drums.pdf" }
+          ]
+        }
+      ],
+
+      "frontCover":"/assets/photos/albums/Cycles/CyclesFront.png",
+      "backCover" :"/assets/photos/albums/Cycles/CyclesBack.png",
+      "albumZip"  :"/assets/music/Cycles.zip"
+    },
+
         {
             "name": "Drafts And Stuff",
             "artist": "Ahmed Mansour",
@@ -127,6 +120,10 @@
             "artist": "Ahmed Mansour",
             "year": 2023,
             "tracks": [
+              {
+                    "name": "Test",
+                    "file": "/assets/music/Coneman/test.wav"
+                },
                 {
                     "name": "Cone of Caution",
                     "file": "/assets/music/Coneman/Cone Of Caution.wav"
@@ -142,11 +139,8 @@
                 {
                     "name": "Under Construction",
                     "file": "/assets/music/Coneman/Under Construction.wav"
-                },
-                {
-                    "name": "Test",
-                    "file": "/assets/music/Coneman/test.wav"
                 }
+                
             ],
             "frontCover": "/assets/photos/albums/Coneman/ConemanFront.png",
             "backCover": "/assets/photos/albums/Coneman/ConemanFront.png",

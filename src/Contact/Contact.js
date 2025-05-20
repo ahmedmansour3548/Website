@@ -10,7 +10,7 @@ export default function Contact() {
   const containerRef = useRef(null);
   const [copied, setCopied] = useState(false);
   const email = "contact@ahmedamansour.com";
-
+  const backHomeRef = useRef(null);
   // get pattern instance and style presets from context
   const { pattern, styles } = useContext(PatternContext);
 
@@ -89,36 +89,58 @@ export default function Contact() {
     });
   };
 
-  const goBackHome = () => {
+   const goBackHome = () => {
     if (!pattern) return;
 
+    /* ── stop any in-progress entrance tweens so we can
+       start the exit animation from the *current* values ── */
+    gsap.killTweensOf(".contact-card");
+    gsap.killTweensOf(".contact-back-home");
+
     const backTL = gsap.timeline({ defaults: { ease: "power2.inOut" } });
-    backTL.to(".contact-card", { opacity: 0, scale: 0.8, duration: 0.3 }, 0)
-      .to(".contact-back-home", { x: 15, duration: 0.15 }, 0)
-      .to(".contact-back-home", { x: -200, duration: 0.5 }, 0.15)
-      .to(".contact-back-home", { opacity: 0, duration: 0.5 }, 0)
-      .to(p.current, {
-        value: 0,
-        opacity: 0,
-        duration: 1,
-        onUpdate() {
-          pattern.material.opacity = p.current.opacity;
-          pattern.regenerate({
-            maxVertices: p.current.value,
-            xPos: 0,
-            yPos: 0,
-            zPos: 0,
-            xFunctionCode: 0,
-            yFunctionCode: 1,
-            deltaAngle: p.current.deltaAngle,
-            scale: p.current.scale,
-            xAngularFreq: 1,
-            yAngularFreq: 1,
-            xPhase: p.current.xAxis,
-            yPhase: p.current.yAxis
-          });
-        }
-      }, 0)
+
+    backTL
+      // fade & shrink the card from whatever scale/opacity it’s at right now
+      .to(
+        ".contact-card",
+        {
+          opacity: 0,
+          scale: (i, el) => gsap.getProperty(el, "scale") * 0.8, // relative shrink
+          duration: 0.3,
+        },
+        0
+      )
+      // little spring-kick, then slide the button off-screen
+      .to(backHomeRef.current, { x: 15,  duration: 0.15 }, 0)
+      .to(backHomeRef.current, { x: -200, duration: 0.5  }, 0.15)
+      .to(backHomeRef.current, { opacity: 0, duration: 0.5 }, 0)
+      // fade the pattern away
+      .to(
+        p.current,
+        {
+          value: 0,
+          opacity: 0,
+          duration: 1,
+          onUpdate() {
+            pattern.material.opacity = p.current.opacity;
+            pattern.regenerate({
+              maxVertices: p.current.value,
+              xPos: 0,
+              yPos: 0,
+              zPos: 0,
+              xFunctionCode: 0,
+              yFunctionCode: 1,
+              deltaAngle: p.current.deltaAngle,
+              scale: p.current.scale,
+              xAngularFreq: 1,
+              yAngularFreq: 1,
+              xPhase: p.current.xAxis,
+              yPhase: p.current.yAxis,
+            });
+          },
+        },
+        0
+      )
       .eventCallback("onComplete", () => navigate("/"));
   };
 
@@ -132,7 +154,7 @@ export default function Contact() {
           <button onClick={copyEmail}>{copied ? "✔ Copied" : "Copy"}</button>
         </div>
       </div>
-      <button className="contact-back-home" onClick={goBackHome}>
+      <button className="contact-back-home" onClick={goBackHome} ref={backHomeRef}>
         <div className="contact-back-icon" aria-hidden="true" alt="Back home" />
         To Home
       </button>

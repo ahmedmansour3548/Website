@@ -1,5 +1,5 @@
 :root {
-  --navy: #101020;
+  --navy: #0a0a14;
   --cyan: #2fe8ff;
   --pink: #ff3ecc;
   --lavender: #c899ff;
@@ -13,8 +13,7 @@ html, body {
     background: var(--navy);
     color: var(--white);
     font-family: "Poppins", sans-serif;
-    overflow-x: hidden;
-    /*overflow-x :hidden;  Disable scrolling */
+    /* overflow-x: hidden; */
     height: 100%; /* Ensure the body takes the full height of the viewport */
     margin: 0; /* Remove default margin */
     z-index: 1;

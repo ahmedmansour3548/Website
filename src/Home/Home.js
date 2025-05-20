@@ -40,8 +40,8 @@ const Home = () => {
     'Eight-One',
     'Robot',
     'Twitch'
-
   ];
+  
   const [currentFont, setCurrentFont] = useState(FONT_LIST[0]);
   const [displayName, setDisplayName] = useState('Ahmed Mansour');
   const previousFontRef = useRef(FONT_LIST[0]);
@@ -294,11 +294,10 @@ const Home = () => {
     const musicTL = gsap.timeline({ paused: true });
     musicTL
       .to(p.current, { duration: 0, onComplete: () => { rotateTL.pause();}})
-      .to(p.current, { value: 1000, xAxis: 0, duration: 3, ease: 'circ.inOut', onUpdate: regen })
-      .to(p.current, { scale: 1.9, duration: 1, ease: 'circ.inOut'}, '<')
-      .to(p.current, { deltaAngle: 0.103, duration: 0.2, ease: 'power4.out' }, '<')
-       .to(p.current, { deltaAngle: 0.103, xAxis: 0, scale: 1, duration: 0.2, ease: 'linear', onUpdate: regen}, '<2')
-      .to(p.current, { duration: 2, onComplete: () => navigate('/music')});
+      .to(p.current, { value: 1000, xAxis: 0, duration: 3, ease: 'power3.inOut', onUpdate: regen })
+      .to(p.current, { scale: 1, duration: 3, ease: 'linear'}, '<')
+      .to(p.current, { deltaAngle: 0.103, duration: 3, ease: 'back(0.2)' }, '<')
+      .to(p.current, { duration: 0.5, onComplete: () => navigate('/music')});
   timelines.current.music = musicTL;
 
   // 7) WRITINGS
@@ -424,7 +423,7 @@ const handleClick = (label, e) => {
       opacity: 0,
       duration: 0.7,
       onComplete: () => {
-        gsap.to('.centered-text', { opacity: 0, duration: 0.2 });
+        gsap.to('.centered-text', { opacity: 0, duration: 0.2 }, 0);
         if (label === 'resume') {
           window.open('/downloads/resume.pdf', '_blank', 'noopener');
         } else {

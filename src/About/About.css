@@ -1,6 +1,6 @@
 /* src/About/About.css */
 
-html, body, #root {
+.about-page {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -103,7 +103,7 @@ filter: brightness(0);
   font-family: Montserrat;
 }
 .about-hero-text h1 {
-  font-size: 6rem;
+  font-size: 5rem;
   margin: 0;
 }
 .about-hero-text p {
@@ -148,6 +148,19 @@ max-width: 800px;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: shine 2s linear infinite;
+}
+
+.about-callout-text span {
+  display: inline-block;
+  will-change: transform;
+  background: inherit;
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.about-callout-text span.space { 
+  transform: none !important;
 }
 
 
@@ -404,3 +417,17 @@ max-width: 800px;
   transform: scale(1.2);
   color: #0073b1;
 }
+
+.about-hero,
+.about-image-block img,
+.about-tech-item { will-change: transform; }
+
+/* -------------------------------------------
+   Slight 3-D tilt when hovering section cards
+   ------------------------------------------- */
+.about-section-card:hover {                /* NEW */
+  transform: perspective(800px) rotateX(2deg) rotateY(-2deg) translateY(-2px);
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.12);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+

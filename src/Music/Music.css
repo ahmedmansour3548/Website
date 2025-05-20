@@ -21,6 +21,7 @@
   pointer-events: auto;
 }
 
+
 .nav-area {
   position: fixed;
   top: 0;
@@ -30,6 +31,7 @@
   cursor: pointer;
   pointer-events: auto;
   transform: scale(1);
+  opacity: 0;
 }
 .nav-area.left { left: 0; }
 .nav-area.right { right: 0; }
@@ -60,6 +62,8 @@
   gap: 2.5rem; /* evenly space all buttons */
   z-index: 10;
   pointer-events: auto;
+  opacity: 0;  /* Hide the footer initially */
+  transform: translateY(100%); /* Position it below the viewport */
 }
 
 .player-footer button {
@@ -84,6 +88,24 @@
 
 .player-footer button:active {
   transform: scale(1.1);
+}
+
+/* 1) All footer controls (Previous, Play, Next, Shuffle, Repeat) */
+.player-footer button:focus,
+.player-footer button:focus-visible {
+  outline: none;           /* no default ring      */
+  box-shadow: none;        /* no Firefox ‘dotted’ */
+}
+
+/* 2) Little table-row buttons that appear on hover           */
+.row-play:focus,
+.row-play:focus-visible,
+.row-download-btn:focus,
+.row-download-btn:focus-visible,
+.dl-header-btn:focus,
+.dl-header-btn:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 .music-shuffle-icon {
@@ -146,32 +168,17 @@
   margin: 0;
 }
 
-
 .now-playing {
-  position: -webkit-sticky;
-  position: sticky;
   bottom: calc(var(--footer-height) + 4rem);
+  position:fixed;
   left: 50%;
-  transform: translateX(-50%);
+  transform:translateX(-50%) scale(1.30); /* start bigger */
   font-size: 1rem;
   text-align: center;
-  z-index: 1;
+  z-index: 10;
   transition: font-size 0.3s;
+  will-change:transform;
 }
-
-.now-playing.fixed {
-  position: fixed;
-  bottom: var(--footer-height);
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 1rem;
-  z-index: 1;
-}
-
-.now-playing.pinned {
-  font-size: 1.8rem;
-}
-
 
 .now-playing h2 {
   margin: 0;
@@ -181,6 +188,16 @@
   font-weight: 100;
 }
 
+
+.now-playing h2 {
+  margin: 0;
+  font-size: 2.4rem;
+  text-shadow: 0 0 4px var(--cyan), 0 0 8px var(--pink);
+  font-family: 'Speculum';
+  font-weight: 100;
+  opacity:0
+}
+
 .now-playing p {
   margin: 1rem;
   font-size: 1rem;
@@ -188,7 +205,19 @@
   text-shadow: 0 0 4px var(--cyan), 0 0 8px var(--pink);
   font-family: 'Speculum';
   font-weight: 100;
+  min-height: 1.2em;
 }
+/* size-agnostic marker; nothing visual */
+.now-playing-spacer{
+  height:8rem;
+}
+
+/* responsive typography when viewport ≤ 800 px */
+@media (max-width: 800px){
+  .now-playing h2 { font-size:1.8rem; }
+  .now-playing p  { font-size:0.9rem;  }
+}
+
 
 .album-details {
   position: relative;
@@ -202,14 +231,18 @@
 
 .track-table { width: 100%; max-width: 600px; margin: 0 auto 2rem auto; border-collapse: collapse; }
 .track-table th, .track-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
-.track-table th:nth-child(2) { width: 40px; }
-.track-table th:nth-child(1) { width: 32px; }
+.track-table th:nth-child(2) { width: 40px; } /* # */
+.track-table th:nth-child(1) { width: 32px; } /* play */
+.track-table th.dl-col      { width: 40px; text-align:center; } /* download */
+.dl-cell, .dl-col { text-align:center; }
 .track-table th { color: var(--pink); letter-spacing: 1px; }
 .track-table tr { transition: background 0.2s; position: relative; }
 .track-table tr:hover { background: rgba(30,30,60,0.8); }
 .track-table tr.active { background: rgba(0,200,255,0.4); }
+.track-table tr:hover .row-play,
+.track-table tr:hover .row-download-btn { opacity:1; }
 .play-cell { position: relative; }
-.row-play { position: absolute; left: 0; top: 50%; transform: translateY(-50%); background: none; border: none; color: #fff; opacity: 0; transition: opacity 0.3s; cursor: pointer; }
+.row-play { position: absolute; left: 0; top: 50%; transform: translateY(-50%) translateX(50%);; background: none; border: none; color: #fff; opacity: 0; transition: opacity 0.3s; cursor: pointer; }
 .track-table tr:hover .row-play { opacity: 1; }
 .track-table tbody tr {
   cursor: pointer;
@@ -219,59 +252,95 @@
 .album-description h3 { margin-bottom: 1rem; color: var(--pink); letter-spacing: 1px; }
 .album-description p { margin: 0; opacity: 0.9; }
 
-.sheet-music-card {
-  margin: 2rem auto;
-  padding: 1.5rem;
-  max-width: 800px;
-  background: #000;
-  border: 2px solid #0ff;
-  border-radius: 1rem;
-  box-shadow: 0 0 12px rgba(0,255,255,0.6);
-  color: #0ff;
-  font-family: 'Press Start 2P', monospace;
-  text-align: center;
+/* ─────────────── SHEET-MUSIC CARD  (v2) ─────────────── */
+
+.sheet-music-card{
+  margin:2rem auto;
+  padding:1.75rem 2rem;
+  max-width:1024px;
+  background:var(--music-card-bg);      /* same colour as footer */
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:1rem;
+  box-shadow:0 6px 12px rgba(0,0,0,0.25);
+  color:#fff;
 }
 
-.sheet-music-card h3 {
-  margin-bottom: 1rem;
-  font-size: 1.2rem;
-  text-shadow: 0 0 6px #0ff;
+/* title */
+.sheet-music-card h3{
+  margin:0 0 1.25rem;
+  font-size:1.25rem;
+  text-align:center;
+  letter-spacing:0.5px;
 }
 
-.parts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 1rem;
+/* 3-across flex grid that centres any leftover cards */
+.instrument-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:1.5rem;                 /* ← even horizontal & vertical space */
+  justify-content:center;     /* ← centres 1-or-2 cards perfectly   */
 }
 
-.part-tile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0.75rem;
-  background: #111;
-  border: 1px solid #0ff;
-  border-radius: 0.75rem;
-  text-decoration: none;
-  color: #0ff;
-  transition: transform 0.2s, box-shadow 0.2s;
+/* individual instrument card */
+.instrument-group{
+  flex:1 1 300px;             /* grow, shrink, base-width 300 px    */
+  max-width:calc(33.333% - 1.5rem);   /* never wider than 3-col grid */
+  box-sizing:border-box;
+  padding:1rem 1.25rem 1.25rem;
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:0.75rem;
+  background:rgba(255,255,255,0.04);
+  transition:transform 0.2s ease, box-shadow 0.2s ease;
+}
+.instrument-group:hover{
+  transform:translateY(-6px);
+  box-shadow:0 4px 10px rgba(0,0,0,0.3);
 }
 
-.part-tile img {
-  width: 48px;
-  height: 48px;
-  margin-bottom: 0.5rem;
-  filter: invert(100%) hue-rotate(180deg);
+/* icon + instrument name */
+.instrument-header{
+  display:flex;
+  align-items:center;
+  gap:0.75rem;
+  margin-bottom:0.75rem;
+}
+.instrument-header img{
+  width:32px;
+  height:32px;
+  flex-shrink:0;
+  filter:invert(100%);
+}
+.instrument-header span{
+  font-size:0.95rem;
+  font-weight:500;
 }
 
-.part-tile span {
-  font-size: 0.75rem;
+/* buttons for each part / download */
+.part-btn{
+  display:inline-block;
+  padding:0.45rem 0.9rem;
+  margin:0.25rem 0.25rem 0;
+  background:rgba(255,255,255,0.10);
+  border-radius:0.5rem;
+  font-size:0.82rem;
+  text-decoration:none;
+  color:#fff;
+  transition:background 0.15s ease;
+}
+.part-btn:hover{
+  background:rgba(255,255,255,0.22);
 }
 
-.part-tile:hover {
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 0 8px rgba(0,255,255,0.8);
+/* ----------------- break-points ----------------- */
+@media (max-width:1023px){           /* tablet  → 2-across */
+  .instrument-group{max-width:calc(50% - 1.5rem);}
 }
+@media (max-width:640px){            /* phone   → stacked  */
+  .instrument-group{max-width:100%;}
+}
+
+
+
 
 .details-main {
   display: flex;
@@ -292,11 +361,69 @@
   }
 }
 
-.download-icon {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
+.download-header-icon{
+  display:inline-block;
+  width:20px; height:20px;
+  background-color: var(--pink);
+  mask:url('/public/assets/icons/download.svg') center/contain no-repeat;
+  -webkit-mask:url('/public/assets/icons/download.svg') center/contain no-repeat;
 }
+
+.dl-header-btn{
+  background:transparent; border:none; cursor:pointer; padding:0;
+  width:100%; height:100%;
+}
+/* ─── download-column tooltip ─────────────────────────────────── */
+.dl-tooltip{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.dl-tooltip-text{
+  position:fixed;          /* follow mouse */
+  padding:.35rem .6rem;
+  font-size:.75rem;
+  letter-spacing:.3px;
+  white-space:nowrap;
+  border-radius:6px;
+
+  /* theme */
+  background:var(--music-card-bg);
+  color:rgb(255, 255, 255);
+  border:1px solid rgb(0, 0, 0);
+  font-family: 'DOS';
+  opacity:0;               /* JS toggles to 1 */
+  pointer-events:none;     /* let mouse reach icon */
+  transition:opacity .25s ease;
+  z-index: 1000;
+  transform:none;
+}
+
+
+.dl-tooltip:hover .dl-tooltip-text,
+.dl-tooltip:focus-within .dl-tooltip-text{
+  opacity:1;
+  transform:translateX(-50%) scale(1);
+}
+
+
+.download-row-icon{
+  display:inline-block;
+  width:18px; height:18px;
+  background-color:#fff;
+  mask:url('/public/assets/icons/download.svg') center/contain no-repeat;
+  -webkit-mask:url('/public/assets/icons/download.svg') center/contain no-repeat;
+  transition:transform .15s;
+}
+
+.row-download-btn{
+  width:100%; height:100%;
+  background:transparent; border:none; cursor:pointer; padding:0;
+}
+.row-download-btn{ opacity:0; transition:opacity .3s; }
+.row-download-btn:hover .download-row-icon{ transform:scale(1.1); }
 
 .tooltip {
   position: relative;
@@ -345,6 +472,7 @@
   font-kerning: normal;
   font-weight: 600;
   z-index: 10;
+  opacity: 0;
 }
 .music-back-icon {
   width: 2rem;

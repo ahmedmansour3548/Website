@@ -1,5 +1,5 @@
 import './Music.css';
-import React, { useEffect, useRef, useState, useContext } from 'react';
+import React, { useEffect, useRef, useState, useContext, useLayoutEffect } from 'react';
 import * as THREE from 'three';
 import { gsap } from 'gsap';
 import {
@@ -53,32 +53,46 @@ const Music = () => {
   // Skybox reference
   const skyboxRef = useRef(null);
   const [initialized, setInitialized] = useState(false);
-
+  const leftNavRef = useRef(null);
+  const rightNavRef = useRef(null);
   const albumTextRef = useRef(null);
+  const albumNameRef = useRef(null);   // <h2>
   const songTextRef = useRef(null);
   const footerRef = useRef(null);
   const detailsRef = useRef(null);
-  const [scrollMode, setScrollMode] = useState('fixed'); // 'fixed' or 'pinned'
-  const [pinnedTop, setPinnedTop] = useState(0);
-  const [pinned, setPinned] = useState(false);
-  // Load album data
+  const spacerRef = useRef(null);
+  const albumTipRef = useRef(null);
+  const backHomeRef = useRef(null);
+
+  const trackObj = albums[currentAlbumIndex]?.tracks[currentTrackIndex];
+  const allParts = trackObj?.parts ?? [];
+
+  /* Group                  →  { Piano:[…], Violin I:[…], … }   */
+  const grouped = allParts.reduce((acc, p) => {
+    (acc[p.instrument] ??= []).push(p);
+    return acc;
+  }, {});
+
+  //  ─── Load album data ───
   useEffect(() => {
     fetch('/music.json')
       .then(res => res.json())
       .then(({ albums }) => {
         setAlbums(albums);
+
         if (albums.length) {
           setCurrentAlbumIndex(0);
           currentAlbumIndexRef.current = 0;
           setCurrentTrackIndex(0);
-          gsap.to(albumTextRef.current, { opacity: 1, duration: 0.5, delay: 0.5 });
-          gsap.to(songTextRef.current, { opacity: 1, duration: 0.5, delay: 0.7 });
-          loadTrack(albums[0].tracks[0], false);
+
+          // simple UI fades
+          const tl = gsap.timeline();
+          tl.to(albumNameRef.current, { opacity: 1, duration: 0.6, delay: 0.4 })
+            .to(songTextRef.current, { opacity: 1, duration: 0.6 }, "<+0.15");
         }
       })
       .catch(console.error);
   }, []);
-
 
   useEffect(() => {
     repeatModeRef.current = repeatMode;
@@ -86,163 +100,248 @@ const Music = () => {
 
   useEffect(() => {
     if (!pattern) return;
-  pattern
-      .setLineWidth(100)
+
+    pattern
+      .setLineWidth(1)
       .setStyle(styles.SOLID)
-      .setOpacity(0.8)
-      .setColor(0xFF0000);
-    }, [pattern]);
+      .setOpacity(1)
+      .setColor(0xff0000);          // ← fills ALL vertices red
+  }, [pattern, styles]);
+
+  useEffect(() => {
+    if (!pattern || initialized) return;
+
+    const tl = gsap.timeline();
+
+    // Fade in the left and right nav arrows
+    tl.to('.nav-area.left', { opacity: 1, duration: 0.6, delay: 0.2 })
+      .to('.nav-area.right', { opacity: 1, duration: 0.6 }, "<+0.1")
+
+    // Fade in the back home button
+    tl.to(backHomeRef.current, { opacity: 1, duration: 0.6 }, "<+0.2")
+    
+    // fade in vinyls using sceneContainerRef
+    tl.to(sceneContainerRef.current, { opacity: 1, duration: 0.6 }, "<+0.2")
+
+    // Slide up the player footer (playback bar)
+    tl.to(footerRef.current, {
+      y: 0, // Slide to its final position
+      opacity: 1,
+      duration: 1,
+      ease: 'power2.out',
+    }, "<+0.4");
+
+  }, [pattern, initialized]);
+
+
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handleNativePlay = () => setIsPlaying(true);
+    const handleNativePause = () => setIsPlaying(false);
+
+    audio.addEventListener('play', handleNativePlay);
+    audio.addEventListener('pause', handleNativePause);
+
+    return () => {
+      audio.removeEventListener('play', handleNativePlay);
+      audio.removeEventListener('pause', handleNativePause);
+    };
+  }, [audioRef.current]);          // rerun whenever we load a new <audio>
+
+
+  //  ─── Fire the very first track once everything is ready ───
+  useEffect(() => {
+    if (!pattern || !albums.length) return;
+
+    // always start with the first album’s first track
+    const firstAlbum = albums[0];
+    const firstTrack = firstAlbum?.tracks[0];
+    if (firstTrack) loadTrack(firstTrack, false, 0, firstAlbum.tracks);
+  }, [albums, pattern]);
+
+  useEffect(() => {
+    if (!pattern || !sceneContainerRef.current) return;
+
+    const canvas = pattern.renderer.domElement;
+
+    // only do it once
+    if (!sceneContainerRef.current.contains(canvas)) {
+      // visually behind the vinyl canvas
+      canvas.style.position = 'absolute';  // relative to .scene-container
+      canvas.style.top = '0';
+      canvas.style.left = '0';
+      canvas.style.zIndex = '0';
+      canvas.style.pointerEvents = 'none'; // pattern is purely decorative
+
+      sceneContainerRef.current.appendChild(canvas);
+    }
+  }, [pattern]);
+
 
   // Initialize scene & renderer
-useEffect(() => {
-  if (!pattern || initialized) return;
-  const scene = sceneRef.current;
-  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.domElement.style.position = 'absolute';
-  renderer.domElement.style.top = '0';
-  renderer.domElement.style.left = '0';
-  renderer.domElement.style.zIndex = '1';
-  rendererRef.current = renderer;
+  useEffect(() => {
+    if (!pattern || initialized) return;
+    const scene = sceneRef.current;
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.domElement.style.position = 'absolute';
+    renderer.domElement.style.top = '-1rem';
+    renderer.domElement.style.left = '0';
+    renderer.domElement.style.zIndex = '1';
+    rendererRef.current = renderer;
 
-  
+    // Set container opacity to 0 so we can fade it in
+    sceneContainerRef.current.style.opacity = 0;
 
-  if (
-    sceneContainerRef.current &&
-    !sceneContainerRef.current.contains(renderer.domElement)
-  ) {
-    sceneContainerRef.current.appendChild(renderer.domElement);
-  }
 
-  // ─── DRAG + DECELERATION‐BASED INERTIA + SNAP + INFINITE ───
-  const el = renderer.domElement;
-  const spacing = window.innerWidth / 2.5;
-  const totalWidth = () => albums.length * spacing;
-
-  let lastX = 0, lastT = 0;
-
-  const onPointerDown = e => {
-    isDraggingRef.current = true;
-    dragStartXRef.current = e.clientX;
-    dragOffsetStartRef.current = globalOffset.current;
-    lastX = e.clientX;
-    lastT = performance.now();
-    offsetTweenRef.current?.kill();
-  };
-
-  const onPointerMove = e => {
-    if (!isDraggingRef.current) return;
-    const dx = e.clientX - dragStartXRef.current;
-    globalOffset.current = dragOffsetStartRef.current + dx;
-    updateAllVinylPositions();
-    lastX = e.clientX;
-    lastT = performance.now();
-  };
-
-  const onPointerUp = e => {
-    if (!isDraggingRef.current) return;
-    isDraggingRef.current = false;
-
-    // 1) compute release velocity
-    const now = performance.now();
-    const dt = Math.max((now - lastT) / 1000, 0.001);
-    const dv = e.clientX - lastX;
-    const velocity = dv / dt; // px/sec
-
-    // 2) if slow release, snap immediately
-    const snapThreshold = 150; // px/sec
-    if (Math.abs(velocity) < snapThreshold) {
-      return snapToCenter();
+    if (
+      sceneContainerRef.current &&
+      !sceneContainerRef.current.contains(renderer.domElement)
+    ) {
+      sceneContainerRef.current.appendChild(renderer.domElement);
     }
 
-    // 3) deceleration model
-    const deceleration = 2000; // px/sec²
-    const t = Math.abs(velocity) / deceleration;                   // time to stop
-    const distance = (velocity * velocity) / (2 * deceleration) * Math.sign(velocity);
+    // ─── DRAG + DECELERATION‐BASED INERTIA + SNAP + INFINITE ───
+    const container = sceneContainerRef.current;
+    const el = renderer.domElement;
+    const spacing = window.innerWidth / 2.5;
+    const totalWidth = () => albums.length * spacing;
 
-    // 4) tween with ease-out, then snap
-    const inertiaObj = { v: globalOffset.current };
-    offsetTweenRef.current = gsap.to(inertiaObj, {
-      v: globalOffset.current + distance,
-      duration: t,
-      ease: 'power2.out',
-      onUpdate: () => {
-        globalOffset.current = inertiaObj.v;
-        updateAllVinylPositions();
-      },
-      onComplete: snapToCenter
-    });
-  };
+    let lastX = 0, lastT = 0;
 
-  function snapToCenter() {
-    const tw      = totalWidth();
-    const rawIdx  = (tw / 2 - globalOffset.current) / spacing;
-    const nearest = Math.round(rawIdx);
+    const onPointerDown = e => {
+      if (e.button !== 0 || isOnOverlay(e)) return; // Left-click only
+      e.stopPropagation();  // Prevent event conflicts
+      isDraggingRef.current = true;
+      dragStartXRef.current = e.clientX;
+      dragOffsetStartRef.current = globalOffset.current;
+      lastX = e.clientX;
+      lastT = performance.now();
+      offsetTweenRef.current?.kill();
+    };
 
-    // sync continuous index
-    continuousIndexRef.current = nearest;
+    const onPointerMove = e => {
+      if (!isDraggingRef.current) return;
+      const dx = e.clientX - dragStartXRef.current;
+      globalOffset.current = dragOffsetStartRef.current + dx;
+      updateAllVinylPositions();
+      lastX = e.clientX;
+      lastT = performance.now();
+    };
 
-    // wrap for UI + audio
-    const wrapped = ((nearest % albums.length) + albums.length) % albums.length;
-    const prev    = currentAlbumIndexRef.current;
+    const onPointerUp = e => {
+      if (!isDraggingRef.current) return;
+      isDraggingRef.current = false;
 
-    // update state + mirror ref
-    setCurrentAlbumIndex(wrapped);
-    currentAlbumIndexRef.current = wrapped;
-    setCurrentTrackIndex(0);
+      // 1) compute release velocity
+      const now = performance.now();
+      const dt = Math.max((now - lastT) / 1000, 0.001);
+      const dv = e.clientX - lastX;
+      const velocity = dv / dt; // px/sec
 
-    // tween into perfect center
-    const snapOffset = tw / 2 - nearest * spacing;
-    const snapObj    = { v: globalOffset.current };
-    offsetTweenRef.current = gsap.to(snapObj, {
-      v: snapOffset,
-      duration: 0.6,
-      ease: 'power3.out',
-      onUpdate: () => {
-        globalOffset.current = snapObj.v;
-        updateAllVinylPositions();
-      },
-      onComplete: () => {
-        if (wrapped !== prev) {
-          loadTrack(
-            albums[wrapped].tracks[0],
-            true,
-            wrapped,
-            albums[wrapped].tracks
-          );
-        }
+      // 2) if slow release, snap immediately
+      const snapThreshold = 150; // px/sec
+      if (Math.abs(velocity) < snapThreshold) {
+        return snapToCenter();
       }
+
+      // 3) deceleration model
+      const deceleration = 2000; // px/sec²
+      const t = Math.abs(velocity) / deceleration;                   // time to stop
+      const distance = (velocity * velocity) / (2 * deceleration) * Math.sign(velocity);
+
+      // 4) tween with ease-out, then snap
+      const inertiaObj = { v: globalOffset.current };
+      offsetTweenRef.current = gsap.to(inertiaObj, {
+        v: globalOffset.current + distance,
+        duration: t,
+        ease: 'power2.out',
+        onUpdate: () => {
+          globalOffset.current = inertiaObj.v;
+          updateAllVinylPositions();
+        },
+        onComplete: snapToCenter
+      });
+    };
+
+    function snapToCenter() {
+      const tw = totalWidth();
+      const rawIdx = (tw / 2 - globalOffset.current) / spacing;
+      const nearest = Math.round(rawIdx);
+
+      // sync continuous index
+      continuousIndexRef.current = nearest;
+
+      // wrap for UI + audio
+      const wrapped = ((nearest % albums.length) + albums.length) % albums.length;
+      const prev = currentAlbumIndexRef.current;
+
+      // update state + mirror ref
+      setCurrentAlbumIndex(wrapped);
+      currentAlbumIndexRef.current = wrapped;
+      setCurrentTrackIndex(0);
+
+      // tween into perfect center
+      const snapOffset = tw / 2 - nearest * spacing;
+      const snapObj = { v: globalOffset.current };
+      offsetTweenRef.current = gsap.to(snapObj, {
+        v: snapOffset,
+        duration: 0.6,
+        ease: 'power3.out',
+        onUpdate: () => {
+          globalOffset.current = snapObj.v;
+          updateAllVinylPositions();
+        },
+        onComplete: () => {
+          if (wrapped !== prev) {
+            loadTrack(
+              albums[wrapped].tracks[0],
+              true,
+              wrapped,
+              albums[wrapped].tracks
+            );
+          }
+        }
+      });
+    }
+    const isOnOverlay = (ev) => ev.target.closest('.nav-area') ||
+      ev.target.closest('.player-footer') ||
+      ev.target.closest('.music-back-home');
+
+    container.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0 || isOnOverlay(e)) return;   // left-click only
+      onPointerDown(e);
     });
-  }
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUp);
 
-  el.addEventListener('pointerdown', onPointerDown);
-  window.addEventListener('pointermove', onPointerMove);
-  window.addEventListener('pointerup', onPointerUp);
+    // ─── rest of init: scene, camera, lights, animate ───
+    albumGroupRef.current.position.set(0, -150, 0);
+    scene.add(albumGroupRef.current);
+    camera.position.set(0, 0, 600);
+    camera.lookAt(scene.position);
+    scene.add(new THREE.AmbientLight(0x404040, 1.5));
+    const pointLight = new THREE.PointLight(0xffffff, 1.2);
+    pointLight.position.set(0, 200, 300);
+    scene.add(pointLight);
 
-  // ─── rest of init: scene, camera, lights, animate ───
-  albumGroupRef.current.position.set(0, -150, 0);
-  scene.add(albumGroupRef.current);
-  camera.position.set(0, 0, 600);
-  camera.lookAt(scene.position);
-  scene.add(new THREE.AmbientLight(0x404040, 1.5));
-  const pointLight = new THREE.PointLight(0xffffff, 1.2);
-  pointLight.position.set(0, 200, 300);
-  scene.add(pointLight);
+    const animate = () => {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    };
+    animate();
+    setInitialized(true);
 
-  const animate = () => {
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-  };
-  animate();
-  setInitialized(true);
-
-  return () => {
-    el.removeEventListener('pointerdown', onPointerDown);
-    window.removeEventListener('pointermove', onPointerMove);
-    window.removeEventListener('pointerup', onPointerUp);
-    renderer.dispose();
-  };
-}, [camera, albums]);
+    return () => {
+      el.removeEventListener('pointerdown', onPointerDown);
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
+      renderer.dispose();
+    };
+  }, [camera, albums]);
 
 
 
@@ -252,14 +351,12 @@ useEffect(() => {
     // switch album
     switchAlbum(dir);
   };
-  const leftNavRef = useRef(null);
-  const rightNavRef = useRef(null);
+
 
   useEffect(() => {
+    if (!initialized || !pattern) return;
 
-    if (!initialized) return;
-    // Build a spiral of, say, 2000 vertices,
-    // centered at 0,0, with your usual deltaAngle & scale
+    // build the spiral geometry
     pattern.regenerate({
       maxVertices: 1000,
       xPos: 0,
@@ -273,15 +370,11 @@ useEffect(() => {
       yAngularFreq: 1,
       xPhase: 0,
       yPhase: 0,
-      loopVertex: 1000,
-      paramsToAdjust: [],
-      adjustAmounts: []
+      loopVertex: 1000
     });
-    // Make sure it’s fully opaque (so you see the red→green)
-    pattern.material.opacity = 1;
-    pattern.setAllVerticesColor(0xff0000);
 
-  }, [initialized, navigate]);
+  }, [initialized, pattern]);
+
   // Update vinyl positions
   const updateAllVinylPositions = () => {
     if (!albums.length) return;
@@ -394,187 +487,215 @@ useEffect(() => {
   //   });
   // };
 
-
+  /* ─── Seamless cruise-then-snap for the “now-playing” badge ───── */
   useEffect(() => {
-    const el = albumTextRef.current;
-    if (!el) return;
+    const badge = albumTextRef.current;      // the visible badge
+    const marker = spacerRef.current;         // invisible 4-rem spacer
+    const gapPx = 32;
+    if (!badge || !marker) return;
 
-    // How far to scrub: 25% of viewport height
-    const scrollDist = window.innerHeight * 0.25;
     const footerH = parseInt(
-      getComputedStyle(document.documentElement).getPropertyValue('--footer-height'),
+      getComputedStyle(document.documentElement)
+        .getPropertyValue('--footer-height'),
       10
     );
 
-    // Make sure our base styles are correct
-    el.style.position = 'fixed';
-    el.style.left = '50%';
-    el.style.transformOrigin = 'center center';
-
-    const st = ScrollTrigger.create({
-      start: 0,
-      end: scrollDist,
-      scrub: true,
-      onUpdate(self) {
-        // 1) Move up by up to scrollDist
-        const y = -scrollDist * self.progress;
-        // 2) Scale from 1 → 1.2 over the last 10% (i.e. prog 0.9→1.0)
-        const scalePortion = Math.min(Math.max((self.progress - 0.9) / 0.1, 0), 1);
-        const scale = 1 + 0.2 * scalePortion;
-        el.style.transform = `translateX(-50%) translateY(${y}px) scale(${scale})`;
-      },
-      onLeave() {
-        // Once scrolled past scrollDist, switch to absolute so it "sticks" in place
-        el.style.position = 'absolute';
-        // Compute its top so it sits exactly where it ended up
-        const topPx = window.innerHeight - footerH - scrollDist;
-        el.style.top = `${topPx}px`;
-        el.style.bottom = 'auto';
-      },
-      onEnterBack() {
-        // If scrolling back above scrollDist, restore fixed positioning
-        el.style.position = 'fixed';
-        el.style.bottom = `${footerH}px`;
-        el.style.top = 'auto';
-      }
+    /* always X-centre the badge */
+    Object.assign(badge.style, {
+      left: '50%',
+      transform: 'translateX(-50%) scale(22)',
+      transformOrigin: 'center',
+      willChange: 'transform',
     });
 
-    return () => st.kill();
+    /* helper returns doc-space Y of marker-centre */
+    const markerCentreY = () =>
+      window.scrollY +            // page-top to viewport-top
+      marker.getBoundingClientRect().top +  // viewport-top to marker-top
+      marker.offsetHeight * 0.5;            // to centre
+
+    /* helper returns doc-space Y where badge-centre would be while pinned */
+    const pinnedCentreY = () =>
+      window.scrollY + window.innerHeight - footerH - gapPx - badge.offsetHeight * 0.5;
+
+    /* onScroll decides between the two states every frame */
+    const onScroll = () => {
+      const stillPinned = markerCentreY() > pinnedCentreY();
+
+      if (stillPinned) {
+        /* 🡒 Pinned (cruising with viewport) */
+        badge.style.position = 'fixed';
+        badge.style.bottom = `${footerH + gapPx}px`;
+        badge.style.top = 'auto';
+
+        /* scale from 0.85 → 1.00 as we approach the snap point         */
+        const dist = markerCentreY() - pinnedCentreY(); // px
+        const span = window.innerHeight * 0.2;          // 20 % viewport
+        const t = Math.min(Math.max(1 - dist / span, 0), 1); // 0-1
+        const scale = 1 + 0.2 * t;
+        badge.style.transform =
+          `translateX(-50%) scale(${scale.toFixed(3)})`;
+      } else {
+        /* 🡒 Released (locked above the details section) */
+        badge.style.position = 'absolute';
+        badge.style.top = `${markerCentreY() - badge.offsetHeight * 0.5}px`;
+        badge.style.bottom = 'auto';
+        badge.style.transform = 'translateX(-50%) scale(1.22)';
+      }
+    };
+
+    /* run once and on every scroll / resize */
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
   }, []);
 
+  useEffect(() => {
+    // Cleanup function to stop audio when leaving the page
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause(); // Pause the audio
+        audioRef.current.ontimeupdate = null; // Remove time update listener
+        audioRef.current.onended = null; // Remove end event listener
+        setIsPlaying(false); // Set the isPlaying state to false
+      }
+    };
+  }, []);
 
+  const resetPatternToRed = () => updatePatternProgress(0);
 
-  // Pattern helpers
-  const fillPatternWithColor = (hex) => {
-    if (!pattern?.geometry?.attributes?.color) return;
-    const colors = pattern.geometry.attributes.color.array;
-    const count = pattern.geometry.attributes.color.count;
-    const r = ((hex >> 16) & 0xff) / 255;
-    const g = ((hex >> 8) & 0xff) / 255;
-    const b = ((hex >> 0) & 0xff) / 255;
-    for (let i = 0; i < count; i++) {
-      colors[i * 3 + 0] = r;
-      colors[i * 3 + 1] = g;
-      colors[i * 3 + 2] = b;
-    }
-    pattern.geometry.attributes.color.needsUpdate = true;
-  };
-
+  /* ---------------------------------------------------------------
+   *  updatePatternProgress
+   *  Colours the first ‹percent› of vertices green and the rest red
+   *  for THREE.Line2 / LineGeometry.
+   * ------------------------------------------------------------- */
   const updatePatternProgress = (percent) => {
-    if (!pattern?.geometry?.attributes?.color) return;
-    const colors = pattern.geometry.attributes.color.array;
-    const count = pattern.geometry.attributes.color.count;
-    const greenCount = Math.floor(count * percent);
-    // first N vertices green
-    for (let i = 0; i < greenCount; i++) {
-      colors[i * 3 + 0] = 0;
-      colors[i * 3 + 1] = 1;
-      colors[i * 3 + 2] = 0;
+    if (!pattern) return;
+
+    const startAttr = pattern.geometry.getAttribute('instanceColorStart');
+    const endAttr = pattern.geometry.getAttribute('instanceColorEnd');
+    if (!startAttr || !endAttr) return;        // safety check
+
+    const segCount = startAttr.count;        // segments = vertices-1
+    const greenLimit = Math.floor(segCount * percent);
+
+    /* helper that writes to either interleaved attribute */
+    const paint = (attr, idx, r, g, b) => {
+      attr.setXYZ(idx, r, g, b);               // handles stride/offset for us
+    };
+
+    for (let i = 0; i < segCount; i++) {
+      // green (0,1,0) up to greenLimit, else red (1,0,0)
+      const g = i < greenLimit;
+      const rVal = g ? 0 : 1;
+      const gVal = g ? 1 : 0;
+
+      // segment i starts at vertex i   → colourStart
+      // segment i ends   at vertex i+1 → colourEnd
+      paint(startAttr, i, rVal, gVal, 0);
+      paint(endAttr, i, rVal, gVal, 0);
     }
-    // the rest red
-    const rr = ((0xFF0000 >> 16) & 0xff) / 255;
-    const rg = ((0xFF0000 >> 8) & 0xff) / 255;
-    const rb = ((0xFF0000 >> 0) & 0xff) / 255;
-    for (let i = greenCount; i < count; i++) {
-      colors[i * 3 + 0] = rr;
-      colors[i * 3 + 1] = rg;
-      colors[i * 3 + 2] = rb;
-    }
-    pattern.geometry.attributes.color.needsUpdate = true;
+
+    startAttr.needsUpdate = true;              // re-upload to GPU
+    endAttr.needsUpdate = true;
+    pattern.material.needsUpdate = true;       // ensure shader refresh
   };
 
   // -----------------------
   // switchAlbum
   // -----------------------
-const switchAlbum = (dir) => {
-  if (!albums.length) return;
+  const switchAlbum = (dir) => {
+    if (!albums.length) return;
 
-  // ─── 1) Stop & detach any running audio callbacks ───
-  if (audioRef.current) {
-    audioRef.current.pause();
-    audioRef.current.ontimeupdate = null;
-    audioRef.current.onended = null;
-    setIsPlaying(false);
-  }
+    resetPatternToRed(); // reset pattern to red
 
-  // ─── 2) Immediately wipe the pattern fully red ───
-  pattern.setColor(0xFF0000);
-
-  // fade out metadata
-  gsap.to([albumTextRef.current, songTextRef.current], {
-    opacity: 0,
-    duration: 0.3
-  });
-
-  // kill any ongoing center spin
-  centerSpinTweenRef.current?.kill();
-  centerSpinTweenRef.current = null;
-
-  // straighten old center vinyl rotation
-  const old = albumGroupRef.current.children[currentAlbumIndex];
-  if (old) {
-    const TWO_PI = Math.PI * 2;
-    const clean = (val) => {
-      const norm = ((val % TWO_PI) + TWO_PI) % TWO_PI;
-      return val + (norm <= Math.PI ? -norm : (TWO_PI - norm));
-    };
-    gsap.killTweensOf(old.rotation);
-    gsap.to(old.rotation, {
-      x: clean(old.rotation.x),
-      y: clean(old.rotation.y),
-      z: clean(old.rotation.z),
-      duration: 0.3,
-      ease: 'power2.out'
-    });
-  }
-
-  // ─── 3) bump our continuous (unwrapped) index ───
-  continuousIndexRef.current += dir;
-
-  // ─── 4) compute wrapped index for React state and audio logic ───
-  const len = albums.length;
-  const wrapped = ((continuousIndexRef.current % len) + len) % len;
-  const prev    = currentAlbumIndex;
-
-  // ─── 5) update React state immediately ───
-  setCurrentAlbumIndex(wrapped);
-  currentAlbumIndexRef.current = wrapped;
-  setCurrentTrackIndex(0);
-
-  // ─── 6) compute new targetOffset based on continuous index ───
-  const spacing = window.innerWidth / 2.5;
-  const totalW  = len * spacing;
-  // offset formula: index 0 → totalW/2, index i → totalW/2 - i*spacing
-  targetOffset.current = totalW / 2 - continuousIndexRef.current * spacing;
-
-  // ─── 7) tween from actual position → targetOffset ───
-  offsetTweenRef.current?.kill();
-  const tweenObj = { v: globalOffset.current };
-  offsetTweenRef.current = gsap.to(tweenObj, {
-    v: targetOffset.current,
-    duration: 0.6,
-    ease: 'power2.inOut',
-    onUpdate: () => {
-      globalOffset.current = tweenObj.v;
-      updateAllVinylPositions();
-    },
-    onComplete: () => {
-      // only reload audio if album truly changed
-      if (wrapped !== prev) {
-        loadTrack(
-          albums[wrapped].tracks[0],
-          true,
-          wrapped,
-          albums[wrapped].tracks
-        );
-      }
-      // fade metadata back in
-      gsap.to(albumTextRef.current, { opacity: 1, duration: 0.5, delay: 0.2 });
-      gsap.to(songTextRef.current, { opacity: 1, duration: 0.5, delay: 0.4 });
+    // ─── 1) Stop & detach any running audio callbacks ───
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.ontimeupdate = null;
+      audioRef.current.onended = null;
+      setIsPlaying(false);
     }
-  });
-};
 
+    // fade out metadata
+    gsap.to([albumTextRef.current, songTextRef.current], {
+      opacity: 0,
+      duration: 0.3
+    });
+
+    // kill any ongoing center spin
+    centerSpinTweenRef.current?.kill();
+    centerSpinTweenRef.current = null;
+
+    // straighten old center vinyl rotation
+    const old = albumGroupRef.current.children[currentAlbumIndex];
+    if (old) {
+      const TWO_PI = Math.PI * 2;
+      const clean = (val) => {
+        const norm = ((val % TWO_PI) + TWO_PI) % TWO_PI;
+        return val + (norm <= Math.PI ? -norm : (TWO_PI - norm));
+      };
+      gsap.killTweensOf(old.rotation);
+      gsap.to(old.rotation, {
+        x: clean(old.rotation.x),
+        y: clean(old.rotation.y),
+        z: clean(old.rotation.z),
+        duration: 0.3,
+        ease: 'power2.out'
+      });
+    }
+
+    // ─── 3) bump our continuous (unwrapped) index ───
+    continuousIndexRef.current += dir;
+
+    // ─── 4) compute wrapped index for React state and audio logic ───
+    const len = albums.length;
+    const wrapped = ((continuousIndexRef.current % len) + len) % len;
+    const prev = currentAlbumIndex;
+
+    // ─── 5) update React state immediately ───
+    setCurrentAlbumIndex(wrapped);
+    currentAlbumIndexRef.current = wrapped;
+    setCurrentTrackIndex(0);
+
+    // ─── 6) compute new targetOffset based on continuous index ───
+    const spacing = window.innerWidth / 2.5;
+    const totalW = len * spacing;
+    // offset formula: index 0 → totalW/2, index i → totalW/2 - i*spacing
+    targetOffset.current = totalW / 2 - continuousIndexRef.current * spacing;
+
+    // ─── 7) tween from actual position → targetOffset ───
+    offsetTweenRef.current?.kill();
+    const tweenObj = { v: globalOffset.current };
+    offsetTweenRef.current = gsap.to(tweenObj, {
+      v: targetOffset.current,
+      duration: 0.6,
+      ease: 'power2.inOut',
+      onUpdate: () => {
+        globalOffset.current = tweenObj.v;
+        updateAllVinylPositions();
+      },
+      onComplete: () => {
+        // only reload audio if album truly changed
+        if (wrapped !== prev) {
+          loadTrack(
+            albums[wrapped].tracks[0],
+            true,
+            wrapped,
+            albums[wrapped].tracks
+          );
+        }
+        // fade metadata back in
+        gsap.to(albumTextRef.current, { opacity: 1, duration: 0.5, delay: 0.2 });
+        gsap.to(songTextRef.current, { opacity: 1, duration: 0.5, delay: 0.4 });
+      }
+    });
+  };
 
   // -----------------------
   // loadTrack (with quick spin + then continuous spin)
@@ -587,7 +708,7 @@ const switchAlbum = (dir) => {
   ) => {
     if (!track) return;
 
-    // fade out title text
+    // Fade out title text
     gsap.to(songTextRef.current, { opacity: 0, duration: 0.3 });
 
     setTimeout(() => {
@@ -606,23 +727,28 @@ const switchAlbum = (dir) => {
       // 3) Create the new Audio
       audioRef.current = new Audio(track.file);
 
-      // 4) Reset the pattern: all red → start at 50% green
-      pattern.setColor(0xFF0000);
-      updatePatternProgress(0.5);
+      audioRef.current.onplay = () => setIsPlaying(true);
+      audioRef.current.onpause = () => setIsPlaying(false);
 
-      // 5) Update pattern as the song plays (maps [0→1] → [0.5→1])
-      audioRef.current.ontimeupdate = () => {
-        const d = audioRef.current.duration;
-        if (!d) return;
-        const raw = audioRef.current.currentTime / d;          // [0→1]
-        const scaled = 0.58 + 0.58 * Math.min(raw, 1);             // [0.5→1]
-        updatePatternProgress(scaled);
-      };
+      // 4) Reset the pattern: all red → start at 50% green
+      if (pattern) {
+        updatePatternProgress(0.5);
+
+        // 5) Update pattern as the song plays
+        audioRef.current.ontimeupdate = () => {
+          const d = audioRef.current.duration;
+          if (!d) return;
+          const raw = audioRef.current.currentTime / d;   // 0 → 1
+          const scaled = 0.58 + 0.58 * Math.min(raw, 1);   // 0.5 → 1
+          updatePatternProgress(scaled);
+        };
+      } else {
+        audioRef.current.ontimeupdate = null;
+      }
 
       // 6) Handle track end
       audioRef.current.onended = () => {
-        // fill pattern fully green
-        updatePatternProgress(1);
+        updatePatternProgress(1);  // Fill pattern fully green
         const centerVinyl = albumGroupRef.current.children[albumIndex];
 
         // 1) if repeat-one, just reload the same track
@@ -638,34 +764,21 @@ const switchAlbum = (dir) => {
           return;
         }
 
-        // figure out if we’re at the last
+        // Figure out if we’re at the last track
         const isLast = newTrackIndex >= tracks.length - 1;
 
         if (!isLast || repeatModeRef.current === 'album') {
-          // if album-repeat or not last --> spin & advance
-          gsap.to(centerVinyl.rotation, {
-            z: '+=3.1416',    // half-turn
-            duration: 0.4,
-            ease: 'power2.out',
-            onComplete: () => {
-              // choose next index (wrap if needed)
-              let nextIdx = newTrackIndex + 1;
-              if (nextIdx >= tracks.length) nextIdx = 0;
-              loadTrack(
-                tracks[nextIdx],
-                true,
-                albumIndex,
-                shuffle ? tracks : undefined
-              );
-            }
-          });
+          // Choose next index (wrap if needed)
+          let nextIdx = newTrackIndex + 1;
+          if (nextIdx >= tracks.length) nextIdx = 0;
+          loadTrack(tracks[nextIdx], true, albumIndex, shuffle ? tracks : undefined);
         } else if (repeatModeRef.current === 'one') {
-          // repeat-one: simply reload same track
+          // repeat-one: simply reload the same track
           loadTrack(track, true, albumIndex, shuffle ? tracks : undefined);
         } else {
-          // no repeat & last track → stop playback
+          // No repeat & last track → stop playback
           setIsPlaying(false);
-          centerSpinTweenRef.current?.kill();
+          centerSpinTweenRef.current?.kill();  // Stop the continuous spin
         }
       };
 
@@ -677,23 +790,35 @@ const switchAlbum = (dir) => {
       // 8) Vinyl spin: quick 360° then infinite
       const centerVinyl = albumGroupRef.current.children[albumIndex];
       if (autoplay && centerVinyl) {
-        centerSpinTweenRef.current?.kill();
+        // 1) First, kill any existing continuous spin animation
+        if (centerSpinTweenRef.current) {
+          centerSpinTweenRef.current.kill();
+        }
+
+        // 2) Capture the current rotation before applying the 360°
+        const currentRotation = centerVinyl.rotation.z;
+
+        // 3) Apply the 360° spin from the current rotation state
         gsap.to(centerVinyl.rotation, {
-          z: '+=6.28319', // full turn
+          z: currentRotation + Math.PI * 2,  // Full 360° spin from the current rotation
           duration: 0.5,
           ease: 'power2.out',
           onComplete: () => {
-            centerSpinTweenRef.current = gsap.to(
-              centerVinyl.rotation,
-              { z: '+=6.28319', duration: 10, ease: 'linear', repeat: -1 }
-            );
+            // 4) After 360° spin, restart continuous spin
+            centerSpinTweenRef.current = gsap.to(centerVinyl.rotation, {
+              z: '+=6.28319',  // Keep spinning
+              duration: 10,  // Slow continuous spin
+              ease: 'linear',
+              repeat: -1  // Infinite repeat
+            });
           }
         });
 
+        // Play the audio
         audioRef.current.play().catch(console.error);
       }
 
-      // fade title back in
+      // Fade title back in
       gsap.to(songTextRef.current, { opacity: 1, duration: 0.5, delay: 0.2 });
     }, 300);
   };
@@ -714,26 +839,40 @@ const switchAlbum = (dir) => {
 
   const cycleRepeat = () => setRepeatMode(m => m === 'none' ? 'album' : m === 'album' ? 'one' : 'none');
 
-
   // Play/pause handlers
   const handlePlayPause = () => {
     if (!audioRef.current) return;
     const center = albumGroupRef.current.children[currentAlbumIndex];
+
     if (audioRef.current.paused) {
-      audioRef.current.play(); setIsPlaying(true);
+      // If the audio is paused, play it and continue spinning the vinyl
+      audioRef.current.play();
+      setIsPlaying(true);
+
+      // Restart continuous spin
       gsap.to(center.rotation, { z: '+=6.283', duration: 10, ease: 'linear', repeat: -1 });
     } else {
-      audioRef.current.pause(); setIsPlaying(false);
+      // If the audio is playing, pause it and stop the continuous spin
+      audioRef.current.pause();
+      setIsPlaying(false);
+
+      // Stop continuous spinning and return the vinyl to an upright position
       gsap.killTweensOf(center.rotation);
-      gsap.to(center.rotation, { z: 0, duration: 0.5, ease: 'power2.out' });
     }
   };
 
   const handlePrevTrack = () => {
-    if (albums[currentAlbumIndex]?.tracks?.length && audioRef.current) {
+    const baseTracks = albums[currentAlbumIndex]?.tracks || [];
+    const tracks = shuffle ? shuffledTracks : baseTracks;
+    if (tracks.length && audioRef.current) {
+      // If song is less than 3 seconds in, go to previous track
       if (audioRef.current.currentTime < 3 && currentTrackIndex > 0) {
-        loadTrack(albums[currentAlbumIndex].tracks[currentTrackIndex - 1], true);
-      } else {
+        loadTrack(tracks[currentTrackIndex - 1], true);
+      } else if (repeatModeRef.current === 'one') {
+        // repeat the last track
+        loadTrack(tracks[currentTrackIndex], true);
+      }
+      else {
         audioRef.current.currentTime = 0;
       }
     }
@@ -748,7 +887,11 @@ const switchAlbum = (dir) => {
         // just stop
         audioRef.current.pause();
         setIsPlaying(false);
-      } else {
+      } else if (repeatModeRef.current === 'one') {
+        // repeat the last track
+        loadTrack(tracks[currentTrackIndex], true);
+      }
+      else {
         const nextIdx = atEnd
           ? 0
           : currentTrackIndex + 1;
@@ -757,7 +900,34 @@ const switchAlbum = (dir) => {
     }
   };
 
+  const triggerDownload = (url, suggested) => {
+    const a = document.createElement('a');
+    a.href = url;
+    if (suggested) a.download = suggested;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  const downloadTrack = (track) => {
+    const url = track.download || track.file;
+    triggerDownload(url, `${track.name || 'track'}.wav`);
+  };
+
+  const downloadAlbum = () => {
+    const album = albums[currentAlbumIndex];
+    if (!album?.albumZip) return;
+    triggerDownload(album.albumZip, `${album.name || 'album'}.zip`);
+  };
+
   const goBackHome = () => {
+    // Ensure audio stops before navigating away
+    if (audioRef.current) {
+      audioRef.current.pause(); // Pause the audio
+      audioRef.current.ontimeupdate = null; // Remove the time update listener
+      audioRef.current.onended = null; // Remove the end event listener
+      setIsPlaying(false); // Set the playing state to false
+    }
     // build a timeline
     const tl = gsap.timeline({
       onComplete: () => {
@@ -774,47 +944,68 @@ const switchAlbum = (dir) => {
         sceneContainerRef.current,
         albumTextRef.current,
         detailsRef.current,
-        footerRef.current
+        footerRef.current,
+        leftNavRef.current,
+        rightNavRef.current
       ],
       { opacity: 0, duration: 0.5 }
-    );
+    ).to(backHomeRef.current, { x: 15, duration: 0.15 }, 0)
+      .to(backHomeRef.current, { x: -200, duration: 0.5 }, 0.15)
+      .to(backHomeRef.current, { opacity: 0, duration: 0.5 }, 0);
 
     // 2) simultaneously collapse the pattern
-    tl.to(
-      pattern,
-      {
-        /* make sure these props actually exist on your pattern object */
-        value: 0,
-        opacity: 0,
-        duration: 1,
-        onUpdate() {
-          pattern.regenerate({
-            maxVertices: pattern.value,
-            xPos: 0,
-            yPos: 0,
-            zPos: 0,
-            xFunctionCode: 0,
-            yFunctionCode: 1,
-            deltaAngle: pattern.deltaAngle,
-            scale: pattern.scale,
-            xAngularFreq: 1,
-            yAngularFreq: 1,
-            xPhase: pattern.xAxis,
-            yPhase: pattern.yAxis,
-            loopVertex: 1000,
-            paramsToAdjust: [],
-            adjustAmounts: []
-          });
-        }
-      },
-      0
-    );
+    if (pattern) {
+      tl.to(
+        pattern,
+        {
+          delay: 0.1,
+          value: 0,
+          opacity: 0,
+          duration: 0.5,
+          onUpdate() {
+            pattern.regenerate({
+              maxVertices: pattern.value,
+              xPos: 0,
+              yPos: 0,
+              zPos: 0,
+              xFunctionCode: 0,
+              yFunctionCode: 1,
+              deltaAngle: pattern.deltaAngle,
+              scale: pattern.scale,
+              xAngularFreq: 1,
+              yAngularFreq: 1,
+              xPhase: pattern.xAxis,
+              yPhase: pattern.yAxis,
+              loopVertex: 1000,
+              paramsToAdjust: [],
+              adjustAmounts: []
+            });
+          }
+        },
+        0
+      );
+    }
   };
 
+  // ─── tooltip mouse-handlers ──────────────────────────────
+  const showAlbumTip = () => { if (albumTipRef.current) albumTipRef.current.style.opacity = 1; };
+  const hideAlbumTip = () => { if (albumTipRef.current) albumTipRef.current.style.opacity = 0; };
+  const moveAlbumTip = e => {
+    const tip = albumTipRef.current;
+    if (!tip) return;
+
+    // clear any residual centering transform
+    tip.style.transform = 'none';
+
+    const { clientX: x, clientY: y } = e;
+    // cursor sits on the tooltip’s BOTTOM-LEFT corner
+    tip.style.left = `${x}px`;                      // align left edges
+    tip.style.top = `${y - tip.offsetHeight}px`;   // raise by its height
+  };
 
   return (
     <div className="music-page">
-      <button className="music-back-home" onClick={goBackHome}>
+      <button className="music-back-home" onClick={goBackHome} ref={backHomeRef}>
         <div className="music-back-icon" aria-hidden="true" alt="Back home" />
         To Home
       </button>
@@ -835,7 +1026,7 @@ const switchAlbum = (dir) => {
 
       {/* Now Playing overlay */}
       <div className="now-playing" ref={albumTextRef}>
-        <h2>{albums[currentAlbumIndex]?.name}</h2>
+        <h2 ref={albumNameRef}>{albums[currentAlbumIndex]?.name}</h2>
         <p ref={songTextRef}>
           {nowPlayingName}
         </p>
@@ -881,6 +1072,8 @@ const switchAlbum = (dir) => {
 
       {/* Album details + sheet music */}
       <div className="album-details" ref={detailsRef}>
+        <div ref={spacerRef} className="now-playing-spacer" />
+
         {/* Track list & album description row */}
         <div className="details-main">
           <div className="track-list-container">
@@ -891,6 +1084,28 @@ const switchAlbum = (dir) => {
                   <th>#</th>
                   <th>Title</th>
                   <th>Length</th>
+                  <th className="dl-col">
+                    <div
+                      className="dl-tooltip"
+                      onMouseEnter={showAlbumTip}
+                      onMouseLeave={hideAlbumTip}
+                      onMouseMove={moveAlbumTip}
+                    >
+                      <button
+                        className="dl-header-btn"
+                        onClick={downloadAlbum}
+                        aria-label="Download whole album"
+                      >
+                        <span className="download-header-icon" />
+                      </button>
+
+                      {/* floating tooltip */}
+                      <span ref={albumTipRef} className="dl-tooltip-text">
+                        Download&nbsp;Album
+                      </span>
+                    </div>
+                  </th>
+
                 </tr>
               </thead>
               <tbody>
@@ -904,6 +1119,15 @@ const switchAlbum = (dir) => {
                     <td>{idx + 1}</td>
                     <td>{track.name}</td>
                     <td>{track.duration || '--:--'}</td>
+                    <td className="dl-cell">
+                      <button
+                        className="row-download-btn"
+                        onClick={(e) => { e.stopPropagation(); downloadTrack(track); }}
+                        aria-label={`Download ${track.name}`}
+                      >
+                        <span className="download-row-icon" />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -917,33 +1141,42 @@ const switchAlbum = (dir) => {
           </div>
         </div>
 
-        {/* Sheet music download card */}
-        <div className="sheet-music-card">
-          <h3>Sheet Music</h3>
-          {albums[currentAlbumIndex]?.tracks[currentTrackIndex]?.parts?.length ? (
-            <div className="parts-grid">
-              {albums[currentAlbumIndex].tracks[currentTrackIndex].parts.map((p, i) => (
-                <a
-                  key={i}
-                  href={p.pdf}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="part-tile"
-                >
-                  <img src={p.icon} alt={`${p.instrument} icon`} />
-                  <span>{p.instrument}</span>
-                </a>
-              ))}
+        {(() => {
+          const parts = albums[currentAlbumIndex]
+            ?.tracks[currentTrackIndex]?.parts || [];
+          if (!parts.length) return null;
+
+          return (
+            <div className="sheet-music-card">
+              <h3>Sheet Music</h3>
+              <div className="instrument-grid">
+                {parts.map((p, idx) => (
+                  <div key={idx} className="instrument-group">
+                    <div className="instrument-header">
+                      <img src={p.icon} alt="" />
+                      <span>{p.instrument}</span>
+                    </div>
+
+                    {Array.isArray(p.download)
+                      ? p.download.map((url, n) => (
+                        <a key={n} href={url} download className="part-btn">
+                          Part&nbsp;{n + 1}
+                        </a>
+                      ))
+                      : (
+                        <a href={p.download} download className="part-btn">
+                          Download
+                        </a>
+                      )}
+                  </div>
+                ))}
+              </div>
             </div>
-          ) : (
-            <p>No sheet-music available for this track.</p>
-          )}
-        </div>
-      </div>
+          );
+        })()}
+      </div>{/* album-details */}
     </div>
   );
-
 };
 
 export default Music;
-

@@ -17,7 +17,7 @@ import Ascii from './ASCII/Ascii';
 import PatternFactory from './Projects/Toys/PatternFactory/PatternFactory';
 import About from './About/About';
 import Projects from './Projects/Projects';
-import EscapeVRoom from './Projects/coding/EscapeVRoom';
+import ProjectPage from './Projects/ProjectPage';
 import History from './History/History';
 import Music from './Music/Music';
 import Writings from './Writings/Writings';
@@ -98,7 +98,8 @@ root.render(
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/projects" element={<Projects />} />
-            <Route path="/projects/coding/:id" element={<EscapeVRoom />} />
+            <Route path="/projects/:category/:id" element={<ProjectPage />} />
+{/* <Route path="/projects/coding/:id" element={<Navigate to={`/projects/coding/${id}`} replace />} /> */}
             <Route path="/music" element={<Music />} />
             <Route path="/thoughts" element={<Thoughts />} />
             <Route path="/writings" element={<Writings />} />
