@@ -154,54 +154,84 @@ useEffect(() => {
 }, [project]);
 
 
-  // animate hero letters
-  useEffect(() => {
-    if (!project) return;
-    const h1 = pageRef.current.querySelector(".iso-hero-text h1");
-    const spans = Array.from(h1.querySelectorAll(".char"));
-    const gradient = getComputedStyle(h1).backgroundImage;
-    const totalW = h1.scrollWidth;
+// 1. Hero-text animation
+useEffect(() => {
+  // Bail out if there’s no project or the title is explicitly disabled
+  if (!project || project.showTitle === false) return;
 
-    // apply gradient once per letter, offset correctly
-    spans.forEach((span) => {
-      span.style.backgroundImage = gradient;
-      span.style.backgroundSize = `${totalW}px 100%`;
-      span.style.backgroundPosition = `-${span.offsetLeft}px 0`;
-      span.style.webkitBackgroundClip = "text";
-      span.style.backgroundClip = "text";
-      span.style.color = "transparent";
-    });
+  const pageEl = pageRef.current;
+  if (!pageEl) return;
 
-    // now animate
-    gsap.set(spans, { autoAlpha: 0, y: 20 });
-    gsap.to(spans, {
+  const h1 = pageEl.querySelector(".iso-hero-text h1");
+  if (!h1) return;
+
+  const spans = Array.from(h1.querySelectorAll(".char"));
+  const gradient = getComputedStyle(h1).backgroundImage;
+  const totalW = h1.scrollWidth;
+
+  // Apply gradient masking per letter
+  spans.forEach((span) => {
+    span.style.backgroundImage = gradient;
+    span.style.backgroundSize = `${totalW}px 100%`;
+    span.style.backgroundPosition = `-${span.offsetLeft}px 0`;
+    span.style.webkitBackgroundClip = "text";
+    span.style.backgroundClip = "text";
+    span.style.color = "transparent";
+  });
+
+  // Build the GSAP timeline
+  const tl = gsap.timeline();
+
+  // Intro reveal
+  tl.set(spans, { autoAlpha: 0, y: 20 })
+    .to(spans, {
       autoAlpha: 1,
       y: 0,
       duration: 0.6,
       ease: "power2.out",
       stagger: 0.05,
       delay: 0.5,
-    });
-  }, [project]);
+    })
 
-  // intersection observer for sections
-  useEffect(() => {
-    if (!project) return;
-    const obs = new IntersectionObserver(
-      (entries, observer) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add("visible");
-            observer.unobserve(e.target);
-          }
-        });
-      },
-      { threshold: 0.15 }
-    );
-    sectionRefs.current.forEach((sec) => sec && obs.observe(sec));
-    return () => obs.disconnect();
-  }, [project]);
-  
+    // Subtle continuous wave after the reveal
+    .add(() => {
+      gsap.to(spans, {
+        y: -3,
+        duration: 2,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+        stagger: { each: 0.04, yoyo: true },
+      });
+    });
+
+  return () => {
+    tl.kill();
+    gsap.killTweensOf(spans);
+  };
+}, [project]);
+
+// 2. Intersection-observer reveal for sections
+useEffect(() => {
+  if (!project) return;
+
+  const obs = new IntersectionObserver(
+    (entries, observer) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add("visible");
+          observer.unobserve(e.target);
+        }
+      });
+    },
+    { threshold: 0.15 }
+  );
+
+  sectionRefs.current.forEach((sec) => sec && obs.observe(sec));
+
+  return () => obs.disconnect();
+}, [project]);
+
 
 
 
@@ -252,16 +282,20 @@ return (
           <div className="decor-tri tri-2" />
         </div>
 
-        <div className="iso-hero-text">
-          <h1>
-            {project.title.split("").map((c,i)=>(
-              <span key={i} className="char">
-                {c === " " ? "\u00A0" : c}
-              </span>
-            ))}
-          </h1>
-          <p>{project.headerPhotoCaption || ""}</p>
-        </div>
+{/* Hero text ― render only if showTitle isn’t explicitly false */}
+{project.showTitle !== false && (
+  <div className="iso-hero-text">
+    <h1>
+      {project.title.split("").map((c, i) => (
+        <span key={i} className="char">
+          {c === " " ? "\u00A0" : c}
+        </span>
+      ))}
+    </h1>
+    <p>{project.headerPhotoCaption || ""}</p>
+  </div>
+)}
+
 
         <a
           className="iso-scroll-arrow"
@@ -270,7 +304,6 @@ return (
           ▼
         </a>
       </section>
-
       {/* ────────── QUICK FACTS ────────── */}
       {Array.isArray(project.quickFacts) && project.quickFacts.length > 0 && (
         <section className="iso-section">
