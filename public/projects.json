@@ -9,6 +9,32 @@
                     "title": "QubitVR",
                     "link": "/projects/vrar/qubitvr",
                     "description": "QubitVR is a VR educational tool we developed as our undergraduate capstone, designed to make quantum computing concepts like Bloch spheres, single-qubit gates, superposition, and measurement accessible through interactive 3D tutorials. Guided by Dr. McMahan (VR) and Dr. Kolodrubetz (physics), our cross-functional team built a space environment in Unity where users can learn the basics of how quantum bits behave. We created grab-and-drop mechanics for NOT, Hadamard, π/2, and π/4 gates, plus a universal-rotation gate, to animate qubit state changes on the Bloch sphere. A flashlight mechanic triggers measurement collapse, followed by a dynamic display of the underlying matrix math. Three structured tutorial modules guide users through core concepts, and a sandbox mode invites open exploration. We iterated with weekly sponsor feedback, frequent playtests, and desktop prototyping via the XR Simulation Toolkit, tracking progress in Jira and Perforce. By delivering QubitVR from zero to polished prototype in under a year, I learned how to translate dense physics into user friendly interactions, design VR UIs that feel natural, and create a system geared towards education rather than just fun. Managing cross-disciplinary communication between developers, designers, and physicists taught me first-hand how complex projects get done.",
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/qubitvr/1.png"
+                        },
+                        {
+                            "url": "/assets/photos/projects/qubitvr/2.gif"
+                        },
+                        {
+                            "url": "/assets/photos/projects/qubitvr/3.gif"
+                        },
+                        {
+                            "url": "/assets/photos/projects/qubitvr/3.gif"
+                        },
+                        {
+                            "url": "/assets/photos/projects/qubitvr/4.png"
+                        },
+                        {
+                            "url": "/assets/photos/projects/qubitvr/5.png"
+                        },
+                        {
+                            "url": "/assets/photos/projects/qubitvr/6.png"
+                        },
+                        {
+                            "url": "/assets/photos/projects/qubitvr/7.gif"
+                        }
+                    ],
                     "headerPhoto": "/assets/photos/projects/qubitvr/qubitvr_header.png",
                     "quickFacts": [
                         {
@@ -37,11 +63,6 @@
                             "value": "Javier Aguilar, Jeff Fortune, Timothy Jinks, Ahmed Mansour, Jacob Powers"
                         }
                     ],
-                    "photos": [
-                        {
-                            "url": "/assets/photos/projects/qubitvr/1.jpg"
-                        }
-                    ],
                     
                     "techUsed": [
                         {
@@ -64,6 +85,29 @@
                     "link": "/projects/vrar/subvrine",
                     "description": "SubVRine began as a final class project for the Virtual Reality Engineering course led by my soon-to-be graduate advisor, Dr. Carolina Cruz-Neira. Still relatively new to the field of VR, I was primarily interested in experimenting with novel UI schemas that could best utilize the strengths of the hardware. To this end, I developed a Unity experience where you take control a submarine that dives deep to find lost treasure. The focus of my design was on how the user would interact with the submersible. I felt that the 6 degrees of freedom offered by most VR controllers had a lot of potential to create a intuitive control system, as both translation and rotation of the controllers could be used to translate and rotate the ship that the user occupied. I was, in part, inspired by previous research on the 'World-In Miniature' concept for viewport manipulation. This idea relates the virtual world to user through a small, handheld replica of the 3D scene the user is currently situated. With this representation, more of the surrounding context can be presented to the user than usual. My design expands on this, by placing a miniature of the submarine within a glass sphere in front of the user. By grabbing this 'proxy', the user can directly control the ship through a mapping of the pose of the miniature to the actual ship. Great care was taken to reduce the aggravation of nausea by applying smoothing to the movement of the ship, reducing jitters and rapid spinning. The outcome of this experiment was very promising. It felt very natural to grab the miniature and bring it to the bottom of the sphere to begin a dive, or to twist the ship to avoid obstacles. There was also a lot of room to take this concept further. For instance, more context in the form of obstacles or items could appear as proxies in the sphere as well, providing more information to the user. This proof-of-concept led directly into my follow-up work on the HoloSphere project, where I continued exploring spatial proxies and context‐rich interactions.",
                     "headerPhoto": "/assets/photos/projects/subvrine/subvrine_header.png",
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/subvrine/1.png"
+                        },
+                        {
+                            "url": "/assets/photos/projects/subvrine/2.gif"
+                        },
+                        {
+                            "url": "/assets/photos/projects/subvrine/3.png"
+                        },
+                        {
+                            "url": "/assets/photos/projects/subvrine/4.png"
+                        },
+                        {
+                            "url": "/assets/photos/projects/subvrine/5.gif"
+                        },
+                        {
+                            "url": "/assets/photos/projects/subvrine/6.png"
+                        },
+                        {
+                            "url": "/assets/photos/projects/subvrine/7.png"
+                        }
+                    ],
                     "quickFacts": [
                         {
                             "label": "Date Started",
@@ -91,12 +135,6 @@
                             "value": "Class Project"
                         }
                     ],
-                    "photos": [
-                        {
-                            "url": "/assets/photos/projects/subvrine/1.jpg"
-                        }
-                    ],
-                    
                     "techUsed": [
                         {
                             "label": "Unity",
@@ -126,7 +164,21 @@
                     "title": "SolitudeVR",
                     "link": "/projects/vrar/solitudevr",
                     "description": "SolitudeVR started with a simple desire: could I bring tactile joy of real playing cards into Virtual Reality? I developed in Unity that marries a VR headset with AR image tracking, creating exactly this kind of soothing, interactive card-based retreat. The concept: use a set of real, Tarot-sized playing cards—each printed with a unique fiducial marker—as tangible controllers for a virtual experience. The architecture breaks down into two core modules; the AR component and the VR component. The AR component uses a webcam mounted over a table to track markers printed onto a set of custom Tarot cards. I chose the Tarot size of cards because this would allow larger makers to be used, improving detection stability. After first experimenting with a number of AR scannable marker variants such as ArUco and ARTag, I landed on AprilTags, as they were easy to generate and provided embedded error correction which improved tracking. I then designed 52 cards, each with a unique marker ID, resulting in a complete set of playing cards. Each card’s unique ID lets the system recognize not just “a card,” but exactly which one, front and back. The VR component of the project involved designing a relaxing nature environment to place the user into, and developing the logic to recognize the markers, calibrate the camera, and set up a simple card matching game. With this set up, virtual cards faces appear to be perfectly overlaid on top of the physical card, and you are able to naturally reach out and pick it up. A cool part of this project was that the system can load any image set you like, opening doors to everything from educational flashcards to bespoke art decks. I really enjoyed this project, but it was certainly a difficult one. I underestimated both how easy it would be to track the markers on the card and transmit the positional data to, and how well the tracking itself worked. A card alone on a flat surface would work well, but if other cards covered up a portion of its face (as is common in many card games), tracking would be compromised. I attempted to remedy this by adding redundant markers to the faces of the cards, but this introduced more issues due to a limit on the number trackable markers. Ultimately, I gained hands-on expertise in fiducial tracking, real-time camera calibration, and crafting user-friendly Mixed Reality UIs under real-world constraints.",
-                    "headerPhoto": "/assets/photos/projects/solitudevr_header.png",
+                    "headerPhoto": "/assets/photos/projects/solitudevr/solitudevr_header.png",
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/solitudevr/1.png"
+                        },
+                        {
+                            "url": "/assets/photos/projects/solitudevr/2.gif"
+                        },
+                        {
+                            "url": "/assets/photos/projects/solitudevr/3.png"
+                        },
+                        {
+                            "url": "/assets/photos/projects/solitudevr/4.png"
+                        }
+                    ],
                     "quickFacts": [
                         {
                             "label": "Date Started",
@@ -154,12 +206,6 @@
                             "value": "Class Project"
                         }
                     ],
-                    "photos": [
-                        {
-                            "url": "/assets/photos/projects/solitudevr/1.jpg"
-                        }
-                    ],
-                    
                     "techUsed": [
                         {
                             "label": "Unity",
@@ -182,6 +228,133 @@
                             "icon": "gimp.svg",
                             "bullets": [
                                 "Hand-designed 52 playing cards with unique markers to be professionally manufactured"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "holosphere",
+                    "title": "HoloSphere",
+                    "link": "/projects/vrar/holosphere",
+                    "description": "HoloSphere is a novel VR control system that blends Hand-Directed manipulation, World-In-Miniature, and gesture-based techniques to deliver full 6-DoF viewport and object control. Central to the design is a transparent sphere populated with miniature “proxy” objects that represent the user and objects in the vicinity. Grabbing and moving these objects within the sphere lets you intutively manipulate its real(virtual?)-world counterpart. The system offers three distinct modes: Intrinsic Manipulation (IM) adjusts your own camera pose by manipulating the red-arrow proxy; Extrinsic Manipulation (EM) controls other scene objects via their proxies; and Combined Manipulation (CM) for doing both at once. When you grab a proxy, the HoloSphere re-centers itself around that target, mapping hand movements to object transforms. I then implemented smoothing algorithms to filter out jitter and calibrated velocity curves for natural-feeling movement. This project was my first research undertaking after entering graduate school. It taught me a lot, not only how to think about 3D control metaphors, but about the research process itself. I presented this project during ASEMFL 2023's graduate research poster session, and received great feedback on the concept.",
+                    "headerPhoto": "/assets/photos/projects/holosphere/holosphere_header.png",
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/holosphere/1.png"
+                        },
+                        {
+                            "url": "/assets/photos/projects/holosphere/2.png"
+                        },
+                        {
+                            "url": "/assets/photos/projects/holosphere/3.png"
+                        },
+                        {
+                            "url": "/assets/photos/projects/holosphere/4.jpg"
+                        }
+                    ],
+                    "quickFacts": [
+                        {
+                            "label": "Date Started",
+                            "icon": "date-started.svg",
+                            "value": "April 2023"
+                        },
+                        {
+                            "label": "Date Completed",
+                            "icon": "date-completed.svg",
+                            "value": "October 2023"
+                        },
+                        {
+                            "label": "Principal Software",
+                            "icon": "wrench.svg",
+                            "value": "Unity"
+                        },
+                        {
+                            "label": "Principal Hardware",
+                            "icon": "hmd.svg",
+                            "value": "Meta Quest 2"
+                        },
+                        {
+                            "label": "Conferences Accepted",
+                            "icon": "conference-accepted.svg",
+                            "value": "ASEMFL 2023"
+                        }
+                    ],
+                    "techUsed": [
+                        {
+                            "label": "Unity",
+                            "icon": "unity.svg",
+                            "bullets": [
+                                "Designed a novel 6-DOF VR user interface for locomotion and arbitrary object manipulation"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "earthxr",
+                    "title": "EarthXR",
+                    "link": "/projects/vrar/earthxr",
+                    "description": "EarthXR is a joint effort within the VARLAB to port the core experience of Google Earth VR into our CAVE; an immersive, room-sized cube where stereoscopic projectors wrap a virtual world around you. We wanted to explore the opportunity to push beyond headset limits and make exploration a fully communal affair. Built in Unity, EarthXR uses Cesium’s 3D tiles to stream real-world terrain, 3D buildings, and imagery on demand. We recreated essential Google VR navigation tools: saving and jumping to custom bookmarks, a point-and-fly system for instant travel, a 'plane-fly' mode for gliding, and the ability to view Street View panoramas when you descend close to the street. Implementing live data was also a goal for us. We collect weather data from the real-world location you are viewing and mimic the conditions virtually. It was a unique experience to develop for the CAVE. because the Virtual Reality is not confined to a headset, this application lends itself well to group experiences. Everyone sees the same world at once, and that can be very freeing.",
+                    "headerPhoto": "/assets/photos/projects/earthxr/earthxr_header.jpg",
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/earthxr/1.png"
+                        },
+                        {
+                            "url": "/assets/photos/projects/earthxr/2.jpg"
+                        },
+                        {
+                            "url": "/assets/photos/projects/earthxr/3.jpg"
+                        },
+                        {
+                            "url": "/assets/photos/projects/earthxr/4.jpg"
+                        }
+                    ],
+                    "quickFacts": [
+                        {
+                            "label": "Date Started",
+                            "icon": "date-started.svg",
+                            "value": "July 31st, 2023"
+                        },
+                        {
+                            "label": "Principal Software",
+                            "icon": "wrench.svg",
+                            "value": "Unity, Cesium"
+                        },
+                        {
+                            "label": "Principal Hardware",
+                            "icon": "hmd.svg",
+                            "value": "CAVE, VIVE Trackers"
+                        },
+                        {
+                            "label": "Team",
+                            "icon": "team.svg",
+                            "value": "Ahmed Mansour, Carsten Neumann, Jason Ortiz, Naomi Yoon, et al."
+                        }
+                    ],
+                    "techUsed": [
+                        {
+                            "label": "Unity",
+                            "icon": "unity.svg",
+                            "bullets": [
+                                "Wrote scripts to handle movement over the global in different styles",
+                                "Implemented real-time data such as weather and air traffic for realism",
+                                "Bookmarks and other quality of life features to better match Google Earth VR"
+                            ]
+                        },
+                        {
+                            "label": "Cesium",
+                            "icon": "cesium.svg",
+                            "bullets": [
+                                "Incorporated Cesium for Unity to stream 3D Tiles (terrain, buildings, imagery) in real time",
+                                "Optimized geographic data loading and rendering when traveling at high speeds"
+                            ]
+                        },
+                        {
+                            "label": "CAVE",
+                            "icon": "cave.svg",
+                            "bullets": [
+                                "Ensured 3D effect remains present even in Street View by employing stereoscopic techniques",
+                                "Implemented real-time data such as weather and air traffic for realism"
                             ]
                         }
                     ]
@@ -256,7 +429,7 @@
                     "title": "Spatial Compositions",
                     "link": "/projects/vrar/spatialcompositions",
                     "description": "Spatial Compositions is my venture into VR-based music authoring. A next-gen Digital Audio Workstation (DAW) built in Unity, it replaces traditional timelines and menus with a 3D grid of interactive blocks that represent musical elements you place and connect in space. What results is the unique ability to express oneself in a way that is both visually and aurally appealing. Under the hood, I implemented a modular block architecture: Note Blocks carry pitch and instrument data, Sample Blocks deliver percussive hits, Mod Blocks tweak sound parameters, and a single Start Block emits the pulse that propagates through the chain. Compositions emerge as users physically snap blocks together in space, then watch the signal travel, triggering sounds in sequence. Composers can explore rhythm, harmony, and dynamics with their whole body, turning abstract timelines into physical objects. Through Spatial Compositions I learned directly the power of spatial metaphors. Music is something that can be as complex as you want, and this can make the industry standard DAWs feel overwhelming. Trust me, I know. When a melody is presented here in 3D space, it can demystify musical structure for everyone.",
-                    "headerPhoto": "/assets/photos/projects/longboardvr/longboardvr_header.png",
+                    "headerPhoto": "/assets/photos/projects/spatialcompositions/spatialcompositions_header.png",
                     "photos": [
                         {
                             "url": "/assets/photos/projects/test.jpg"
@@ -327,10 +500,13 @@
                     "title": "Coneman",
                     "link": "/projects/art/coneman",
                     "description": "One evening, while cruising around my university campus on my skateboard, I came across a half dozen traffic cones strewn about the top floor of a parking garage. Feeling a bit bored, I thought it might be fun challenging myself to weave through the cones on my board after lining them up. This impromptu slalom attempt did not end up going very well (I was still fairly new to skating at the time). After many a tumble, I began to get somewhat frustrated, and so I took it out on the cones, pushing and throwing them around. It felt silly, but it was then that I began to think about the story that was developing right in front of me. The story of a person trying to accomplish a goal, but was held back by their misplaced frustration, violently attacking these friendly obstacles rather than accepting their own deficiencies. It was then that Coneman was born. I began to film very soon after, as I suspected that campus officials would collect these cones sooner rather than later. After doing the first few shots on my own, I quickly realized that I would need extra hands for what I had in mind. That's when I called upon my good friend Ronan to help not only with filming, but to be the actor who would don the cones of the titular Coneman. With his help (as well as benevolent passersby), we finished filming in 3 nights. There was no script, and very little prep work. I utilized some practical effect tricks such as fishing line to move cones at a distance, and ketchup to stand in for blood. In hindsight I am very proud of the film, but I acknowledge the multitude of flaws in it, the largest of which is the visual quality. I was inexperienced with filming at night, and with no access to lights, the end result is a film with a noticeable graininess and some scenes that are simply too dark. The overhead lights on the garage gave the whole film a green tone, which was not intentional. Nonetheless, I felt that I achieved what I set out to do. The soundtrack for the film, which I composed, can be found here.",
-                    "headerPhoto": "/assets/photos/projects/coneman_header.jpg",
+                    "headerPhoto": "/assets/photos/projects/coneman/coneman_header.png",
                     "photos": [
                         {
-                            "url": "/assets/photos/projects/test.jpg"
+                            "url": "/assets/photos/projects/1.png"
+                        },
+                        {
+                            "url": "/assets/photos/projects/2.png"
                         }
                     ],
                     "quickFacts": [
@@ -363,13 +539,16 @@
                 },
                 {
                     "id": "mural",
-                    "title": "VARLAB Wall of Fame",
+                    "title": "Wall of Fame",
                     "link": "/projects/art/mural",
                     "description": "The VARLAB Mural, otherwise known as the Wall of Fame is an Augmented Reality art installation that was designed to be a space where members of the lab have an opportunity to truly express themselves in a unique way. Installed on the second floor of Partnership II near the University of Central Florida, the mural is a large wall art piece that depicts a futuristic cityscape above a sci-fi door that bears the labaratories logo. By scanning the logo with a phone, visitors can explore an interactive directory of lab members. Each entry showcases a 3D model, a quote, and links to further explore that person’s work. The concept arose when our research group relocated into Partnership II. My professor urged us to think of ways to make this new space our own, and as we are a VR and AR based research lab, I began to think of a way to incorporate the technology into the lab itself. With my previous experience in marker-based AR and a new physical wall to work with, I envisioned a system that would let lab members actively contribute their own digital “presence” to a public installation. The mural would become both a celebration of our work and a tool for networking, storytelling, and memory. I built the system on top of AR.js, a JavaScript library that allows mobile AR directly through a web browser—no app download required. To me, this was a critical design constraint. The experience had to have as low a barrier to entry as possible so that as many people as possible would elect to spend time exploring it. However, this also meant working within the constraints of WebAR, including tracking stability, model optimization, and mobile-friendly rendering. I collaborated with Abdul Mannan Mohamed and Martin McCarthy to design the visual style of the mural itself, with the goal of making the physical and digital elements felt cohesive. With Naomi Yoon’s help, we developed a backend system for dynamically loading new content, handling model uploads, and supporting content updates through an internal admin tool. The VARLAB Mural is one of my most ambitious undertakings to date. It is a permanent installation that reflects the identity of our lab not just in its theme, but in how it allows every member to leave something behind. As the lab grows, I hope this mural continues to serve as a meaningful, creative, and technical artifact.",
                     "headerPhoto": "/assets/photos/projects/mural/mural_header.jpg",
                     "photos": [
                         {
-                            "url": "/assets/photos/projects/test.jpg"
+                            "url": "/assets/photos/projects/mural/1.jpg"
+                        },
+                        {
+                            "url": "/assets/photos/projects/mural/2.jpg"
                         }
                     ],
                     "quickFacts": [
@@ -419,68 +598,231 @@
             ]
         },
         {
-            "id": "research",
-            "title": "Research Projects",
+            "id": "programming",
+            "title": "Programming Projects",
             "projects": [
                 {
-                    "id": "varlab",
-                    "title": "VARLAB Research",
-                    "description": "Research on the intersection of virtual reality and art.",
-                    "headerPhoto": "/assets/photos/projects/varlab_header.jpg",
-                    "headerPhotoWidth": 800,
-                    "headerPhotoHeight": 600,
-                    "photos": [
+                    "id": "geneticmelodies",
+                    "title": "Genetic Melodies",
+                    "link": "/projects/programming/geneticmelodies",
+                    "description": "Genetic Melodies is a Java-based composition playground that applies genetic algorithms and evolutionary computation to music creation. It dares the ask the forbidden question: Can an algorithm produce novel and pleasant music? The short answer: Kinda of, maybe. We began this project by first defining what it means for a piece of music to be classified as \"good\", for its these measures of quality that guided the design of our selection and crossover techniques. We settled on three criteria: Consistency, Complexity, and Creativity. Pieces should have identifiable patterns or motifs, should have internal similarities and differences, and sound interesting. Following this, we crafted a number of selection and crossover techniques, including a novel one called “Measure Crossover” that swaps whole bars of music between parents, keeping rhythmic flow intact. We also were interested in how we can keep a human-in-the-loop during the generative process, providing feedback and iteratively improving the fitness of the pieces. Once pieces are generated, the user can select the ones that they enjoyed, back in the population for the next run of generations. In practice, Genetic Melodies can surprise you with music that almost feel intentional. It's an application that has the potential to create some fun and unexpected melodies. Just don't expect it to win any awards.",
+                    "headerPhoto": "/assets/photos/projects/geneticmelodies/geneticmelodies_header.png",
+                    "quickFacts": [
                         {
-                            "url": "/assets/photos/projects/test.jpg",
-                            "width": 1024,
-                            "height": 768
+                            "label": "Date Started",
+                            "icon": "date-started.svg",
+                            "value": "February 6th, 2024"
+                        },
+                        {
+                            "label": "Date Completed",
+                            "icon": "date-completed.svg",
+                            "value": "April 15th, 2024"
+                        },
+                        {
+                            "label": "Principal Software",
+                            "icon": "wrench.svg",
+                            "value": "Java"
+                        },
+                        {
+                            "label": "Team",
+                            "icon": "team.svg",
+                            "value": "Jenna Goodrich, Andey Robins, Ahmed Mansour"
+                        },
+                        {
+                            "label": "Project Type",
+                            "icon": "project-type.svg",
+                            "value": "Class Project"
                         }
                     ],
-                    "link": "/projects/research/varlab",
                     "techUsed": [
                         {
-                            "label": "Unity",
-                            "icon": "unity.svg",
-                            "url": "/projects/unity",
+                            "label": "Java",
+                            "icon": "java.svg",
                             "bullets": [
-                                "Developed interactive VR installations for art exhibitions"
+                                "Created a genetic algorithim that operates on a numerical representation of pitches and rhythms",
+                                "Utilized the Java MIDI package to play genetically generated melodies",
+                                "Implemented variations of crossover, mutation, and fitness functions for maximum experimentation"
                             ]
                         }
                     ]
                 },
                 {
-                    "id": "qubitvr",
-                    "title": "QubitVR",
-                    "description": "An educational VR app to visualize quantum states in 3D.",
-                    "headerPhoto": "/assets/photos/projects/qubitvr_header.png",
-                    "headerPhotoWidth": 1911,
-                    "headerPhotoHeight": 905,
-                    "photos": [
+                    "id": "website",
+                    "title": "Personal Website",
+                    "link": "/projects/programming/website",
+                    "description": "I've held for many years that I ought to have a website, a corner of the internet I could shape to my liking, and show the world (and potential employers) who I really am. With a career, graduate school, and life in the way however, this pestering thought remained just that—an idea. Once I completed my Master's degree, I felt that the time was right to devote all my energy into it. And look at that! It must of worked, because here you are reading this right now! The driving inspiration behind this effort is that geometric motif you see all over the site. I first created the first version of it in 2022, almost on a whim. I loved how chaotic it could be, yet at the same time maintaining a sense of order. It was the beauty of mathematics, not by numbers but by colors and lines, of patterns and shapes. To this day I still lose myself to intricacies of what it can generate. I think part of why my website took so long to take shape was being a bit too overzealous in my plans. I originally wanted to have an animated character in the background that the geometric pattern would interact with. No doubt inspired by games I was playing at the time (namely Persona 5), I wanted my menu system to feel alive and super dynamic. All these things sounded really cool, but it really was a case of biting off more than I can chew. After some time I felt that I should let go of these ideas, and once I stripped back to the essentials, progress flowed. This site is—and always will be—a work in progress. I already see things that need streamlining, and some things to change as I add more and more content. I'm just happy that I finally have my own little corner of the web.",
+                    "headerPhoto": "/assets/photos/projects/website/website_header.png",
+                    "quickFacts": [
                         {
-                            "url": "/assets/photos/projects/test.jpg",
-                            "width": 1024,
-                            "height": 768
+                            "label": "Date Started",
+                            "icon": "date-started.svg",
+                            "value": "June 2nd, 2024"
+                        },
+                        {
+                            "label": "Lines of Code",
+                            "icon": "code.svg",
+                            "value": "5,000+"
+                        },
+                        {
+                            "label": "Principal Software",
+                            "icon": "wrench.svg",
+                            "value": "React, Three.js"
                         }
                     ],
-                    "link": "/projects/coding/qubitvr",
                     "techUsed": [
                         {
-                            "label": "Unity",
-                            "icon": "unity.svg",
-                            "url": "/projects/unity",
+                            "label": "React",
+                            "icon": "react.svg",
                             "bullets": [
-                                "Visualized Bloch spheres with custom materials",
-                                "Implemented hand-tracking interactions",
-                                "Optimized shader performance for VR"
+                                "Designed dynamic pages while handling states and refs, maintaining proper component lifecycle",
+                                "Created a Pattern Provider that maintained continuity of the background geometric pattern during navigations"
                             ]
                         },
                         {
-                            "label": "C#",
-                            "icon": "csharp.svg",
-                            "url": "/projects/csharp",
+                            "label": "Three.js",
+                            "icon": "threejs.svg",
                             "bullets": [
-                                "Wrote clean, modular code for quantum state transitions",
-                                "Used async patterns to load resources on demand"
+                                "Heavily utitilized to create 3D menus and patterns",
+                                "Built music page that intertwines 3D meshes with 2D line objects",
+                                "Ensured proper memory management by cleaning up scenes during page transitions"
+                            ]
+                        },
+                        {
+                            "label": "CSS",
+                            "icon": "css.svg",
+                            "bullets": [
+                                "Designed fade in/out animations for menus and other elements",
+                                "Implemented responsive design for smaller screen resolutions",
+                                "Crafted a hierarchical design of rules to reduce duplicate code"
+                            ]
+                        },
+                        {
+                            "label": "GSAP",
+                            "icon": "gsap.svg",
+                            "bullets": [
+                                "Powers all menu animations, bringing pages to life and maintaining consistent timings"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "largelanguagemonkey",
+                    "title": "Large Language Monkey",
+                    "link": "/projects/programming/largelanguagemonkey",
+                    "description": "Large Language Monkey was my first venture into using Large Language Models for Procedural Content Generation. Reese and I designed a 2D platformer that parses level data created entirely by a generative AI model. We set out to measure zero-shot capabilities across model architectures—comparing OpenAI’s 3.5-Turbo and 4o with Ollama’s 70B and 3B variants—and to refine a prompt framework that could consistently yield compilable, playable, and novel levels. We divvied up the work: Reese built the game code and parser, while I managed LLM selection and engineered the prompts. We iterated seven prompting strategies—incrementally adding grammar rules, jump-distance guidelines, and example layouts—then generated 280 levels for hands-on testing. Our findings expressed a complex landscape: smaller models excel with tight prompts, larger ones nail parsing accuracy, and prompt detail has diminishing returns. Some levels generated were incredibly simple to beat, while others were flat out impossible. And many simply could not be parsed due to issues in the data. From all this, one thing I definitely learned is that prompt engineering is a craft in of itself. There is a sweet spot between telling the AI just enough to guide its output without stifling its inventiveness. And I learned that sometimes, size isn't everything. A smaller model in the right context can perform just as well as a larger one. Procedural Content Generation is not only viable but certainly ripe for further exploration.",
+                    "headerPhoto": "/assets/photos/projects/largelanguagemonkey/largelanguagemonkey_header.png",
+                    "photos": [
+                        {
+                            "url": "/assets/photos/largelanguagemonkey/1.png"
+                        }
+                    ],
+                    "quickFacts": [
+                        {
+                            "label": "Date Started",
+                            "icon": "date-started.svg",
+                            "value": "October 2024"
+                        },
+                        {
+                            "label": "Date Completed",
+                            "icon": "date-completed.svg",
+                            "value": "December 2024"
+                        },
+                        {
+                            "label": "Principal Software",
+                            "icon": "wrench.svg",
+                            "value": "LLMs, Raylib"
+                        },
+                        {
+                            "label": "Project Type",
+                            "icon": "project-type.svg",
+                            "value": "Class Project"
+                        }
+                    ],
+                    "techUsed": [
+                        {
+                            "label": "ChatGPT/Ollama",
+                            "icon": "llms.svg",
+                            "bullets": [
+                                "Designed a comprehensive prompt set to tease out the best performance of LLMs",
+                                "Ollama client CLI integration for Llama 3.1-70B & 3.2-3B zero-shot calls"
+                            ]
+                        },
+                        {
+                            "label": "Raylib",
+                            "icon": "raylib.svg",
+                            "bullets": [
+                                "Built a platforming game engine from scratch",
+                                "Implemented a ASCII level parser with error detection for invalid data",
+                                "Created an export system to automatically generate a file containing the results of parsing and playing the levels for data analysis"
+                            ]
+                        },
+                        {
+                            "label": "Art",
+                            "icon": "art.svg",
+                            "bullets": [
+                                "Created all the assets used in the game, including player animations (moving, jumping, etc.), backgrounds, and platforms",
+                                "Composed an original soundtrack, inspired by the technological themes of the project"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "raytracedmusicvisualizer",
+                    "title": "Raytraced Music Visualizer",
+                    "link": "/projects/programming/raytracedmusicvisualizer",
+                    "description": "Built with Mitsuba 3, this music visualizer is a study in light physics and audio-driven animation. A Python-based project, this tool can generate a high fidelity scene depicting a abstract world of crystals and colors. Under the hood, I piped the specified music track through a Python preprocessing script that extracted tempo, onset times, and FFT-derived frequency envelopes. Those data streams drove Mitsuba’s Python API to animate transforms and tweak material shaders in sync with the music. In short, this means that spheres dance and change color to the music, illuminating the scene and providing some visually pleasing scenes. After rendering each frame, I used FFMPEG to compile the frames into video and re-sync the original audio, resulting in a seamless, fully raytraced performance. As this was my first time using raytracing to create something, I learned a great deal about how it all works. I learned the interplay between sample count and noise, how RGB representation works, and the art of writing custom BSDFs. Writing shader code was always a bit daunting to me, but after this project I feel a lot more confident about it. I really like how the project turned out, I hope I get to use this technology to bring even more ideas to life.",
+                    "headerPhoto": "/assets/photos/projects/raytracedmusicvisualizer/raytracedmusicvisualizer_header.png",
+                    "quickFacts": [
+                        {
+                            "label": "Date Started",
+                            "icon": "date-started.svg",
+                            "value": "March 27th, 2025"
+                        },
+                        {
+                            "label": "Date Completed",
+                            "icon": "date-completed.svg",
+                            "value": "April 21st, 2025"
+                        },
+                        {
+                            "label": "Principal Software",
+                            "icon": "wrench.svg",
+                            "value": "Mitsuba 3"
+                        },
+                        {
+                            "label": "Language",
+                            "icon": "code.svg",
+                            "value": "Python, XML"
+                        },
+                        {
+                            "label": "Project Type",
+                            "icon": "project-type.svg",
+                            "value": "Class Project"
+                        }
+                    ],
+                    "techUsed": [
+                        {
+                            "label": "Mitsuba 3",
+                            "icon": "mitsuba.svg",
+                            "bullets": [
+                                "Experimented with different variants (scalar, cuda, etc.)",
+                                "Explored light and render settings to generate the most visually appealing scenes",
+                                "HDRI environment maps + rectangular area lights for crisp caustics and realistic global illumination"
+                            ]
+                        },
+                        {
+                            "label": "Python",
+                            "icon": "python.svg",
+                            "bullets": [
+                                "Librosa + numpy for beat detection, onset times, and multi-band FFT envelope extraction",
+                                "Custom hooks binding audio events to Mitsuba parameters for a dynamic, audio-reactive scene"
+                            ]
+                        },
+                        {
+                            "label": "FFMPEG",
+                            "icon": "ffmpeg.svg",
+                            "bullets": [
+                                "Compiled rendered frames into one video file",
+                                "Synchronized audio file to video"
                             ]
                         }
                     ]
@@ -494,52 +836,29 @@
                 {
                     "id": "patternfactory",
                     "title": "Pattern Factory",
-                    "description": "A generative art toy that creates unique geometric patterns.",
-                    "headerPhoto": "/assets/photos/projects/toys_header.jpg",
-                    "headerPhotoWidth": 800,
-                    "headerPhotoHeight": 600,
-                    "photos": [
-                        {
-                            "url": "/assets/photos/projects/test.jpg",
-                            "width": 1024,
-                            "height": 768
-                        }
-                    ],
                     "link": "/projects/toys/patternfactory",
-                    "techUsed": [
+                    "description": "Pattern Factory is a browser-based tool for generating animated line-based geometry using Three.js. What began as a background element for my website turned into its own little art toy. It's controlled through a interface that lets you morph function curves into intricate, evolving patterns. The output is mathematical, meditative, and kind of mesmerizing.",
+                    "headerPhoto": "/assets/photos/projects/patternfactory/patternfactory_header.png",
+                    "quickFacts": [
                         {
-                            "label": "three.js",
-                            "icon": "threejs.svg",
-                            "url": "/projects/threejs",
-                            "bullets": [
-                                "Created generative art pieces using code"
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "id": "concentriccircle",
-                    "title": "Concentric Circles",
-                    "description": "An audio-visualizer that paints concentric rings to music.",
-                    "headerPhoto": "/assets/photos/projects/concentriccircle_header.png",
-                    "headerPhotoWidth": 799,
-                    "headerPhotoHeight": 629,
-                    "photos": [
-                        {
-                            "url": "/assets/photos/projects/test.jpg",
-                            "width": 1024,
-                            "height": 768
+                            "label": "Date Started",
+                            "icon": "date-started.svg",
+                            "value": "June 2nd, 2024"
                         }
                     ],
-                    "link": "/projects/coding/concentriccircle",
                     "techUsed": [
                         {
-                            "label": "p5.js",
-                            "icon": "p5js.svg",
-                            "url": "/projects/p5js",
+                            "label": "Three.js",
+                            "icon": "threejs.svg",
                             "bullets": [
-                                "Drew dynamic concentric rings synced to audio FFT",
-                                "Experimented with color harmonies based on frequency bands"
+                                "Utilized Line Rendering and trigonometric functions to create animated patterns"
+                            ]
+                        },
+                        {
+                            "label": "React",
+                            "icon": "react.svg",
+                            "bullets": [
+                                "Crafted a user interface to customize pattern parameters and create animations"
                             ]
                         }
                     ]
@@ -547,34 +866,86 @@
                 {
                     "id": "battletetris",
                     "title": "BattleTetris",
-                    "description": "Multiplayer competitive Tetris clone with power-ups.",
-                    "headerPhoto": "/assets/photos/projects/battletetris_header.png",
-                    "headerPhotoWidth": 799,
-                    "headerPhotoHeight": 629,
-                    "photos": [
+                    "link": "/projects/toys/battletetris",
+                    "description": "BattleTetris was my entry for VARLAB’s Summer Game Jam 2024. The theme of the game jam was \"The Others\", and my interpretation of that concept was something competitive and novel. My idea was a chaotic, two-player twist on the original Tetris formula: both players compete on the same board, but with opposite gravity. Player 1 drops blocks from the top like normal, while Player 2 starts from the bottom and pushes pieces upward. I engineered it in Java using an adapted open-source Tetris base, then heavily modified it to support this 2 player mechanic. At the heart of BattleTetris is strategy of a shared space and all the complications that come with it. If a falling piece from one player intersects with the rising piece of the other, the two pieces merge into a larger, awkward shape, forcing both players to adapt. The game becomes a strategic tug-of-war, with raw Tetris skill playing just as big a role as quick reflexes and the ability to out manuver your opponent. The hardest part was collision logic: detecting whether overlapping pieces should collide, pass through, or merge. I designed per-player color tracking and conditional board reads to handle overlapping states, as well as custom row-clearing logic that works in both upward and downward directions.",
+                    "headerPhoto": "/assets/photos/projects/battletetris/battletetris_header.png",
+                    "quickFacts": [
                         {
-                            "url": "/assets/photos/projects/test.jpg",
-                            "width": 1024,
-                            "height": 768
+                            "label": "Date Started",
+                            "icon": "date-started.svg",
+                            "value": "June 22nd, 2024"
+                        },
+                        {
+                            "label": "Date Completed",
+                            "icon": "date-completed.svg",
+                            "value": "June 24th, 2024"
                         }
                     ],
-                    "link": "/projects/coding/battletetris",
                     "techUsed": [
                         {
-                            "label": "React",
-                            "icon": "reactjs.svg",
-                            "url": "/projects/reactjs",
+                            "label": "Java",
+                            "icon": "java.svg",
                             "bullets": [
-                                "Built game UI with hooks and context",
-                                "Synced state across clients via WebSockets"
+                                "Built the core game logic and rendering using standard Java and AWT/Swing",
+                                "Managed simultaneous dual-player logic on a single board using multithreaded timers"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "concentriccircles",
+                    "title": "Concentric Circles",
+                    "link": "/projects/toys/concentriccircles",
+                    "description": "This is one of those ideas I built without knowing it already had a name. I wanted to see what kind of patterns would emerge if I took a handful of orbiting points, averaged their positions as they spun, and drew the result. I ended up rediscovering a really satisfying drawing tool; an idea known as Lissajous curves. Users can interactively control the radius and speed of each point, toggle between standard and weighted averaging, and use fast-forward mode to accelerate the drawing. The UI was built using Java Swing, and everything is rendered in real-time to a buffered canvas.",
+                    "headerPhoto": "/assets/photos/projects/concentriccircles/concentriccircles_header.png",
+                    "quickFacts": [
+                        {
+                            "label": "Date Started",
+                            "icon": "date-started.svg",
+                            "value": "August 8th, 2024"
+                        }
+                    ],
+                    "techUsed": [
+                        {
+                            "label": "Java Swing",
+                            "icon": "java.svg",
+                            "bullets": [
+                                "Created an interactive GUI to control radii, speeds, and drawing logic"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "raygridencoder",
+                    "title": "Ray Grid Encoder",
+                    "link": "/projects/toys/raygridencoder",
+                    "description": "I was toying with the idea of using a ray to encode binary data spatially. Not by color, length, or angle alone, but rather by how it traverses through a grid. In this system, each cell in a grid offers the ray a binary decision as it passes through: exit through the top edge, econding a 0, or the right edge, encoding a 1. By carefully tuning the ray's angle and starting position, it can be made to follow a path that “spells out” any desired binary sequence. The result is a Java visualization tool where a ray slices through a grid of squares, its trajectory encoding a unique bitstring based on which edges it exits. I built in a brute-force search method to find a ray configuration that matches a target binary prefix. I’m still not sure what applications this has, or even if it has mathematical potential, but as a concept, it’s fascinating.",
+                    "headerPhoto": "/assets/photos/projects/raygridencoder/raygridencoder_header.png",
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/raygridencoder/1.png"
+                        }
+                    ],
+                    "quickFacts": [
+                        {
+                            "label": "Date Started",
+                            "icon": "date-started.svg",
+                            "value": "February 4th, 2025"
+                        }
+                    ],
+                    "techUsed": [
+                        {
+                            "label": "Java2D",
+                            "icon": "java.svg",
+                            "bullets": [
+                                "Used Java’s 2D graphics API to simulate ray traversal through a grid and visualize intersections in real time"
                             ]
                         },
                         {
-                            "label": "Node.js",
-                            "icon": "nodejs.svg",
-                            "url": "/projects/nodejs",
+                            "label": "DDA Algorithm",
+                            "icon": "dda.svg",
                             "bullets": [
-                                "Authored real-time server for matchmaking and power-ups"
+                                "Designed a digital differential analyzer (DDA)-style algorithm to simulate grid traversal and binary output based on exit sides"
                             ]
                         }
                     ]
@@ -584,12 +955,123 @@
         {
             "id": "archive",
             "title": "Archived Projects",
-            "projects": [
+            "projects": 
+            [
+                {
+                    "id": "Amazoff",
+                    "title": "Amazoff",
+                    "link": "/projects/archive/amazoff",
+                    "description": "Amazoff was a database-driven e-commerce platform built from scratch as part of a group project for a database systems course. The site gave users the ability to browse products, place mock orders, and manage their own list of discount codes, all backed by a fully connected MySQL-to-PHP backend and a lightweight JavaScript/HTML/CSS frontend. As project manager and backend developer, I handled the core data flow between the database and the UI. Users could sign up, browse products, place orders, and view order histories. Admins, meanwhile, accessed a Store Management System (SMS) where they could add or remove items, define discount policies, and view analytics on purchase and code redemption patterns. Everything was connected by robust database logic and dynamically generated views. The project ended up being a great crash course in database-backed application design, with a special focus on access control, dynamic content, and CRUD workflows.",
+                    "headerPhoto": "/assets/photos/projects/amazoff/amazoff_header.png",
+                    "quickFacts": [
+                        {
+                            "label": "Date Started",
+                            "icon": "date-started.svg",
+                            "value": "February 2020"
+                        },
+                        {
+                            "label": "Date Completed",
+                            "icon": "date-completed.svg",
+                            "value": "April 2020"
+                        },
+                        {
+                            "label": "Principal Software",
+                            "icon": "wrench.svg",
+                            "value": "MySQL, PHP"
+                        },
+                        {
+                            "label": "Team",
+                            "icon": "team.svg",
+                            "value": "Ahmed Mansour, Cristopher Matos, Connor McBryde, Gustavo Monaco"
+                        }
+                    ],
+                    "techUsed": [
+                        {
+                            "label": "MySQL",
+                            "icon": "mysql.svg",
+                            "bullets": [
+                                "Designed and populated relational database schema for users, products, orders, and discount codes",
+                                "Implemented complex queries to fetch order history and manage discount policy logic"
+                            ]
+                        },
+                        {
+                            "label": "PHP",
+                            "icon": "php.svg",
+                            "bullets": [
+                                "Created backend logic to handle user login, signup, item browsing, and admin discount management",
+                                "Handled form submission, data sanitization, and response rendering"
+                            ]
+                        },
+                        {
+                            "label": "JavaScript",
+                            "icon": "js.svg",
+                            "bullets": [
+                                "Helped style and build the customer-facing storefront and admin dashboard"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "dinnertime",
+                    "title": "DinnerTime",
+                    "link": "/projects/archive/dinnertime",
+                    "description": "DinnerTime was our team’s solution to an annoyingly common question: Where should we eat? Built for my Principles of Object Oriented Programming (better known as POOP) class, this web and mobile app helps indecisive users actually choose a resturant. Whether you’re alone, with friends, or trying to pick from an overwhelming list of nearby spots to eat, DinnerTime gives you a button to press and a place to go. As the project manager and backend lead, I oversaw development and feature planning while also building out the core APIs in Express and Node.js. We used MongoDB for storage, and React on the frontend for a responsive, user-friendly interface. The app uses geolocation to grab real-time options near you, and supports filtering (for example, “only Italian food”) and social features such as sharing results or exploring a friend’s favorite spots. We followed the MERN stack and deployed to a live server with the intent of supporting both browser and mobile clients. Our Android developer worked in parallel to create a mobile build, while our frontend team focused on smooth UI/UX in React. Despite a few bumps in the road (mostly Git being Git) we collaborated successfully and shipped our final build. DinnerTime was a strong example of a simple, targeted app idea executed cleanly. We had fun making it, learned a lot about collaborative web development, and proved that even the most basic ideas can inspire great things.",
+                    "headerPhoto": "/assets/photos/projects/dinnertime/dinnertime_header.png",
+                    "quickFacts": [
+                        {
+                            "label": "Date Started",
+                            "icon": "date-started.svg",
+                            "value": "February 2020"
+                        },
+                        {
+                            "label": "Date Completed",
+                            "icon": "date-completed.svg",
+                            "value": "April 2020"
+                        },
+                        {
+                            "label": "Principal Software",
+                            "icon": "wrench.svg",
+                            "value": "React, Node.js, Android Studio"
+                        },
+                        {
+                            "label": "Team",
+                            "icon": "team.svg",
+                            "value": "Axel Aristud, Alex Flohr, Emily Lyons, Ahmed Mansour, Alex Santiago, Ian Wallace"
+                        }
+                    ],
+                    "techUsed": [
+                        {
+                            "label": "MongoDB",
+                            "icon": "mongodb.svg",
+                            "bullets": [
+                                "Defined schema for user favorites, location-based lookups, and cuisine filters",
+                                "Stored geolocation-enabled restaurant data for fast proximity filtering"
+                            ]
+                        },
+                        {
+                            "label": "Node.js + Express.js",
+                            "icon": "node.svg",
+                            "bullets": [
+                                "Built RESTful APIs to handle user registration, location queries, and randomized restaurant selection",
+                                "Managed server-side logic for filters like cuisine type and friend-based favorite sharing"
+                            ]
+                        },
+                        {
+                            "label": "React",
+                            "icon": "react.svg",
+                            "bullets": [
+                                "Collaborated with frontend teammates to integrate backend endpoints into an intuitive UI for selecting restaurants",
+                                "Built components to show restaurant metadata and handle user interaction for filtering and selection"
+                            ]
+                        }
+                    ]
+                },
                 {
                     "id": "escapevroom",
                     "title": "EscapeVRoom",
+                    "link": "/projects/archive/escapevroom",
                     "description": "My Senior Design team wanted to improve our skills developing for Virtual Reality, so we decided to participate in Knight Hacks, a hackathon hosted by the University of Central Florida. We had some time before work began on our final project, so we saw the hackathon as the perfect opportunity to challenge ourselves in a fast-paced, collaborative environment. With a weekend to build something from scratch, we focused on designing an immersive escape room experience in Unity.\n\nEscapeVRoom is a single-level escape room filled with interactive items, environmental puzzles, and game scripts to guide the player toward unlocking the final door. We divided responsibilities among the team based on interest and experience: I focused on scripting major mechanics like the bookshelf and fireplace puzzle, while also integrating everyone’s code into a unified project. Javier designed the environment and puzzle logic, and Jacob set up item interactions and built core functionality like the silver key and chest. Working closely as a team, we were able to teach each other new tools and quickly adapt to the challenges of Unity development.\n\nThis project helped me gain hands-on experience using the full range of Unity’s development tools—from animation and scripting to environment design and interaction systems. It was also a great opportunity to deepen my C# skills and practice building a functional VR experience under a time constraint.",
-                    "headerPhoto": "/assets/photos/projects/escapevroom/header.png",
+                    "headerPhoto": "/assets/photos/projects/escapevroom/escapevroom_header.png",
                     "keyTakeaways": [
                         "Improved real-time collaboration skills",
                         "Learned how to handle API rate limits effectively",
@@ -598,38 +1080,82 @@
                     "photos": [
                         {
                             "url": "/assets/photos/projects/escapevroom/1.png"
+                        },
+                        {
+                            "url": "/assets/photos/projects/escapevroom/2.png"
                         }
                     ],
-                    "link": "/projects/archive/escapevroom",
-                    "dateCompleted": "October 7th, 2020",
-                    "softwareUsed": "Unity",
-                    "hardware": "Meta Quest 2",
-                    "teamMembers": [
-                        "Javier Aguilar",
-                        "Jeff Fortune",
-                        "Timothy Jinks",
-                        "Jacob Powers"
-                    ],
-                    "sponsors": [
-                        "Dr. Ryan McMahan",
-                        "\nDr. Michael Kolodrubetz"
+                    "quickFacts": [
+                        {
+                            "label": "Date Started",
+                            "icon": "date-started.svg",
+                            "value": "October 7th, 2020"
+                        },
+                        {
+                            "label": "Date Completed",
+                            "icon": "date-completed.svg",
+                            "value": "October 11th, 2020"
+                        },
+                        {
+                            "label": "Principal Software",
+                            "icon": "wrench.svg",
+                            "value": "Unity"
+                        },
+                        {
+                            "label": "Principal Software",
+                            "icon": "hmd.svg",
+                            "value": "Meta Quest 2"
+                        },
+                        {
+                            "label": "Team",
+                            "icon": "team.svg",
+                            "value": "Javier Aguilar, Ahmed Mansour, Jacob Powers"
+                        }
                     ],
                     "techUsed": [
                         {
                             "label": "Unity",
                             "icon": "unity.svg",
-                            "url": "/projects/unity",
                             "bullets": [
-                                "Built core 3D environment and physics interactions",
-                                "Utilized Unity's XR Toolkit for VR interactions"
+                                "Built a simple VR scene with puzzle logic to challenge the player",
+                                "Utilized controller-based interactions for grabbing and releasing objects"
                             ]
                         }
                     ],
                     "resources": {
-                        "repoUrl": "https://github.com/you/knighthacks2020",
-                        "downloadUrl": "/assets/zips/knighthacks2020.zip",
-                        "liveUrl": "https://yourgamehost.com/knighthacks2020"
+                        "repoUrl": "https://github.com/you/knighthacks2020"
                     }
+                },
+                {
+                    "id": "ternarycompressor",
+                    "title": "Ternary Compressor",
+                    "link": "/projects/archive/ternarycompressor",
+                    "description": "I explored a generalization of Cantor’s pairing function to 3D using Mathematica. The goal was to construct a bijective mapping from ℕ³ to ℕ using a structured traversal through 3D space. I experimented with various snaking and boundary-transition rules inspired by Cantor’s original 2D diagonal method. The traversal respects Euclidean distance from the origin and introduces unique ordering behavior across spherical layers. I implemented dynamic Mathematica visualizations and custom sorting functions to analyze behavior and validate uniqueness. Future directions include searching for closed-form polynomials for γ(x, y, z) and extending this idea to ℕⁿ.",
+                    "headerPhoto": "/assets/photos/projects/ternarycompressor/ternarycompressor_header.png",
+                    "quickFacts": [
+                        {
+                            "label": "Date Started",
+                            "icon": "date-started.svg",
+                            "value": "September 23rd, 2023"
+                        }
+                    ],
+                    "techUsed": [
+                        {
+                            "label": "Mathematica",
+                            "icon": "mathematica.svg",
+                            "bullets": [
+                                "Developed a generalization of Cantor’s Pairing Function to 3D and beyond using symbolic logic and pattern rules",
+                                "Explored coordinate “snaking” behavior in higher dimensions, simulating traversal through octants"
+                            ]
+                        },
+                        {
+                            "label": "MaTeX",
+                            "icon": "matex.svg",
+                            "bullets": [
+                                "Used MaTeX to render all mathematical expressions in LaTeX"
+                            ]
+                        }
+                    ]
                 }
             ]
         },

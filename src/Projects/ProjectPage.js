@@ -15,9 +15,9 @@ import "yet-another-react-lightbox/plugins/thumbnails.css";
 gsap.registerPlugin(Flip);
 
 const COLOR_MAP = {
-  coding: 0xf94144,
+  vrar: 0xf94144,
   art: 0xf3722c,
-  research: 0x577590,
+  programming: 0x577590,
   toys: 0x43aa8b,
   archive: 0x90be6d,
   xplor: 0xf9c74f,
