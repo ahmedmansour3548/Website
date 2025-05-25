@@ -5,22 +5,16 @@ import React, { createContext, useRef, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { store } from './store/index';
-import { AnimationControlProvider } from './utils/AnimationControlContext';
 import * as THREE from 'three';
 import cameraInstance from './utils/camera';
 import Pattern, { PatternStyle } from './utils/Pattern';
 
 import Home from './Home/Home';
-import Thoughts from './Thoughts/Thoughts';
-import Ascii from './ASCII/Ascii';
 import PatternFactory from './Projects/Toys/PatternFactory/PatternFactory';
 import About from './About/About';
 import Projects from './Projects/Projects';
 import ProjectPage from './Projects/ProjectPage';
-import History from './History/History';
 import Music from './Music/Music';
-import Writings from './Writings/Writings';
 import Contact from './Contact/Contact';
 import NotFound from './NotFound/NotFound';
 // PatternContext provides both instance and style presets
@@ -91,29 +85,21 @@ const PatternProvider = ({ children }) => {
 // App render
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <Provider store={store}>
     <Router>
       <PatternProvider>
-        <AnimationControlProvider>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/projects" element={<Projects />} />
             <Route path="/projects/:category/:id" element={<ProjectPage />} />
 {/* <Route path="/projects/coding/:id" element={<Navigate to={`/projects/coding/${id}`} replace />} /> */}
             <Route path="/music" element={<Music />} />
-            <Route path="/thoughts" element={<Thoughts />} />
-            <Route path="/writings" element={<Writings />} />
-            <Route path="/ascii" element={<Ascii />} />
             <Route path="/projects/toys/patternfactory/play" element={<PatternFactory />} />
             <Route path="/about" element={<About />} />
-            <Route path="/history" element={<History />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </AnimationControlProvider>
       </PatternProvider>
     </Router>
-  </Provider>
 );
 
 reportWebVitals();

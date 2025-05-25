@@ -1,5 +1,5 @@
 /* ========================================================== */
-/* src/Home/Home.js                                        */
+/* src/Home/Home.js                                           */
 /* ========================================================== */
 /*
  * © Ahmed Mansour 2025
@@ -9,7 +9,6 @@ import { useState, useEffect, useRef, useContext } from 'react';
 import { gsap } from 'gsap';
 import * as THREE from 'three';
 import { useNavigate } from 'react-router-dom';
-import Particles from '../utils/Particles';
 import { PatternContext } from '../index';
 import './Home.css';
 
@@ -24,7 +23,6 @@ const Home = () => {
   const lastPatternColor = useRef(0xff0000);
   const hoverTween = useRef(null);
   const colorCycleEnabled = useRef(true);
-  const particlesRef = useRef();
   const radialMenuMountRef = useRef();
   const colorTweenRef = useRef(null);
   const pulseTweenRef = useRef(null);
@@ -360,7 +358,6 @@ const Home = () => {
   /* ─────────────────────────────────────────────────────────── */
   useEffect(() => {
     Object.assign(p.current, { value: 0, deltaAngle: 1.05, opacity: 1, xAxis: 0 });
-    particlesRef.current = new Particles();
     setInitialized(true);
   }, []);
 
@@ -424,7 +421,6 @@ const Home = () => {
   /* ──────────────────────────────────────────────────────── */
   return (
     <div className="home-page">
-      <div className="particles-container" ref={particlesRef} />
       <div className="radialmenu-container" ref={radialMenuMountRef} />
       <div className="centered-text" style={{ fontFamily: `"${currentFont}"` }}>
         {displayName}

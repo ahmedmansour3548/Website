@@ -455,7 +455,7 @@ export default function Music () {
     const spacing = window.innerWidth / 2.5;
     albums.forEach((album, i) => {
       const vinylGroup = new THREE.Group();       // disc
-      const vinylTex = new THREE.TextureLoader().load('/assets/vinyl3.png');
+      const vinylTex = new THREE.TextureLoader().load('/assets/vinyl.png');
       const discGeo = new THREE.CylinderGeometry(200, 200, 2, 32);
       const discMat = new THREE.MeshPhongMaterial({
         map: vinylTex,

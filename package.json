@@ -4,13 +4,7 @@
   "private": true,
   "dependencies": {
     "@gsap/react": "^2.1.0",
-    "@react-spring/web": "^9.7.3",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "d3": "^7.9.0",
     "gsap": "^3.12.5",
-    "matter-js": "^0.20.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-fast-marquee": "^1.6.5",
@@ -19,14 +13,13 @@
     "react-redux": "^9.1.0",
     "react-router-dom": "^6.22.0",
     "react-scripts": "5.0.1",
-    "recharts": "^2.15.1",
     "redux": "^5.0.1",
     "three": "^0.173.0",
     "web-vitals": "^2.1.4",
     "yet-another-react-lightbox": "^3.23.0"
   },
   "scripts": {
-    "start": "cross-env NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
