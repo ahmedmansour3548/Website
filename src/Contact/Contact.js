@@ -1,17 +1,24 @@
-// src/Contact/Contact.js
+/* ========================================================== */
+/* src/Contact/Contact.js                                     */
+/* ========================================================== */
+/*
+ * © Ahmed Mansour 2025
+ */
 import React, { useRef, useEffect, useState, useContext } from "react";
 import { gsap } from "gsap";
 import { useNavigate } from "react-router-dom";
 import { PatternContext } from "../index";
 import "./Contact.css";
 
+/* ────────────────────────────────────────────────────────── */
+/*  Component                                                 */
+/* ────────────────────────────────────────────────────────── */
 export default function Contact() {
   const navigate = useNavigate();
   const containerRef = useRef(null);
   const [copied, setCopied] = useState(false);
   const email = "contact@ahmedamansour.com";
   const backHomeRef = useRef(null);
-  // get pattern instance and style presets from context
   const { pattern, styles } = useContext(PatternContext);
 
   // mirror of Home’s animation state
@@ -92,8 +99,7 @@ export default function Contact() {
    const goBackHome = () => {
     if (!pattern) return;
 
-    /* ── stop any in-progress entrance tweens so we can
-       start the exit animation from the *current* values ── */
+    // stop any in-progress entrance tweens so we can start the exit animation from the current values
     gsap.killTweensOf(".contact-card");
     gsap.killTweensOf(".contact-back-home");
 
@@ -144,6 +150,9 @@ export default function Contact() {
       .eventCallback("onComplete", () => navigate("/"));
   };
 
+  /* ──────────────────────────────────────────────────────── */
+  /* Render JSX                                               */
+  /* ──────────────────────────────────────────────────────── */
   return (
     <section className="contact-container" ref={containerRef}>
       <div className="contact-card">

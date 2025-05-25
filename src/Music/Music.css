@@ -6,7 +6,8 @@
 .music-page {
   position: relative;
   overflow-x: hidden;
-  width: 100vw;
+  width: 100%;        /* respect the scrollbar width */
+ overflow-x: hidden; /* supress any leftover nudge   */
   min-height: calc(100vh + var(--footer-height));
   background: transparent;
 }
@@ -15,7 +16,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   z-index: 1;
   pointer-events: auto;
@@ -64,6 +65,8 @@
   pointer-events: auto;
   opacity: 0;  /* Hide the footer initially */
   transform: translateY(100%); /* Position it below the viewport */
+  justify-content: center;     /* centre the control cluster   */
+  padding-right: 4rem;         /* breathing room for new button */
 }
 
 .player-footer button {
@@ -167,6 +170,44 @@
 .music-repeat-one-icon {
   margin: 0;
 }
+
+/* ─── bouncing arrow keyframes ──────────────────────────────── */
+@keyframes arrow-bounce {
+  0%, 100% { transform: translateY(0);   }
+  50%      { transform: translateY(4px); }
+}
+
+/* ───── “Album Details” button ───── */
+.player-footer .details-btn {
+  position: absolute;          /* take it out of the flex flow  */
+  right: 11rem;                 /* neat inset from the edge       */
+  top: 50%;                    /* vertical-centre inside footer  */
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0;                  /* no extra box around text       */
+  background: none;
+  border: none;
+  font-family: 'Speculum', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.player-footer .details-btn:hover{
+  transform:translateY(-50%) scale(1.04);   /* no more jump */
+}
+
+
+.details-arrow {
+  height: 1rem;                /* keep natural width -> no squeeze */
+  width: auto;
+  animation: arrow-bounce 1.2s infinite ease-in-out;
+}
+
 
 .now-playing {
   bottom: calc(var(--footer-height) + 4rem);

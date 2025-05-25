@@ -1,0 +1,56 @@
+/* dark starfield-ish backdrop comes from Pattern canvas behind everything */
+.nf-container {
+  position: relative;
+  z-index: 1;            /* keep text above the Pattern renderer */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+  pointer-events: none;  /* let mouse pass through to any scene interaction */
+}
+
+.nf-code {
+  font-size: clamp(4rem, 18vw, 14rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  font-family: 'Montserrat', 'Segoe UI', sans-serif;
+  background: linear-gradient(90deg, #00d1ff 0%, #ff007f 100%);
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: hueShift 8s linear infinite;
+  margin: 0;
+}
+
+@keyframes hueShift {
+  0%   { filter: hue-rotate(0deg);   }
+  100% { filter: hue-rotate(360deg); }
+}
+
+.nf-tagline {
+  font-size: 1.25rem;
+  color: #e0e0e0;
+  margin: 0.5rem 0 2rem;
+  pointer-events: auto;
+}
+
+.nf-home-btn {
+  --accent: #00d1ff;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  border: 2px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+.nf-home-btn:hover,
+.nf-home-btn:focus-visible {
+  background: var(--accent);
+  color: #0b0b0b;
+  outline: none;
+}

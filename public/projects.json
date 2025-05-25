@@ -40,7 +40,7 @@
                     "quickFacts": [
                         {
                             "label": "Date Started",
-                            "icon": "date-started.svg",
+                            "icon": "date-completed.svg",
                             "value": "September 18th, 2020"
                         },
                         {
@@ -112,7 +112,7 @@
                     "quickFacts": [
                         {
                             "label": "Date Started",
-                            "icon": "date-started.svg",
+                            "icon": "date-completed.svg",
                             "value": "September 27th, 2022"
                         },
                         {
@@ -183,7 +183,7 @@
                     "quickFacts": [
                         {
                             "label": "Date Started",
-                            "icon": "date-started.svg",
+                            "icon": "date-completed.svg",
                             "value": "February 15th, 2023"
                         },
                         {
@@ -256,7 +256,7 @@
                     "quickFacts": [
                         {
                             "label": "Date Started",
-                            "icon": "date-started.svg",
+                            "icon": "date-completed.svg",
                             "value": "April 2023"
                         },
                         {
@@ -313,7 +313,7 @@
                     "quickFacts": [
                         {
                             "label": "Date Started",
-                            "icon": "date-started.svg",
+                            "icon": "date-completed.svg",
                             "value": "July 31st, 2023"
                         },
                         {
@@ -383,7 +383,7 @@
                     "quickFacts": [
                         {
                             "label": "Date Started",
-                            "icon": "date-started.svg",
+                            "icon": "date-completed.svg",
                             "value": "October 27th, 2023"
                         },
                         {
@@ -451,7 +451,7 @@
                     "quickFacts": [
                         {
                             "label": "Date Started",
-                            "icon": "date-started.svg",
+                            "icon": "date-completed.svg",
                             "value": "October 2024"
                         },
                         {
@@ -491,14 +491,6 @@
                                 "Signal propagation system: event-driven chain triggering with audio playback and pitch adjustment",
                                 "Runtime UI spawning on wrist-mounted canvas, with drag-and-drop block menu"
                             ]
-                        },
-                        {
-                            "label": "Meta Quest 2",
-                            "icon": "quest2.svg",
-                            "bullets": [
-                                "Coroutine-driven token spawner and procedural generation tied to player proximity",
-                                "Developed a control system that mimics riding a longboard by mapping direction to leaning forwards or backwards"
-                            ]
                         }
                     ]
                 }
@@ -534,7 +526,7 @@
                     "quickFacts": [
                         {
                             "label": "Filming Started",
-                            "icon": "date-started.svg",
+                            "icon": "date-completed.svg",
                             "value": "May 11th, 2023"
                         },
                         {
@@ -576,7 +568,7 @@
                     "quickFacts": [
                         {
                             "label": "Date Started",
-                            "icon": "date-started.svg",
+                            "icon": "date-completed.svg",
                             "value": "January 2024"
                         },
                         {
@@ -632,7 +624,7 @@
                     "quickFacts": [
                         {
                             "label": "Date Started",
-                            "icon": "date-started.svg",
+                            "icon": "date-completed.svg",
                             "value": "February 6th, 2024"
                         },
                         {
@@ -677,7 +669,7 @@
                     "quickFacts": [
                         {
                             "label": "Date Started",
-                            "icon": "date-started.svg",
+                            "icon": "date-completed.svg",
                             "value": "June 2nd, 2024"
                         },
                         {
@@ -741,7 +733,7 @@
                     "quickFacts": [
                         {
                             "label": "Date Started",
-                            "icon": "date-started.svg",
+                            "icon": "date-completed.svg",
                             "value": "October 2024"
                         },
                         {
@@ -797,7 +789,7 @@
                     "quickFacts": [
                         {
                             "label": "Date Started",
-                            "icon": "date-started.svg",
+                            "icon": "date-completed.svg",
                             "value": "March 27th, 2025"
                         },
                         {
@@ -864,7 +856,7 @@
                     "quickFacts": [
                         {
                             "label": "Date Started",
-                            "icon": "date-started.svg",
+                            "icon": "date-completed.svg",
                             "value": "June 2nd, 2024"
                         }
                     ],
@@ -894,7 +886,7 @@
                     "quickFacts": [
                         {
                             "label": "Date Started",
-                            "icon": "date-started.svg",
+                            "icon": "date-completed.svg",
                             "value": "June 22nd, 2024"
                         },
                         {
@@ -923,7 +915,7 @@
                     "quickFacts": [
                         {
                             "label": "Date Started",
-                            "icon": "date-started.svg",
+                            "icon": "date-completed.svg",
                             "value": "August 8th, 2024"
                         }
                     ],
@@ -951,7 +943,7 @@
                     "quickFacts": [
                         {
                             "label": "Date Started",
-                            "icon": "date-started.svg",
+                            "icon": "date-completed.svg",
                             "value": "February 4th, 2025"
                         }
                     ],
@@ -989,7 +981,7 @@
                     "quickFacts": [
                         {
                             "label": "Date Started",
-                            "icon": "date-started.svg",
+                            "icon": "date-completed.svg",
                             "value": "February 2020"
                         },
                         {
@@ -1043,7 +1035,7 @@
                     "quickFacts": [
                         {
                             "label": "Date Started",
-                            "icon": "date-started.svg",
+                            "icon": "date-completed.svg",
                             "value": "February 2020"
                         },
                         {
@@ -1111,7 +1103,7 @@
                     "quickFacts": [
                         {
                             "label": "Date Started",
-                            "icon": "date-started.svg",
+                            "icon": "date-completed.svg",
                             "value": "October 7th, 2020"
                         },
                         {
@@ -1158,7 +1150,7 @@
                     "quickFacts": [
                         {
                             "label": "Date Started",
-                            "icon": "date-started.svg",
+                            "icon": "date-completed.svg",
                             "value": "September 23rd, 2023"
                         }
                     ],
@@ -1169,13 +1161,6 @@
                             "bullets": [
                                 "Developed a generalization of Cantor’s Pairing Function to 3D and beyond using symbolic logic and pattern rules",
                                 "Explored coordinate “snaking” behavior in higher dimensions, simulating traversal through octants"
-                            ]
-                        },
-                        {
-                            "label": "MaTeX",
-                            "icon": "matex.svg",
-                            "bullets": [
-                                "Used MaTeX to render all mathematical expressions in LaTeX"
                             ]
                         }
                     ]

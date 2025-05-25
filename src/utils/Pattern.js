@@ -123,6 +123,17 @@ export default class Pattern {
     return this;
   }
 
+  setZIndex(zIndex) {
+    this.renderer.domElement.style.zIndex = zIndex.toString();
+    return this;
+  }
+
+  // Set canvas position ('absolute' or 'fixed')
+  setCanvasPosition(position) {
+    this.renderer.domElement.style.position = position;
+    return this;
+  }
+
   regenerate(options = {}) {
     const opts = {
       deltaAngle     : 1,

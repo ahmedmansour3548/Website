@@ -1,79 +1,99 @@
-import './Music.css';
-import React, { useEffect, useRef, useState, useContext, useLayoutEffect } from 'react';
+/* ========================================================== */
+/* src/About/About.css                                        */
+/* ========================================================== */
+/*
+ * © Ahmed Mansour 2025
+ */
+
+import { useEffect, useRef, useState, useContext } from 'react';
 import * as THREE from 'three';
 import { gsap } from 'gsap';
-import {
-  FaChevronLeft,
-  FaChevronRight,
-  FaPlay,
-  FaPause,
-  FaStepBackward,
-  FaStepForward,
-} from 'react-icons/fa';
+import { FaPlay, FaPause, FaStepBackward, FaStepForward } from 'react-icons/fa';
 import cameraInstance from '../utils/camera';
 import { PatternContext } from "../index";
 import { useNavigate } from 'react-router-dom';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import './Music.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const Music = () => {
-  // Three.js & pattern refs
-  const sceneRef = useRef(new THREE.Scene());
-  const camera = cameraInstance.getCamera();
-  const rendererRef = useRef(null);
-  const sceneContainerRef = useRef(null);
-  const navigate = useNavigate();
-  // Pattern from provider
-  const { pattern, styles } = useContext(PatternContext);
-  // Audio & playback state
-  const [albums, setAlbums] = useState([]);
+/* ────────────────────────────────────────────────────────── */
+/*  Component                                                 */
+/* ────────────────────────────────────────────────────────── */
+export default function Music () {
+  const navigate             = useNavigate();
+  /* ──────────────────────────────── */
+  /*  Refs / Singletons               */
+  /* ──────────────────────────────── */
+  const sceneRef             = useRef(new THREE.Scene());
+  const rendererRef          = useRef(null);
+  const sceneContainerRef    = useRef(null);
+  const camera               = cameraInstance.getCamera();
+
+  const albumGroupRef        = useRef(new THREE.Group());
+  const skyboxRef            = useRef(null);
+
+  const leftNavRef           = useRef(null);
+  const rightNavRef          = useRef(null);
+  const footerRef            = useRef(null);
+  const backHomeRef          = useRef(null);
+
+  const albumTextRef         = useRef(null);
+  const albumNameRef         = useRef(null);
+  const songTextRef          = useRef(null);
+  const detailsRef           = useRef(null);
+  const spacerRef            = useRef(null);
+  const albumTipRef          = useRef(null);
+
+  /* drag-state */
+  const isDraggingRef        = useRef(false);
+  const dragStartXRef        = useRef(0);
+  const dragOffsetStartRef   = useRef(0);
+  const continuousIndexRef   = useRef(0);
+
+  /* offsets & tweens */
+  const globalOffset         = useRef(0);
+  const targetOffset         = useRef(0);
+  const offsetTweenRef       = useRef(null);
+  const vinylTweensRef       = useRef([]);
+  const centerSpinTweenRef   = useRef(null);
+
+  /* audio refs */
+  const audioRef             = useRef(null);
+  const repeatModeRef        = useRef('none');
+  const currentAlbumIndexRef = useRef(0);
+
+  /* ──────────────────────────────── */
+  /*  Context & Reactive state        */
+  /* ──────────────────────────────── */
+  const { pattern, styles }                 = useContext(PatternContext);
+
+  const [albums, setAlbums]                 = useState([]);
+  const [initialized, setInitialized]       = useState(false);
+
   const [currentAlbumIndex, setCurrentAlbumIndex] = useState(0);
-  const currentAlbumIndexRef = useRef(currentAlbumIndex);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+
   const [nowPlayingName, setNowPlayingName] = useState('');
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef(null);
-  const [shuffle, setShuffle] = useState(false);
-  const [repeatMode, setRepeatMode] = useState('none');
-  const repeatModeRef = useRef(repeatMode);
+  const [isPlaying, setIsPlaying]           = useState(false);
+
+  const [shuffle, setShuffle]               = useState(false);
   const [shuffledTracks, setShuffledTracks] = useState([]);
-  // Vinyl group & offsets
-  const albumGroupRef = useRef(new THREE.Group());
-  const globalOffset = useRef(0);
-  const targetOffset = useRef(0);
-  const offsetTweenRef = useRef(null);
-  const vinylTweensRef = useRef([]);
-  const centerSpinTweenRef = useRef(null);
-  // --- Drag-to-navigate state ---
-  const isDraggingRef = useRef(false);
-  const dragStartXRef = useRef(0);
-  const dragOffsetStartRef = useRef(0);
-  const continuousIndexRef = useRef(0);
-  // Skybox reference
-  const skyboxRef = useRef(null);
-  const [initialized, setInitialized] = useState(false);
-  const leftNavRef = useRef(null);
-  const rightNavRef = useRef(null);
-  const albumTextRef = useRef(null);
-  const albumNameRef = useRef(null);   // <h2>
-  const songTextRef = useRef(null);
-  const footerRef = useRef(null);
-  const detailsRef = useRef(null);
-  const spacerRef = useRef(null);
-  const albumTipRef = useRef(null);
-  const backHomeRef = useRef(null);
+  const [repeatMode, setRepeatMode]         = useState('none');
 
-  const trackObj = albums[currentAlbumIndex]?.tracks[currentTrackIndex];
-  const allParts = trackObj?.parts ?? [];
+  const trackObj   = albums[currentAlbumIndex]?.tracks[currentTrackIndex];
+  const allParts   = trackObj?.parts ?? [];
 
-  /* Group                  →  { Piano:[…], Violin I:[…], … }   */
+  /* group parts by instrument for sheet-music grid */
   const grouped = allParts.reduce((acc, p) => {
     (acc[p.instrument] ??= []).push(p);
     return acc;
   }, {});
 
-  //  ─── Load album data ───
+
+  /* ──────────────────────────────────────────────────────── */
+  /*  Fetch album metadata                                    */
+  /* ──────────────────────────────────────────────────────── */
   useEffect(() => {
     fetch('/music.json')
       .then(res => res.json())
@@ -98,6 +118,9 @@ const Music = () => {
     repeatModeRef.current = repeatMode;
   }, [repeatMode]);
 
+  /* ──────────────────────────────────────────────────────── */
+  /*  Pattern visualiser configuration                        */
+  /* ──────────────────────────────────────────────────────── */
   useEffect(() => {
     if (!pattern) return;
 
@@ -105,7 +128,7 @@ const Music = () => {
       .setLineWidth(1)
       .setStyle(styles.SOLID)
       .setOpacity(1)
-      .setColor(0xff0000);          // ← fills ALL vertices red
+      .setColor(0xff0000);          // fills ALL vertices red to start
   }, [pattern, styles]);
 
   useEffect(() => {
@@ -133,8 +156,9 @@ const Music = () => {
 
   }, [pattern, initialized]);
 
-
-
+  /* ──────────────────────────────────────────────────────── */
+  /*  <audio> event listeners                           */
+  /* ──────────────────────────────────────────────────────── */
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -152,7 +176,9 @@ const Music = () => {
   }, [audioRef.current]);          // rerun whenever we load a new <audio>
 
 
-  //  ─── Fire the very first track once everything is ready ───
+  /* ──────────────────────────────────────────────────────── */
+  /*  Fire the very first track once everything is ready      */
+  /* ──────────────────────────────────────────────────────── */
   useEffect(() => {
     if (!pattern || !albums.length) return;
 
@@ -181,9 +207,11 @@ const Music = () => {
   }, [pattern]);
 
 
-  // Initialize scene & renderer
+  /* ──────────────────────────────────────────────────────── */
+  /*  Mount Three-JS renderer & drag-to-scroll system         */
+  /* ──────────────────────────────────────────────────────── */
   useEffect(() => {
-    if (!pattern || initialized) return;
+    if (!pattern || initialized || albums.length === 0) return;
     const scene = sceneRef.current;
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -336,7 +364,7 @@ const Music = () => {
     setInitialized(true);
 
     return () => {
-      el.removeEventListener('pointerdown', onPointerDown);
+      container.removeEventListener('pointerdown', onPointerDown);
       window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('pointerup', onPointerUp);
       renderer.dispose();
@@ -344,19 +372,11 @@ const Music = () => {
   }, [camera, albums]);
 
 
-
-  const handleNav = (dir, ref) => {
-    // scale feedback
-    gsap.fromTo(ref.current, { scale: 1 }, { scale: 1.1, duration: 0.1, yoyo: true, repeat: 1, transformOrigin: 'center center' });
-    // switch album
-    switchAlbum(dir);
-  };
-
-
+  /* ──────────────────────────────────────────────────────── */
+  /*  Pattern spiral geometry (once scene is ready)           */
+  /* ──────────────────────────────────────────────────────── */
   useEffect(() => {
     if (!initialized || !pattern) return;
-
-    // build the spiral geometry
     pattern.regenerate({
       maxVertices: 1000,
       xPos: 0,
@@ -372,7 +392,6 @@ const Music = () => {
       yPhase: 0,
       loopVertex: 1000
     });
-
   }, [initialized, pattern]);
 
   // Update vinyl positions
@@ -389,8 +408,11 @@ const Music = () => {
     });
   };
 
+  /* ──────────────────────────────────────────────────────── */
+  /*  7) Main carousel nav / rotation feedback                */
+  /* ──────────────────────────────────────────────────────── */
   useEffect(() => {
-    // kill old tweens
+    // kill any wobble tweens, then rebuild 
     vinylTweensRef.current.forEach(t => t.kill());
     vinylTweensRef.current = [];
 
@@ -401,7 +423,6 @@ const Music = () => {
 
     const children = albumGroupRef.current.children;
     children.forEach((vinylGroup, idx) => {
-      // center index = currentAlbumIndex
       const isCenter = idx === currentAlbumIndex;
 
       if (isCenter) {
@@ -411,8 +432,8 @@ const Music = () => {
       } else {
         // off-center: slow, subtle back‐and‐forth rotations on X & Y
         const tween = gsap.to(vinylGroup.rotation, {
-          x: '+=0.15',          // rotate +0.2 radians on X...
-          y: '+=0.15',         // and +0.15 on Y...
+          x: '+=0.15',                        // rotate +0.15 radians on X
+          y: '+=0.15',                        // and +0.15 on Y.
           duration: 4 + Math.random() * 2,    // 4–6s per cycle
           ease: 'sine.inOut',
           yoyo: true,
@@ -422,7 +443,10 @@ const Music = () => {
       }
     });
   }, [albums, currentAlbumIndex]);
-  // Create vinyl meshes
+
+  /* ──────────────────────────────────────────────────────── */
+  /*  Vinyl mesh construction                                 */
+  /* ──────────────────────────────────────────────────────── */
   useEffect(() => {
     if (!albums.length) return;
     const group = albumGroupRef.current;
@@ -430,9 +454,7 @@ const Music = () => {
 
     const spacing = window.innerWidth / 2.5;
     albums.forEach((album, i) => {
-      const vinylGroup = new THREE.Group();
-
-      // Vinyl disc texture
+      const vinylGroup = new THREE.Group();       // disc
       const vinylTex = new THREE.TextureLoader().load('/assets/vinyl3.png');
       const discGeo = new THREE.CylinderGeometry(200, 200, 2, 32);
       const discMat = new THREE.MeshPhongMaterial({
@@ -487,9 +509,11 @@ const Music = () => {
   //   });
   // };
 
-  /* ─── Seamless cruise-then-snap for the “now-playing” badge ───── */
+  /* ────────────────────────────────────────────────────────── */
+  /*  Seamless cruise-then-snap for the “now-playing” badge     */
+  /* ────────────────────────────────────────────────────────── */
   useEffect(() => {
-    const badge = albumTextRef.current;      // the visible badge
+    const badge = albumTextRef.current;       // the visible badge
     const marker = spacerRef.current;         // invisible 4-rem spacer
     const gapPx = 32;
     if (!badge || !marker) return;
@@ -569,11 +593,10 @@ const Music = () => {
 
   const resetPatternToRed = () => updatePatternProgress(0);
 
-  /* ---------------------------------------------------------------
-   *  updatePatternProgress
-   *  Colours the first ‹percent› of vertices green and the rest red
-   *  for THREE.Line2 / LineGeometry.
-   * ------------------------------------------------------------- */
+  /* ──────────────────────────────────────────────────────────────────────── */
+  /*  Colours the first ‹percent› of vertices green and the rest red          */
+  /*  for THREE.Line2 / LineGeometry.                                         */
+  /* ──────────────────────────────────────────────────────────────────────── */
   const updatePatternProgress = (percent) => {
     if (!pattern) return;
 
@@ -584,7 +607,7 @@ const Music = () => {
     const segCount = startAttr.count;        // segments = vertices-1
     const greenLimit = Math.floor(segCount * percent);
 
-    /* helper that writes to either interleaved attribute */
+    // helper that writes to either interleaved attribute
     const paint = (attr, idx, r, g, b) => {
       attr.setXYZ(idx, r, g, b);               // handles stride/offset for us
     };
@@ -606,15 +629,21 @@ const Music = () => {
     pattern.material.needsUpdate = true;       // ensure shader refresh
   };
 
-  // -----------------------
-  // switchAlbum
-  // -----------------------
+  /* ──────────────────────────────────────────────────────── */
+  /*  Album switching logic                                   */
+  /* ──────────────────────────────────────────────────────── */
+  const handleNav = (dir, ref) => {
+    // scale arrow for feedback
+    gsap.fromTo(ref.current, { scale: 1 }, { scale: 1.1, duration: 0.1, yoyo: true, repeat: 1, transformOrigin: 'center center' });
+    switchAlbum(dir);
+  };
+
   const switchAlbum = (dir) => {
     if (!albums.length) return;
 
     resetPatternToRed(); // reset pattern to red
 
-    // ─── 1) Stop & detach any running audio callbacks ───
+    // stop & detach any running audio callbacks ───
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.ontimeupdate = null;
@@ -650,26 +679,26 @@ const Music = () => {
       });
     }
 
-    // ─── 3) bump our continuous (unwrapped) index ───
+    // bump our continuous (unwrapped) index ───
     continuousIndexRef.current += dir;
 
-    // ─── 4) compute wrapped index for React state and audio logic ───
+    // compute wrapped index for React state and audio logic ───
     const len = albums.length;
     const wrapped = ((continuousIndexRef.current % len) + len) % len;
     const prev = currentAlbumIndex;
 
-    // ─── 5) update React state immediately ───
+    // update React state immediately ───
     setCurrentAlbumIndex(wrapped);
     currentAlbumIndexRef.current = wrapped;
     setCurrentTrackIndex(0);
 
-    // ─── 6) compute new targetOffset based on continuous index ───
+    // compute new targetOffset based on continuous index ───
     const spacing = window.innerWidth / 2.5;
     const totalW = len * spacing;
     // offset formula: index 0 → totalW/2, index i → totalW/2 - i*spacing
     targetOffset.current = totalW / 2 - continuousIndexRef.current * spacing;
 
-    // ─── 7) tween from actual position → targetOffset ───
+    // tween from actual position → targetOffset ───
     offsetTweenRef.current?.kill();
     const tweenObj = { v: globalOffset.current };
     offsetTweenRef.current = gsap.to(tweenObj, {
@@ -697,9 +726,9 @@ const Music = () => {
     });
   };
 
-  // -----------------------
-  // loadTrack (with quick spin + then continuous spin)
-  // -----------------------
+  /* ──────────────────────────────────────────────────────── */
+  /* loadTrack & playback                                     */
+  /* ──────────────────────────────────────────────────────── */
   const loadTrack = (
     track,
     autoplay = true,
@@ -712,29 +741,29 @@ const Music = () => {
     gsap.to(songTextRef.current, { opacity: 0, duration: 0.3 });
 
     setTimeout(() => {
-      // 1) Stop any existing audio and tear down callbacks
+      // Stop any existing audio and tear down callbacks
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.ontimeupdate = null;
         audioRef.current.onended = null;
       }
 
-      // 2) Determine which track list to use (shuffle vs. normal)
+      // Determine which track list to use (shuffle vs. normal)
       const baseTracks = albums[albumIndex]?.tracks ?? [];
       const tracks = trackArray ?? (shuffle ? shuffledTracks : baseTracks);
       const newTrackIndex = tracks.indexOf(track);
 
-      // 3) Create the new Audio
+      // Create the new Audio
       audioRef.current = new Audio(track.file);
 
       audioRef.current.onplay = () => setIsPlaying(true);
       audioRef.current.onpause = () => setIsPlaying(false);
 
-      // 4) Reset the pattern: all red → start at 50% green
+      // Reset the pattern: all red → start at 50% green
       if (pattern) {
         updatePatternProgress(0.5);
 
-        // 5) Update pattern as the song plays
+        // Update pattern as the song plays
         audioRef.current.ontimeupdate = () => {
           const d = audioRef.current.duration;
           if (!d) return;
@@ -746,12 +775,12 @@ const Music = () => {
         audioRef.current.ontimeupdate = null;
       }
 
-      // 6) Handle track end
+      // Handle track end
       audioRef.current.onended = () => {
         updatePatternProgress(1);  // Fill pattern fully green
         const centerVinyl = albumGroupRef.current.children[albumIndex];
 
-        // 1) if repeat-one, just reload the same track
+        // if repeat-one, just reload the same track
         if (repeatModeRef.current === 'one') {
           gsap.to(centerVinyl.rotation, {
             z: '+=3.1416',
@@ -782,34 +811,34 @@ const Music = () => {
         }
       };
 
-      // 7) Update React state
+      // Update React state
       setCurrentTrackIndex(newTrackIndex);
       setNowPlayingName(track.name);
       setIsPlaying(autoplay);
 
-      // 8) Vinyl spin: quick 360° then infinite
+      // Vinyl spin: quick 360° then infinite
       const centerVinyl = albumGroupRef.current.children[albumIndex];
       if (autoplay && centerVinyl) {
-        // 1) First, kill any existing continuous spin animation
+        // kill any existing continuous spin animation
         if (centerSpinTweenRef.current) {
           centerSpinTweenRef.current.kill();
         }
 
-        // 2) Capture the current rotation before applying the 360°
+        // Capture the current rotation before applying the 360°
         const currentRotation = centerVinyl.rotation.z;
 
-        // 3) Apply the 360° spin from the current rotation state
+        // Apply the 360° spin from the current rotation state
         gsap.to(centerVinyl.rotation, {
           z: currentRotation + Math.PI * 2,  // Full 360° spin from the current rotation
           duration: 0.5,
           ease: 'power2.out',
           onComplete: () => {
-            // 4) After 360° spin, restart continuous spin
+            // After 360° spin, restart continuous spin
             centerSpinTweenRef.current = gsap.to(centerVinyl.rotation, {
-              z: '+=6.28319',  // Keep spinning
-              duration: 10,  // Slow continuous spin
+              z: '+=6.28319',       // Keep spinning
+              duration: 10,         // Slow continuous spin
               ease: 'linear',
-              repeat: -1  // Infinite repeat
+              repeat: -1            // Infinite repeat
             });
           }
         });
@@ -823,6 +852,9 @@ const Music = () => {
     }, 300);
   };
 
+  /* ──────────────────────────────────────────────────────── */
+  /* Playback controls                                        */
+  /* ──────────────────────────────────────────────────────── */
   const toggleShuffle = () => {
     const on = !shuffle;
     setShuffle(on);
@@ -900,6 +932,9 @@ const Music = () => {
     }
   };
 
+  /* ──────────────────────────────────────────────────────── */
+  /* Download helpers                                         */
+  /* ──────────────────────────────────────────────────────── */
   const triggerDownload = (url, suggested) => {
     const a = document.createElement('a');
     a.href = url;
@@ -920,6 +955,9 @@ const Music = () => {
     triggerDownload(album.albumZip, `${album.name || 'album'}.zip`);
   };
 
+  /* ──────────────────────────────────────────────────────── */
+  /* Exit back home                                           */
+  /* ──────────────────────────────────────────────────────── */
   const goBackHome = () => {
     // Ensure audio stops before navigating away
     if (audioRef.current) {
@@ -938,7 +976,7 @@ const Music = () => {
       }
     });
 
-    // 1) fade out DOM elements
+    // fade out DOM elements
     tl.to(
       [
         sceneContainerRef.current,
@@ -953,7 +991,7 @@ const Music = () => {
       .to(backHomeRef.current, { x: -200, duration: 0.5 }, 0.15)
       .to(backHomeRef.current, { opacity: 0, duration: 0.5 }, 0);
 
-    // 2) simultaneously collapse the pattern
+    // simultaneously collapse the pattern
     if (pattern) {
       tl.to(
         pattern,
@@ -987,7 +1025,9 @@ const Music = () => {
     }
   };
 
-  // ─── tooltip mouse-handlers ──────────────────────────────
+  /* ──────────────────────────────────────────────────────── */
+  /* Tooltip helpers                                          */
+  /* ──────────────────────────────────────────────────────── */
   const showAlbumTip = () => { if (albumTipRef.current) albumTipRef.current.style.opacity = 1; };
   const hideAlbumTip = () => { if (albumTipRef.current) albumTipRef.current.style.opacity = 0; };
   const moveAlbumTip = e => {
@@ -1000,11 +1040,20 @@ const Music = () => {
     const { clientX: x, clientY: y } = e;
     // cursor sits on the tooltip’s BOTTOM-LEFT corner
     tip.style.left = `${x}px`;                      // align left edges
-    tip.style.top = `${y - tip.offsetHeight}px`;   // raise by its height
+    tip.style.top = `${y - tip.offsetHeight}px`;    // raise by its height
   };
 
+  const scrollToDetails = () => {
+  /* smooth-scroll so the album-details top edge hits the viewport */
+  detailsRef.current?.scrollIntoView({ behavior: 'smooth' });
+};
+
+  /* ──────────────────────────────────────────────────────── */
+  /* Render JSX                                               */
+  /* ──────────────────────────────────────────────────────── */
   return (
     <div className="music-page">
+      {/* back to homepage */}
       <button className="music-back-home" onClick={goBackHome} ref={backHomeRef}>
         <div className="music-back-icon" aria-hidden="true" alt="Back home" />
         To Home
@@ -1024,7 +1073,7 @@ const Music = () => {
         <img src="/assets/icons/chevron-left-white.svg" alt="Next album" className="flipped" />
       </div>
 
-      {/* Now Playing overlay */}
+      {/* Now-playing badge */}
       <div className="now-playing" ref={albumTextRef}>
         <h2 ref={albumNameRef}>{albums[currentAlbumIndex]?.name}</h2>
         <p ref={songTextRef}>
@@ -1041,22 +1090,18 @@ const Music = () => {
         >
           <div className="music-shuffle-icon" />
         </button>
-
         {/* Prev */}
         <button onClick={handlePrevTrack}>
           <FaStepBackward />
         </button>
-
         {/* Play/Pause */}
         <button onClick={handlePlayPause}>
           {isPlaying ? <FaPause /> : <FaPlay />}
         </button>
-
         {/* Next */}
         <button onClick={handleNextTrack}>
           <FaStepForward />
         </button>
-
         {/* Repeat */}
         <button
           onClick={cycleRepeat}
@@ -1068,6 +1113,14 @@ const Music = () => {
             <div className="music-repeat-icon" />
           )}
         </button>
+        <button className="details-btn" onClick={scrollToDetails}>
+    Album&nbsp;Details
+    <img
+      src="/assets/icons/chevron-icon-down-white.png"
+      alt=""
+      className="details-arrow"
+    />
+  </button>
       </div>
 
       {/* Album details + sheet music */}
@@ -1174,9 +1227,7 @@ const Music = () => {
             </div>
           );
         })()}
-      </div>{/* album-details */}
+      </div>
     </div>
   );
 };
-
-export default Music;

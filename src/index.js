@@ -22,7 +22,7 @@ import History from './History/History';
 import Music from './Music/Music';
 import Writings from './Writings/Writings';
 import Contact from './Contact/Contact';
-
+import NotFound from './NotFound/NotFound';
 // PatternContext provides both instance and style presets
 export const PatternContext = createContext({ pattern: null, styles: PatternStyle });
 
@@ -104,11 +104,11 @@ root.render(
             <Route path="/thoughts" element={<Thoughts />} />
             <Route path="/writings" element={<Writings />} />
             <Route path="/ascii" element={<Ascii />} />
-            <Route path="/projects/toys/:id" element={<PatternFactory />} />
+            <Route path="/projects/toys/patternfactory/play" element={<PatternFactory />} />
             <Route path="/about" element={<About />} />
             <Route path="/history" element={<History />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="*" element={<p>There is nothing here: 404!</p>} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </AnimationControlProvider>
       </PatternProvider>

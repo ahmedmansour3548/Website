@@ -1,313 +1,229 @@
-// src/About/About.js
-import React, { useEffect, useRef, useContext } from 'react';
+/* ========================================================== */
+/* src/About/About.css                                        */
+/* ========================================================== */
+/*
+ * © Ahmed Mansour 2025
+ */
+
+import { useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { gsap } from 'gsap';
 import './About.css';
-import * as THREE from 'three';
-import { PatternContext } from '../index';
-import { gsap } from "gsap";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+
+/* ────────────────────────────────────────────────────────── */
+/*  Static data                                               */
+/* ────────────────────────────────────────────────────────── */
 
 const primaryTech = [
-  { file: 'js.svg', label: 'JavaScript', url: '/projects/coding/knighthacks2020' },
-  { file: 'reactjs.svg', label: 'React', url: '/projects/react' },
-  { file: 'threejs.svg', label: 'Three.js', url: '/projects/threejs' },
-  { file: 'unity.svg', label: 'Unity', url: '/projects/unity' },
-  { file: 'nodejs.svg', label: 'Node.js', url: '/projects/nodejs' },
-  { file: 'scss.svg', label: 'SCSS', url: '/projects/scss' }
+  { file: 'js.svg',       label: 'JavaScript', url: '/projects/coding/knighthacks2020' },
+  { file: 'reactjs.svg',  label: 'React',      url: '/projects/react' },
+  { file: 'threejs.svg',  label: 'Three.js',   url: '/projects/threejs' },
+  { file: 'unity.svg',    label: 'Unity',      url: '/projects/unity' },
+  { file: 'node.svg',     label: 'Node.js',    url: '/projects/nodejs' },
+  { file: 'scss.svg',     label: 'SCSS',       url: '/projects/scss' }
 ];
 
 const otherTech = [
   { file: 'typescript.svg', label: 'TypeScript', url: '/projects/typescript' },
-  { file: 'git.svg', label: 'Git', url: '/projects/git' },
-  { file: 'mysql.svg', label: 'MySQL', url: '/projects/mysql' },
-  { file: 'angular.svg', label: 'Angular', url: '/projects/angular' },
-  { file: 'nextjs.svg', label: 'Next.js', url: '/projects/nextjs' },
-  { file: 'java.svg', label: 'Java', url: '/projects/java' }
+  { file: 'git.svg',        label: 'Git',        url: '/projects/git' },
+  { file: 'mysql.svg',      label: 'MySQL',      url: '/projects/mysql' },
+  { file: 'angular.svg',    label: 'Angular',    url: '/projects/angular' },
+  { file: 'nextjs.svg',     label: 'Next.js',    url: '/projects/nextjs' },
+  { file: 'java.svg',       label: 'Java',       url: '/projects/java' }
 ];
 
 const socialLinks = [
-  { file: 'linkedin.svg', url: 'https://www.linkedin.com/in/yourprofile', label: 'LinkedIn' },
-  { file: 'github.svg', url: 'https://github.com/yourusername', label: 'GitHub' },
-  { file: 'resume.svg', url: '/assets/resume.pdf', label: 'Resume' },
-  { file: 'soundcloud.svg', url: '/assets/soundcloud.pdf', label: 'Soundcloud' }
+  { file: 'linkedin.svg',  url: 'https://www.linkedin.com/in/yourprofile', label: 'LinkedIn' },
+  { file: 'github.svg',    url: 'https://github.com/yourusername',        label: 'GitHub' },
+  { file: 'resume.svg',    url: '/assets/resume.pdf',                     label: 'Resume' },
+  { file: 'soundcloud.svg',url: '/assets/soundcloud.pdf',                 label: 'Soundcloud' }
 ];
 
 const sections = [
   {
     title: 'Who am I?',
-    text:
-      'I’m Ahmed Mansour — software engineer, XR creator, musician, philosopher. Forever curious, I blend code, sound, and thought into immersive experiences.',
-    img: '/assets/photos/Me_1.JPG',
-    tilt: 3,
+    text : 'I’m Ahmed Mansour — software engineer, XR creator, musician, philosopher. Forever curious, I blend code, sound, and thought into immersive experiences.',
+    img  : '/assets/photos/Me_1.JPG',
+    tilt : 3,
     offset: -25
   },
   {
-    title: 'Tools & Technologies I\'ve Used',
-    // Section 2 uses tech grid instead of text
+    title: 'Tools & Technologies I\'ve Used'   // tech grid in place of text
   },
   {
     title: 'Social Links',
-    text:
-      'By merging tech and art, I empower presence and spark creativity — helping others feel, learn, and imagine differently.',
-    img: '/assets/photos/Creativity.jpg'
+    text : 'By merging tech and art, I empower presence and spark creativity — helping others feel, learn, and imagine differently.',
+    img  : '/assets/photos/Creativity.jpg'
   }
 ];
 
-export default function About() {
-  const navigate = useNavigate();
-  const sectionRefs = useRef([]);
-  const techGridRef = useRef(null);
-  const heroTextRef = useRef(null);
-  const scrollImgRef = useRef(null);
-  const heroSectionRef = useRef(null);
+/* ────────────────────────────────────────────────────────── */
+/*  Component                                                 */
+/* ────────────────────────────────────────────────────────── */
+export default function About () {
+  const navigate         = useNavigate();
+  /* ──────────────────────────────── */
+  /*  Refs                            */
+  /* ──────────────────────────────── */
+  const sectionRefs      = useRef([]);
+  const techGridRef      = useRef(null);
+  const scrollArrowRef   = useRef(null);
 
-  const patternRef = useContext(PatternContext);
-  const pattern = patternRef ? patternRef.current : null;
-
+  /* ───  Once on mount: animate tech grid hint ────── */
   useEffect(() => {
     const hint = document.querySelector('.about-tech-grid-hint');
     if (!hint) return;
-    const text = hint.textContent.trim();
-    hint.innerHTML = '';  
-    text.split('').forEach(char => {
+
+    /* replace text with individually animated <span>s */
+    const chars = [...hint.textContent];
+    hint.innerHTML = '';
+    chars.forEach(c => {
       const span = document.createElement('span');
-      span.textContent = char;
+      span.textContent = c;
       hint.appendChild(span);
     });
+
     gsap.to('.about-tech-grid-hint span', {
       y: -16,
       duration: 2,
+      ease: 'sine.inOut',
       repeat: -1,
       yoyo: true,
-      ease: 'sine.inOut',
       stagger: 0.005
     });
   }, []);
 
+  /* ───  Page-entry fade-ins / overlay ─────────────────── */
   useEffect(() => {
-
-        gsap.to('.about-gradient-overlay', {
-      opacity: 1,
-      duration: 1.5,
-      ease: 'power2.inOut',
-      delay: 0.2
-    });
-    
-    // start everything invisible
     gsap.set('.about-page > *:not(.about-transition-overlay)', { opacity: 0 });
-    // then fade in hero, callout, sections in sequence
-    gsap.to('.about-hero', {
-      opacity: 1,
-      duration: 3.2,
-      delay: 0.2,
-      ease: 'power2.out'
+
+    gsap.to('.about-gradient-overlay', { opacity: 1, duration: 1.5, delay: 0.2, ease: 'power2.inOut' });
+    gsap.to('.about-hero',            { opacity: 1, duration: 3.2, delay: 0.2, ease: 'power2.out' });
+    gsap.to('.about-callout',         { opacity: 1, duration: 1.0, delay: 0.8, ease: 'power2.out' });
+    gsap.to('.about-content-section', { opacity: 1, duration: 1.0, delay: 1.2, stagger: 0.2, ease: 'power2.out' });
+    gsap.to('.about-back-home',       { opacity: 1, duration: 0.8, delay: 0.2, ease: 'power2.out' });
+  }, []);
+
+  /* ───  Call-out wave animation ────────── */
+  useEffect(() => {
+    const callout = document.querySelector('.about-callout-text');
+    if (!callout) return;
+
+    /* preserve spaces by converting to &nbsp; */
+    const original = [...callout.textContent];
+    callout.innerHTML = '';
+    original.forEach(ch => {
+      const span = document.createElement('span');
+      span.innerHTML = (ch === ' ') ? '&nbsp;' : ch;
+      callout.appendChild(span);
     });
-    gsap.to('.about-callout', {
-      opacity: 1,
-      duration: 1.0,
-      delay: 0.8,
-      ease: 'power2.out'
-    });
-    gsap.to('.about-content-section', {
-      opacity: 1,
-      duration: 1.0,
-      delay: 1.2,
-      stagger: 0.2,
-      ease: 'power2.out'
-    });
-    // also fade in the back button
-    gsap.to('.about-back-home', {
-      opacity: 1,
-      duration: 0.8,
-      delay: 0.2,
-      ease: 'power2.out'
+
+    const spans = gsap.utils.toArray('.about-callout-text span');
+    gsap.to(spans, {
+      yPercent: -10,
+      duration: 3,
+      ease: 'sine.inOut',
+      repeat: -1,
+      yoyo: true,
+      stagger: { each: 0.05, yoyo: true, repeat: -1 }
     });
   }, []);
 
-useEffect(() => {
-  const callout = document.querySelector(".about-callout-text");
-  if (!callout) return;
-
-  /* 1️⃣  split while preserving spaces */
-  const raw = callout.textContent;          // no .trim() !
-  callout.innerHTML = "";
-  Array.from(raw).forEach((ch) => {
-    const span = document.createElement("span");
-    if (ch === " ") {
-      /* keep word spacing */
-      span.innerHTML = "&nbsp;";
-      span.classList.add("space");
-    } else {
-      span.textContent = ch;
-    }
-    callout.appendChild(span);
-  });
-
-  const spans = gsap.utils.toArray(".about-callout-text span");
-
-  /* 2️⃣  travelling wave:
-         each char rises & falls but their clocks are offset,
-         giving the illusion of a wave moving left→right   */
-  gsap.to(spans, {
-    yPercent: -10,
-    duration: 3,
-    ease: "sine.inOut",
-    repeat: -1,
-    yoyo: true,
-    stagger: {
-      each: 0.05,      // offset between letters
-      repeat: -1,
-      yoyo: true
-    }
-  });
-}, []);
-
+  /* ───  Parallax drift for section-1 image ────────────── */
   useEffect(() => {
-    if (!patternRef || !patternRef.current) return;
-    const pattern = patternRef.current;
-    const saved = JSON.parse(sessionStorage.getItem('patternState') || 'null');
-    const state = saved || { value: 100, xAxis: 0, yAxis: 0, deltaAngle: 1, opacity: 0 };
-    Object.assign(pattern, state);
-    pattern.material.opacity = state.opacity;
-    pattern.regenerate({
-      maxVertices: state.value,
-      xPos: 0, yPos: 0, zPos: 0,
-      xFunctionCode: 0, yFunctionCode: 1,
-      deltaAngle: state.deltaAngle,
-      scale: 1,
-      xAngularFreq: 1, yAngularFreq: 1,
-      xPhase: state.xAxis, yPhase: state.yAxis,
-      loopVertex: 1000, paramsToAdjust: [], adjustAmounts: []
-    });
-
-    const tl = gsap.timeline({ repeat: -1, yoyo: true, defaults: { ease: 'sine' } });
-    tl.to(pattern, { xAngularFreq: 0.001, opacity: 0, duration: 5, onUpdate: () => {
-      pattern.material.opacity = pattern.opacity;
-      pattern.regenerate({
-        maxVertices: state.value,
-        xPos: 0, yPos: 0, zPos: 0,
-        xFunctionCode: 0, yFunctionCode: 1,
-        deltaAngle: pattern.deltaAngle,
-        scale: 1,
-        xAngularFreq: pattern.xAngularFreq,
-        yAngularFreq: 1,
-        xPhase: pattern.xAxis, yPhase: pattern.yAxis,
-        loopVertex: 1000, paramsToAdjust: [], adjustAmounts: []
-      });
-    }});
-
-    return () => tl.kill();
-  }, [patternRef]);
-
-   useEffect(() => {
-
-    /* SECTION 1 IMAGE: slow upward drift for a depth feel */
-    gsap.to(".about-image-block img", {
+    gsap.to('.about-image-block img', {
       y: -80,
-      ease: "none",
+      ease: 'none',
       scrollTrigger: {
-        trigger: ".about-section-1",
-        start: "top bottom",
-        end: "bottom top",
+        trigger: '.about-section-1',
+        start: 'top bottom',
+        end:   'bottom top',
         scrub: true
       }
     });
   }, []);
 
-
-const goBackHome = () => {
-  const overlay = document.createElement('div');
-  overlay.classList.add('about-transition-overlay');
-  document.body.appendChild(overlay);
-
-  const pat = patternRef?.current;
-  const homeState = { value: 50, deltaAngle: 1.05, opacity: 0, xAxis: 0, yAxis: 0 };
-
-  const tl = gsap.timeline({
-    defaults: { ease: 'power2.inOut' },
-    onComplete: () => navigate('/')
-  });
-
-  tl.to(overlay, { opacity: 1, duration: 0.8 }, 0)
-    .to('.about-page > *:not(.pattern-background)', { opacity: 0, duration: 0.6 }, 0)
-    .to(homeState, {
-      duration: 1,
-      onUpdate: () => {
-        if (!pat) return;
-        Object.assign(pat, homeState);
-        pat.material.opacity = homeState.opacity;
-        pat.regenerate({
-          maxVertices: homeState.value,
-          xPos: 0, yPos: 0, zPos: 0,
-          xFunctionCode: 0, yFunctionCode: 1,
-          deltaAngle: pat.deltaAngle,
-          scale: 2,
-          xAngularFreq: 1, yAngularFreq: 1,
-          xPhase: pat.xAxis, yPhase: 0,
-          loopVertex: 1000, paramsToAdjust: [], adjustAmounts: []
-        });
-      }
-    }, 0.2)
-    // spring right a bit, then shoot left off screen
-      .to(".about-back-home", { x: 15, duration: 0.15, ease: "power2.out" }, 0)
-      .to(".about-back-home", { x: -200, duration: 0.5, ease: "power2.out" }, 0.15)
-      .to(".about-back-home", { opacity: 0, duration: 0.2, ease: "linear" }, '<')  // Fade out the back-home button at the same time;
-};
-
-
+  /* ───  Reveal each section on first entry ────────────── */
   useEffect(() => {
-    const obs = new IntersectionObserver((entries, obsr) => {
-      entries.forEach(e => {
+    const observer = new IntersectionObserver(
+      entries => entries.forEach(e => {
         if (e.isIntersecting) {
-          e.target.classList.add("visible");
-          obsr.unobserve(e.target);
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
         }
-      });
-    }, { threshold: 0.15, rootMargin: "0px 0px -10% 0px" });
+      }),
+      { threshold: 0.15, rootMargin: '0px 0px -10% 0px' }
+    );
 
-    sectionRefs.current.forEach(el => el && obs.observe(el));
-    return () => obs.disconnect();
+    sectionRefs.current.forEach(el => el && observer.observe(el));
+    return () => observer.disconnect();
   }, []);
 
+  /* ─── 6.  Helpers ───────────────────────────────────────── */
+  const handleScrollDown = () =>
+    window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
 
-  const scrollDown = () => window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
+  const goBackHome = () => {
+    /* dark-blue overlay + button slide */
+    const overlay = document.createElement('div');
+    overlay.classList.add('about-transition-overlay');
+    document.body.appendChild(overlay);
 
+    gsap.timeline({ defaults: { ease: 'power2.inOut' }, onComplete: () => navigate('/') })
+        .to(overlay,            { opacity: 1, duration: 0.8 }, 0)
+        .to('.about-back-home', { x: 15,     duration: 0.15  }, 0)
+        .to('.about-back-home', { x: -200,   duration: 0.5   }, 0.15)
+        .to('.about-back-home', { opacity: 0,duration: 0.2   }, '<');
+  };
+
+  /* ──────────────────────────────────────────────────────── */
+  /*  Render JSX                                              */
+  /* ──────────────────────────────────────────────────────── */
   return (
     <div className="about-page">
+      {/* Back-to-home button */}
       <button className="about-back-home" onClick={goBackHome}>
-        <div className="about-back-icon" aria-hidden="true" alt="Back home"/>
+        <div className="about-back-icon" aria-hidden="true" />
         To Home
       </button>
-      
+
+      {/* Fixed overlay tint */}
       <div className="about-gradient-overlay" />
-      <section className="about-hero" ref={heroSectionRef}>
-        <div className="about-hero-text" ref={heroTextRef}>
+
+      {/* ── HERO ─────────────────────────────────────────── */}
+      <section className="about-hero">
+        <div className="about-hero-text">
           <h1>Ahmed Mansour</h1>
           <p>“Always learning by creating.”</p>
         </div>
+
         <div className="about-scroll-arrow">
           <img
+            ref={scrollArrowRef}
+            onClick={handleScrollDown}
             src="/assets/icons/chevron-icon-down-white.png"
-            alt="Scroll Down"
-            ref={scrollImgRef}
-            onClick={scrollDown}
+            alt="Scroll down"
           />
         </div>
       </section>
 
+      {/* ── CALLOUT ───────────────────────────────────────── */}
       <section className="about-callout">
         <p className="about-callout-text">
           Merging code, sound, and philosophy to expand reality.
         </p>
       </section>
 
+      {/* ── MAIN CONTENT SECTIONS ─────────────────────────── */}
       {sections.map((sec, i) => (
         <section
           key={i}
-          className={`about-content-section about-section-${i + 1}`}
           ref={el => (sectionRefs.current[i] = el)}
+          className={`about-content-section about-section-${i + 1}`}
         >
           <div className="about-section-card">
+
+            {/* Section 0 — “Who am I?” */}
             {i === 0 && (
               <div className="about-split-layout">
                 <div className="about-text-block">
@@ -320,51 +236,53 @@ const goBackHome = () => {
               </div>
             )}
 
+            {/* Section 1 — Tech grids */}
             {i === 1 && (
               <>
                 <h2>{sec.title}</h2>
+
                 <p className="about-tech-grid-hint">
                   Psst - Click on a tool to see how I've used it in a project! :)
                 </p>
-                <div className="about-tech-grid about-primary" ref={techGridRef}>
-                  {primaryTech.map((tech, idx) => (
-                    <Link to={tech.url} className="about-tech-item" key={idx}>
-                      <img src={`/assets/icons/${tech.file}`} alt={tech.label} />
-                      <span>{tech.label}</span>
+
+                <div className="about-tech-grid about-primary">
+                  {primaryTech.map(({ file, label, url }) => (
+                    <Link key={label} to={url} className="about-tech-item">
+                      <img src={`/assets/icons/${file}`} alt={label} />
+                      <span>{label}</span>
                     </Link>
                   ))}
                 </div>
+
                 <hr className="about-divider" />
-                <h3 className="about-subheading">Other Technologies</h3>
+                <h3 className="about-subheading">Other&nbsp;Technologies</h3>
+
                 <div className="about-tech-grid about-secondary">
-                  {otherTech.map((tech, idx) => (
-                    <Link
-                      to={tech.url}
-                      className="about-tech-item about-secondary-item"
-                      key={idx}
-                    >
-                      <img src={`/assets/icons/${tech.file}`} alt={tech.label} />
-                      <span>{tech.label}</span>
+                  {otherTech.map(({ file, label, url }) => (
+                    <Link key={label} to={url} className="about-tech-item about-secondary-item">
+                      <img src={`/assets/icons/${file}`} alt={label} />
+                      <span>{label}</span>
                     </Link>
                   ))}
                 </div>
               </>
             )}
 
+            {/* Section 2 — Social links */}
             {i === 2 && (
               <>
                 <h2>{sec.title}</h2>
                 <div className="about-social-bar">
-                  {socialLinks.map((link, idx) => (
+                  {socialLinks.map(({ file, url, label }) => (
                     <a
-                      key={idx}
-                      href={link.url}
+                      key={label}
+                      href={url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="about-social-item"
                     >
-                      <img src={`/assets/icons/${link.file}`} alt={link.label} />
-                      <span>{link.label}</span>
+                      <img src={`/assets/icons/${file}`} alt={label} />
+                      <span>{label}</span>
                     </a>
                   ))}
                 </div>
@@ -373,6 +291,6 @@ const goBackHome = () => {
           </div>
         </section>
       ))}
-    </div>  
+    </div>
   );
 }

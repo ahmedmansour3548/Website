@@ -1,4 +1,4 @@
-// src/Projects/coding/EscapeVRoom.js
+// src/Projects/ProjectPage.js
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import "./ProjectPage.css";
@@ -15,7 +15,7 @@ import "yet-another-react-lightbox/plugins/thumbnails.css";
 gsap.registerPlugin(Flip);
 
 const COLOR_MAP = {
-  vrar: 0xf94144,
+  vrar: 0xcc4144,
   art: 0xf3722c,
   programming: 0x577590,
   toys: 0x43aa8b,
@@ -63,7 +63,7 @@ const [queuedProject, setQueued]    = useState(null); // awaiting display
   const pageRef = useRef();
   const arrowRef = useRef();
   const firstLoad = useRef(true);
-
+const scrollImgRef = useRef(null);
 // ─────────── Fetch project + category once ───────────
 useEffect(() => {
   fetch("/projects.json")
@@ -93,9 +93,12 @@ useEffect(() => {
   const vars = {
     "--project-color":      toHex(base),
     "--project-dark":       toHex(adjustColor(base, -60)),
-    "--project-light":      toHex(adjustColor(base,  60)),
+    "--project-light":      toHex(adjustColor(base, 120)),
     "--project-background": toHex(adjustColor(base,-100)),
     "--project-card":       toHex(adjustColor(base, -30)),
+    "--section-header":     toHex(adjustColor(base, 100)),
+    "--tech-text":          toHex(adjustColor(base, 200)),
+    "--quickfact-header":   toHex(adjustColor(base, 80)),
   };
 
   Object.entries(vars).forEach(([k,v]) =>
@@ -115,9 +118,12 @@ useEffect(() => {
     tweenPalette({
       "project-color":      toHex(base),
       "project-dark":       toHex(adjustColor(base, -60)),
-      "project-light":      toHex(adjustColor(base,  60)),
+      "project-light":      toHex(adjustColor(base,  120)),
       "project-background": toHex(adjustColor(base,-100)),
       "project-card":       toHex(adjustColor(base, -30)),
+      "section-header":     toHex(adjustColor(base, 150)),
+      "tech-text":          toHex(adjustColor(base, 200)),
+      "quickfact-header":   toHex(adjustColor(base, 80)),
     });
   }
 
@@ -133,7 +139,7 @@ useEffect(() => {
 
     /* ─── 4  animate layout only (no opacity flash) ─── */
     Flip.from(state, {
-      duration: 0.8,
+      duration: 1.2,
       ease: "power2.inOut",
       stagger: 0.05,
     });
@@ -269,6 +275,9 @@ useEffect(() => {
       ));
   }
 
+  const scrollDown = () => window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
+
+
 return (
   <>
     <CategoryMenu categories={categories} />
@@ -299,7 +308,7 @@ return (
 
         <a
           className="iso-scroll-arrow"
-          onClick={() => document.querySelector(".iso-section")?.scrollIntoView({ behavior:"smooth" })}
+          onClick={scrollDown}
         >
           ▼
         </a>
