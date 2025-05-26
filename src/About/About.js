@@ -1,5 +1,5 @@
 /* ========================================================== */
-/* src/About/About.css                                        */
+/* src/About/About.js                                        */
 /* ========================================================== */
 /*
  * © Ahmed Mansour 2025
@@ -8,7 +8,10 @@
 import { useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './About.css';
+
+gsap.registerPlugin(ScrollTrigger);
 
 /* ────────────────────────────────────────────────────────── */
 /*  Static data                                               */
@@ -39,24 +42,6 @@ const socialLinks = [
   { file: 'soundcloud.svg',url: '/assets/soundcloud.pdf',                 label: 'Soundcloud' }
 ];
 
-const sections = [
-  {
-    title: 'Who am I?',
-    text : 'I’m Ahmed Mansour — software engineer, XR creator, musician, philosopher. Forever curious, I blend code, sound, and thought into immersive experiences.',
-    img  : '/assets/photos/Me_1.JPG',
-    tilt : 3,
-    offset: -25
-  },
-  {
-    title: 'Tools & Technologies I\'ve Used'   // tech grid in place of text
-  },
-  {
-    title: 'Social Links',
-    text : 'By merging tech and art, I empower presence and spark creativity — helping others feel, learn, and imagine differently.',
-    img  : '/assets/photos/Creativity.jpg'
-  }
-];
-
 /* ────────────────────────────────────────────────────────── */
 /*  Component                                                 */
 /* ────────────────────────────────────────────────────────── */
@@ -68,7 +53,8 @@ export default function About () {
   const sectionRefs      = useRef([]);
   const techGridRef      = useRef(null);
   const scrollArrowRef   = useRef(null);
-
+  const heroBgRef           = useRef(null);
+  const heroRef             = useRef(null);
   /* ───  Once on mount: animate tech grid hint ────── */
   useEffect(() => {
     const hint = document.querySelector('.about-tech-grid-hint');
@@ -104,35 +90,75 @@ export default function About () {
     gsap.to('.about-back-home',       { opacity: 1, duration: 0.8, delay: 0.2, ease: 'power2.out' });
   }, []);
 
-  /* ───  Call-out wave animation ────────── */
-  useEffect(() => {
-    const callout = document.querySelector('.about-callout-text');
-    if (!callout) return;
+    useEffect(() => {
+    const bg  = heroBgRef.current;
+    const txt = heroRef.current.querySelector('.about-hero-text');
+    const arrow = scrollArrowRef.current;
 
-    /* preserve spaces by converting to &nbsp; */
-    const original = [...callout.textContent];
-    callout.innerHTML = '';
-    original.forEach(ch => {
-      const span = document.createElement('span');
-      span.innerHTML = (ch === ' ') ? '&nbsp;' : ch;
-      callout.appendChild(span);
+
+    /* Scroll-away parallax */
+    ScrollTrigger.create({
+      trigger: heroRef.current,
+      start: 'top top',
+      end: 'bottom top',
+      scrub: true,
+      onUpdate: self => {
+        const prog = self.progress;
+        gsap.to([txt, arrow], { yPercent: -prog * 100, opacity: 1 - prog, overwrite: 'auto' });
+      }
     });
 
-    const spans = gsap.utils.toArray('.about-callout-text span');
-    gsap.to(spans, {
-      yPercent: -10,
-      duration: 3,
-      ease: 'sine.inOut',
-      repeat: -1,
-      yoyo: true,
-      stagger: { each: 0.05, yoyo: true, repeat: -1 }
-    });
+    return () => {
+      ScrollTrigger.getAll().forEach(t => t.kill());
+    };
   }, []);
+
+/* ───  Call-out wave animation ────────── */
+useEffect(() => {
+  const callout = document.querySelector('.about-callout-text');
+  if (!callout) return;
+
+  // Split the sentence into words
+  const words = callout.textContent.trim().split(' ');
+
+  // 2. Rebuild the markup
+  callout.innerHTML = '';
+  words.forEach((word, idx) => {
+    const wordWrapper = document.createElement('span');
+    wordWrapper.className = 'callout-word';          // keep the entire word together
+    wordWrapper.style.display = 'inline-block';
+
+    [...word].forEach(ch => {
+      const charSpan = document.createElement('span');
+      charSpan.className = 'callout-char';
+      charSpan.style.display = 'inline-block';
+      charSpan.textContent = ch;
+      wordWrapper.appendChild(charSpan);
+    });
+
+    callout.appendChild(wordWrapper);
+
+    // Add a normal breaking space between words
+    if (idx < words.length - 1) callout.appendChild(document.createTextNode(' '));
+  });
+
+  // Animate every character span
+  const chars = callout.querySelectorAll('.callout-char');
+  gsap.to(chars, {
+    yPercent: -10,
+    duration: 3,
+    ease: 'sine.inOut',
+    repeat: -1,
+    yoyo: true,
+    stagger: { each: 0.05, yoyo: true, repeat: -1 }
+  });
+}, []);
+
 
   /* ───  Parallax drift for section-1 image ────────────── */
   useEffect(() => {
     gsap.to('.about-image-block img', {
-      y: -80,
+      y: -40,
       ease: 'none',
       scrollTrigger: {
         trigger: '.about-section-1',
@@ -159,6 +185,21 @@ export default function About () {
     return () => observer.disconnect();
   }, []);
 
+/* ── Floating tech icons ───────────────────────────────── */
+useEffect(() => {
+  gsap.utils.toArray('.about-tech-item').forEach(item => {
+    // each icon gets its own randomised looping tween
+    gsap.to(item, {
+      y: () => gsap.utils.random(-8, 8),
+      rotation: () => gsap.utils.random(-1, 1),
+      duration: () => gsap.utils.random(2.5, 4),
+      ease: 'sine.inOut',
+      repeat: -1,
+      yoyo: true
+    });
+  });
+}, []);
+
   /* ─── 6.  Helpers ───────────────────────────────────────── */
   const handleScrollDown = () =>
     window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
@@ -179,24 +220,27 @@ export default function About () {
   /* ──────────────────────────────────────────────────────── */
   /*  Render JSX                                              */
   /* ──────────────────────────────────────────────────────── */
-  return (
+ return (
     <div className="about-page">
-      {/* Back-to-home button */}
+      {/* Back-home btn */}
       <button className="about-back-home" onClick={goBackHome}>
         <div className="about-back-icon" aria-hidden="true" />
         To Home
       </button>
 
-      {/* Fixed overlay tint */}
+      {/* overlay tint */}
       <div className="about-gradient-overlay" />
 
-      {/* ── HERO ─────────────────────────────────────────── */}
-      <section className="about-hero">
+      {/* ── HERO ───────────────── */}
+      <section className="about-hero" ref={heroRef}>
+        <div
+          ref={heroBgRef}
+          className="about-hero-bg"
+          style={{ backgroundImage: "url('/assets/photos/Me_Hero.jpg')" }}
+        />
         <div className="about-hero-text">
-          <h1>Ahmed Mansour</h1>
-          <p>“Always learning by creating.”</p>
+          <h1 className="about-hero-text-header">Ahmed Mansour</h1>
         </div>
-
         <div className="about-scroll-arrow">
           <img
             ref={scrollArrowRef}
@@ -207,90 +251,95 @@ export default function About () {
         </div>
       </section>
 
-      {/* ── CALLOUT ───────────────────────────────────────── */}
+      {/* ── CALLOUT ────────────── */}
       <section className="about-callout">
         <p className="about-callout-text">
-          Merging code, sound, and philosophy to expand reality.
+          Building the future of immersive experiences.
         </p>
       </section>
 
-      {/* ── MAIN CONTENT SECTIONS ─────────────────────────── */}
-      {sections.map((sec, i) => (
-        <section
-          key={i}
-          ref={el => (sectionRefs.current[i] = el)}
-          className={`about-content-section about-section-${i + 1}`}
-        >
-          <div className="about-section-card">
-
-            {/* Section 0 — “Who am I?” */}
-            {i === 0 && (
-              <div className="about-split-layout">
-                <div className="about-text-block">
-                  <h2>{sec.title}</h2>
-                  <p className="about-section-text">{sec.text}</p>
-                </div>
-                <div className="about-image-block">
-                  <img src={sec.img} alt={sec.title} />
-                </div>
-              </div>
-            )}
-
-            {/* Section 1 — Tech grids */}
-            {i === 1 && (
-              <>
-                <h2>{sec.title}</h2>
-
-                <p className="about-tech-grid-hint">
-                  Psst - Click on a tool to see how I've used it in a project! :)
-                </p>
-
-                <div className="about-tech-grid about-primary">
-                  {primaryTech.map(({ file, label, url }) => (
-                    <Link key={label} to={url} className="about-tech-item">
-                      <img src={`/assets/icons/${file}`} alt={label} />
-                      <span>{label}</span>
-                    </Link>
-                  ))}
-                </div>
-
-                <hr className="about-divider" />
-                <h3 className="about-subheading">Other&nbsp;Technologies</h3>
-
-                <div className="about-tech-grid about-secondary">
-                  {otherTech.map(({ file, label, url }) => (
-                    <Link key={label} to={url} className="about-tech-item about-secondary-item">
-                      <img src={`/assets/icons/${file}`} alt={label} />
-                      <span>{label}</span>
-                    </Link>
-                  ))}
-                </div>
-              </>
-            )}
-
-            {/* Section 2 — Social links */}
-            {i === 2 && (
-              <>
-                <h2>{sec.title}</h2>
-                <div className="about-social-bar">
-                  {socialLinks.map(({ file, url, label }) => (
-                    <a
-                      key={label}
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="about-social-item"
-                    >
-                      <img src={`/assets/icons/${file}`} alt={label} />
-                      <span>{label}</span>
-                    </a>
-                  ))}
-                </div>
-              </>
-            )}
+      {/* ── SECTION 1 — Who am I? ───────────────────────── */}
+      <section
+        ref={el => (sectionRefs.current[0] = el)}
+        className="about-content-section about-section-1"
+      >
+        <div className="about-section-card">
+          <div className="about-split-layout">
+            <div className="about-text-block">
+              <h2 className="about-text-block-header">Who am I?</h2>
+              <p className="about-section-text">
+                I’m a 26-year-old <strong>developer</strong> with a love for
+                <strong> immersive experiences</strong>. My focus is shaping the
+                next era of <strong>spatial computing</strong> by crafting
+                <strong> XR systems</strong> that feel
+                <strong> seamless, responsive,</strong> and <strong>real</strong>.
+              </p>
+            </div>
+            <div className="about-image-block">
+              <img src="/assets/photos/Me_1.JPG" alt="Portrait of Ahmed" />
+            </div>
           </div>
-        </section>
-      ))}
+        </div>
+      </section>
+
+      {/* ── SECTION 2 — Tech grid ───────────────────────── */}
+      <section
+        ref={el => (sectionRefs.current[1] = el)}
+        className="about-content-section about-section-2"
+      >
+        <div className="about-section-card">
+          <h2 className="about-tech-grid-header">Core Technologies & Tools</h2>
+
+          <p className="about-tech-grid-hint">
+            Psst – click a tool to see how I’ve used it :)
+          </p>
+
+          <div className="about-tech-grid about-primary">
+            {primaryTech.map(({ file, label, url }) => (
+              <Link key={label} to={url} className="about-tech-item">
+                <img src={`/assets/icons/${file}`} alt={label} />
+                <span>{label}</span>
+              </Link>
+            ))}
+          </div>
+
+          <hr className="about-divider" />
+          <h3 className="about-subheading">Other Technologies</h3>
+
+          <div className="about-tech-grid about-secondary">
+            {otherTech.map(({ file, label, url }) => (
+              <Link key={label} to={url} className="about-tech-item about-secondary-item">
+                <img src={`/assets/icons/${file}`} alt={label} />
+                <span>{label}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── SECTION 3 — Social links ────────────────────── */}
+      <section
+        ref={el => (sectionRefs.current[2] = el)}
+        className="about-content-section about-section-3"
+      >
+        <div className="about-section-card">
+          <h2 className="about-social-bar-header">Social Links</h2>
+          <div className="about-social-bar">
+            {socialLinks.map(({ file, url, label }) => (
+              <a
+                key={label}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="about-social-item"
+              >
+                <img src={`/assets/icons/${file}`} alt={label} />
+                <span>{label}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

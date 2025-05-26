@@ -14,6 +14,58 @@
     background-color: black;
     color: white;
 }
+/* Center-screen “Coming Soon!” tooltip */
+.writings-button::after {
+  content: 'Coming Soon!';
+  position: fixed;                 /* lock to viewport, not the button */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0.25rem 0.75rem;
+  font-family: 'Speculum';
+  font-size: 1.4rem;
+  color: var(--tab-color, #90be6d);
+  background: rgba(0, 0, 0, 0.85);
+  border: 2px solid var(--tab-color, #90be6d);
+  white-space: nowrap;
+
+  /* heavy “not ready” halo */
+  box-shadow: 0 0 40px 20px rgba(0, 0, 0, 0.8);
+
+  /* fade-in animation */
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+
+  pointer-events: none;            /* keep it non-interactive */
+  z-index: 100;                    /* float above pattern & UI */
+}
+
+.writings-button:hover::after {
+  opacity: 1;
+}
+
+.home-coming-soon-overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0.5rem 1.25rem;
+  font-family: 'Speculum', sans-serif;
+  font-size: 1.8rem;
+  color: #90be6d;
+  background: rgba(0,0,0,0.85);
+  border: 2px solid #90be6d;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0; 
+  transition: opacity 0.25s ease-out;
+  z-index: 100; 
+}
+
+.home-coming-soon-overlay.show {
+  opacity: 1;
+}
+
 
 .centered-text {
   position: absolute;
@@ -60,15 +112,6 @@
     position: absolute;
     top: 200px;
     left: 10px;
-    z-index: 1;
-}
-
-.ascii-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
     z-index: 1;
 }
 

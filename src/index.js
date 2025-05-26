@@ -1,10 +1,9 @@
 /* src/index.js */
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import React, { createContext, useRef, useEffect, useState } from 'react';
+import { createContext, useRef, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { Provider } from 'react-redux';
 import * as THREE from 'three';
 import cameraInstance from './utils/camera';
 import Pattern, { PatternStyle } from './utils/Pattern';
@@ -17,6 +16,7 @@ import ProjectPage from './Projects/ProjectPage';
 import Music from './Music/Music';
 import Contact from './Contact/Contact';
 import NotFound from './NotFound/NotFound';
+
 // PatternContext provides both instance and style presets
 export const PatternContext = createContext({ pattern: null, styles: PatternStyle });
 
@@ -91,7 +91,6 @@ root.render(
             <Route path="/" element={<Home />} />
             <Route path="/projects" element={<Projects />} />
             <Route path="/projects/:category/:id" element={<ProjectPage />} />
-{/* <Route path="/projects/coding/:id" element={<Navigate to={`/projects/coding/${id}`} replace />} /> */}
             <Route path="/music" element={<Music />} />
             <Route path="/projects/toys/patternfactory/play" element={<PatternFactory />} />
             <Route path="/about" element={<About />} />

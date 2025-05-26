@@ -150,14 +150,26 @@ useEffect(() => {
 useEffect(() => {
   if (!project || !firstLoad.current) return;
 
-  gsap.set(".cat-menu", { autoAlpha: 0 });
+  // keep the menu invisible & inert from the very first paint
+  gsap.set(".cat-menu", { autoAlpha: 0, pointerEvents: "none" });
 
   gsap.timeline()
-      .fromTo(pageRef.current, { autoAlpha:0.5 }, { autoAlpha:1, duration:1 })
-      .to(".cat-menu",        { autoAlpha:1, duration:1, ease:"power2.out" }, "-=0.3");
+      // make the hero (page) fade from 0 → 1 so it fully covers the menu
+      .fromTo(
+        pageRef.current,
+        { autoAlpha: 0 },
+        { autoAlpha: 1, duration: 1 }
+      )
+      // reveal the menu *after* the hero is opaque
+      .to(
+        ".cat-menu",
+        { autoAlpha: 1, pointerEvents: "auto", duration: 1, ease: "power2.out" },
+        "-=0.05"          // starts a hair after the hero hits full opacity
+      );
 
-  firstLoad.current = false;      // subsequent navigations skip this
+  firstLoad.current = false;   // subsequent navigations skip this
 }, [project]);
+
 
 
 // 1. Hero-text animation
@@ -237,9 +249,6 @@ useEffect(() => {
 
   return () => obs.disconnect();
 }, [project]);
-
-
-
 
   // ─────────── Entrance fade once project exists ───────────
   useEffect(() => {
@@ -335,13 +344,29 @@ return (
         </section>
       )}
 
+{/* ────────── LIVE DEMO BUTTON ────────── */}
+      {project.liveUrl && (
+        <section className="iso-section iso-live-demo">
+          <div className="iso-card iso-live-card">
+            <a
+              href={project.liveUrl}
+              className="live-demo-btn"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Click me for a live demo!
+            </a>
+          </div>
+        </section>
+      )}
+
       {/* ────────── OVERVIEW ────────── */}
       {project.description && (
         <section className="iso-section iso-overview">
           <div className="iso-card split">
             <div className="text-block">
               <h2 className="iso-card-header">Overview</h2>
-              <p>{formatText(project.description)}</p>
+              <p className="iso-overview-text">{formatText(project.description)}</p>
             </div>
 
             <div className="img-block">

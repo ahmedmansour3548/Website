@@ -8,8 +8,9 @@
   top:5.5rem; left:1rem; z-index:1;
   width:var(--menu-width);
   display:flex; flex-direction:column; gap:.75rem;
+  visibility: hidden;
   overflow:visible;
-  opacity:0;                      /* ← start invisible */
+  transition: opacity .35s ease;
 }
 
 /* ─────────── Category toggle button ─────────── */

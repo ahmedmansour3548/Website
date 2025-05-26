@@ -1,703 +1,242 @@
-﻿import React, { useState, useEffect, useContext } from 'react';
-import cameraInstance from '../../../utils/camera';
-import { PatternContext } from "../../../index";
-import { gsap } from 'gsap';
+﻿/* ========================================================== */
+/*  PatternFactory – v3.0  (CSS‐only slide, bulletproof)      */
+/* ========================================================== */
+
+import React, {
+  useState, useEffect, useContext, useRef, useMemo,
+} from 'react';
+import { PatternContext } from '../../../index';
 import './PatternFactory.css';
-import * as THREE from 'three';
+import { gsap } from "gsap";
+/* ───────────────────────── UI CONFIG (unchanged) ────────── */
+const PARAM_CONFIG = [
+  { key: 'maxVertices',  label: 'Vertices',            min: 0,    max: 10000,  step: 1,     default: 100 },
+  { key: 'xPos',         label: 'X Position',          min: -10,  max: 10,     step: 0.01,  default: 0   },
+  { key: 'yPos',         label: 'Y Position',          min: -10,  max: 10,     step: 0.01,  default: 0   },
+  { key: 'xFunctionCode',label: 'X Function',          min: 0,    max: 25,     step: 1,     default: 0   },
+  { key: 'yFunctionCode',label: 'Y Function',          min: 0,    max: 25,     step: 1,     default: 1   },
+  { key: 'deltaAngle',   label: 'Δ Angle',             min: -2,   max: 2,      step: 0.001, default: 1   },
+  { key: 'scale',        label: 'Scale',               min: 0.01, max: 10,     step: 0.01,  default: 1   },
+  { key: 'xAngularFreq', label: 'X Angular Freq',      min: 0,    max: 10,     step: 0.01,  default: 1   },
+  { key: 'yAngularFreq', label: 'Y Angular Freq',      min: 0,    max: 10,     step: 0.01,  default: 1   },
+  { key: 'xPhase',       label: 'X Phase',             min: -Math.PI, max: Math.PI, step: 0.01, default: 0 },
+  { key: 'yPhase',       label: 'Y Phase',             min: -Math.PI, max: Math.PI, step: 0.01, default: 0 },
+];
 
-const PatternFactory = () => {
-  const patternRef = useContext(PatternContext);
-  const [patternParams, setPatternParameters] = useState({
-    maxVertices: 100,
-    xPos: 0,
-    yPos: 0,
-    zPos: 0,
-    xFunctionCode: 0,
-    yFunctionCode: 1,
-    deltaAngle: 1,
-    scale: 1,
-    xAngularFreq: 1,
-    yAngularFreq: 1,
-    xAxis: 0,
-    yAxis: 0,
-    xPhase: 0,
-    yPhase: 0,
-    loopVertex: 200,
-    paramsToAdjust: ['deltaAngle'],
-    adjustAmounts: [1]
-  });
-  const [changeRates, setChangeRates] = useState({
-    maxVertices: 0,
-    xPos: 0,
-    yPos: 0,
-    xFunctionCode: 0,
-    yFunctionCode: 0,
-    deltaAngle: 0,
-    scale: 0,
-    xAngularFreq: 0,
-    yAngularFreq: 0,
-    xPhase: 0,
-    yPhase: 0,
-    loopVertex: 0
-  });
-  const [isRunning, setIsRunning] = useState({});
-  const intervals = React.useRef({});
+const CLAMP = { maxVertices: { min: 0, max: 10000 }, xFunctionCode: { min: 0, max: 25 }, yFunctionCode: { min: 0, max: 25 } };
+const initRates = () => Object.fromEntries(PARAM_CONFIG.map(({ key }) => [key, 0]));
 
+/* ────────────────────────────────────────────────────────── */
+export default function PatternFactory() {
+  const { pattern } = useContext(PatternContext);
 
- // handle rate-based adjustments
+  /* state --------------------------------------------------- */
+  const [vals,  setVals]  = useState(Object.fromEntries(PARAM_CONFIG.map(({ key, default: d }) => [key, d])));
+  const [rates, setRates] = useState(initRates());
+  const [run,   setRun]   = useState({});
+  const timers            = useRef({});
+
+  /* panel open flag */
+  const [open, setOpen]   = useState(false);
+  const panelRef          = useRef(null);
+  const tabRef   = useRef(null);
+  /* helpers ------------------------------------------------- */
+  const clamp = (k, v) => {
+    const rule = CLAMP[k];
+    return rule ? Math.max(rule.min, Math.min(rule.max, v)) : v;
+  };
+
+  const numeric = useMemo(() => {
+    const out = {};
+    for (const [k, v] of Object.entries(vals)) out[k] = clamp(k, parseFloat(v) || 0);
+    return out;
+  }, [vals]);
+
+  /* redraw pattern */
+  useEffect(() => { if (pattern) pattern.regenerate(numeric); }, [pattern, numeric]);
+
+  /* intervals for animating parameters ---------------------- */
   useEffect(() => {
-    Object.entries(changeRates).forEach(([param, rate]) => {
-      if (rate !== 0 && isRunning[param]) {
-        startChangingParameter(param, rate);
+    Object.entries(rates).forEach(([k, r]) => {
+      if (r !== 0 && run[k]) startLoop(k, r);
+    });
+    return () => Object.values(timers.current).forEach(clearInterval);
+  }, [run, rates]);
+
+  const startLoop = (k, r) => {
+    clearInterval(timers.current[k]);
+    timers.current[k] = setInterval(() => {
+      setVals(p => ({ ...p, [k]: clamp(k, (parseFloat(p[k]) || 0) + r) }));
+    }, 16);
+  };
+
+  /* mouse-move listener — bottom ⅓ opens, mid screen closes --- */
+  useEffect(() => {
+    const handle = (e) => {
+      const y = e.clientY;
+      const h = window.innerHeight;
+      const inside = panelRef.current?.contains(e.target);
+      if (y > h * 0.66 || inside) {
+        setOpen(true);
+      } else if (y < h * 0.5 && !inside) {
+        setOpen(false);
       }
-    });
-    return () => {
-      Object.values(intervals.current).forEach(clearInterval);
     };
-  }, [isRunning, changeRates]);
-
- // ─── Draw *once* after the provider is definitely ready ───
- useEffect(() => {
-   const frame = requestAnimationFrame(() => {
-     const pattern = patternRef.current;
-     if (!pattern) return;
-     pattern.material.opacity = 1;
-     pattern.setAllVerticesColor(0xFF0000);
-     pattern.regenerate(patternParams);
-   });
-   return () => cancelAnimationFrame(frame);
- }, [patternRef]);  // run this once on mount
-
- useEffect(() => {
-    const pattern = patternRef.current;
-    if (!pattern) return;
-
-    // make sure it's visible
-    pattern.material.opacity = 1;
-    pattern.setAllVerticesColor(0xFF0000);
-
-    // draw it
-    pattern.regenerate(patternParams);
-  }, [patternRef, patternParams]);
+    window.addEventListener('mousemove', handle);
+    return () => window.removeEventListener('mousemove', handle);
+  }, []);
 
 
-  const handleParameterChange = e => {
-    const { name, value } = e.target;
-    if (!isNaN(parseFloat(value)) || value === '' || value === '-') {
-      setPatternParameters(prev => ({ ...prev, [name]: value }));
-    }
-  };
+  /* sliding animation */
+useEffect(() => {
+  if (!panelRef.current || !tabRef.current) return;
 
-  const handleRateChangeInput = e => {
-    const { name, value } = e.target;
-    const param = name.replace('-change-rate', '');
-    if (!isNaN(parseFloat(value)) || value === '' || value === '-') {
-      setChangeRates(prev => ({ ...prev, [param]: parseFloat(value) || 0 }));
-    }
-  };
+  // how tall the panel will be when it’s open
+  const panelHeight = panelRef.current.offsetHeight;
 
-  const updateParameter = (param, delta, isInt = false) => {
-    setPatternParameters(prev => {
-      const oldVal = parseFloat(prev[param]);
-      const newVal = isInt ? Math.round(oldVal + delta) : oldVal + delta;
-      return { ...prev, [param]: newVal };
+  // lift or drop the tab by exactly the panel’s height
+  gsap.to(tabRef.current, {
+    bottom: open ? panelHeight : 0,
+    ease: 'expo.out',
+    duration: 0.5,
+  });
+}, [open]);
+
+  /* mutators ------------------------------------------------ */
+  const setVal  = (k, v) => setVals(p => ({ ...p, [k]: clamp(k, v) }));
+  const setRate = (k, v) => setRates(r => ({ ...r, [k]: v }));
+  const toggleRun = (k) =>
+    setRun(prev => {
+      const now = !prev[k];
+      if (!now) clearInterval(timers.current[k]);
+      return { ...prev, [k]: now };
     });
+
+const Row = ({ cfg }) => {
+  const { key, label, min, max, step } = cfg;
+  const playing   = run[key];
+  const sliderRef = useRef(null);
+  const rateRef   = useRef(null);
+  const valsRef   = useRef(vals);
+
+  // Always keep valsRef up to date for regenerations:
+  useEffect(() => { valsRef.current = vals; }, [vals]);
+
+  // General drag‑binder factory
+  const bindDrag = (ref, isRate) => {
+    const el = ref.current;
+    if (!el) return () => {};
+
+    // how fine to snap:
+    const snapStep = isRate ? 0.001 : parseFloat(el.getAttribute('step')) || step;
+
+    const onDown = (e) => {
+      e.preventDefault();
+      document.body.style.userSelect = 'none'; // avoid text‑select
+      const rect = el.getBoundingClientRect();
+
+      const onMove = (ev) => {
+        let pct = (ev.clientX - rect.left) / rect.width;
+        pct = Math.max(0, Math.min(1, pct));
+        let v = min + pct * (max - min);
+        // snap to step
+        const k = Math.round((v - min) / snapStep);
+        v = min + k * snapStep;
+        el.value = v;
+
+        if (isRate) {
+          setRate(key, v);
+        } else {
+          // immediate visual update:
+          const fresh = { ...valsRef.current, [key]: v };
+          if (pattern) pattern.regenerate(fresh);
+        }
+      };
+
+      const onUp = (ev) => {
+        document.body.style.userSelect = '';
+        document.removeEventListener('pointermove', onMove);
+        document.removeEventListener('pointerup', onUp);
+        if (!isRate) {
+          // commit to React state last
+          setVal(key, parseFloat(el.value));
+        }
+      };
+
+      document.addEventListener('pointermove', onMove);
+      document.addEventListener('pointerup',   onUp);
+    };
+
+    el.addEventListener('pointerdown', onDown);
+    return () => el.removeEventListener('pointerdown', onDown);
   };
 
-  const handleRateChange = (param, amount) => {
-    setChangeRates(prev => ({ ...prev, [param]: prev[param] + amount }));
-  };
+  // bind both sliders whenever they mount or `playing` toggles
+  useEffect(() => {
+    const unbindMain = bindDrag(sliderRef, /*isRate=*/false);
+    const unbindRate = playing ? bindDrag(rateRef, /*isRate=*/true) : () => {};
+    return () => {
+      unbindMain();
+      unbindRate();
+    };
+  }, [playing, key]);
 
-  const toggleInterval = param => {
-    setIsRunning(prev => ({ ...prev, [param]: !prev[param] }));
-    if (!isRunning[param]) {
-      startChangingParameter(param, changeRates[param]);
-    } else {
-      stopChangingParameter(param);
-    }
-  };
+  return (
+    <div className="pf-row" key={key}>
+      <span className="pf-label">{label}</span>
 
-  const startChangingParameter = (param, rate) => {
-    clearInterval(intervals.current[param]);
-    intervals.current[param] = setInterval(() => {
-      setPatternParameters(prev => ({
-        ...prev,
-        [param]: prev[param] + rate
-      }));
-    }, 10);
-  };
+      {/* main slider */}
+      <input
+        ref={sliderRef}
+        className="pf-slider"
+        type="range"
+        min={min} max={max} step={step}
+        defaultValue={vals[key]}
+      />
 
-  const stopChangingParameter = param => {
-    clearInterval(intervals.current[param]);
-    intervals.current[param] = null;
-  };
+      {/* manual number input */}
+      <input
+        className="pf-number"
+        type="number"
+        min={min} max={max} step={step}
+        value={vals[key]}
+        onChange={e => setVal(key, clamp(key, e.target.value))}
+      />
 
-  const isValid = val => val === '' || val === '-' || !isNaN(parseFloat(val));
+      {/* animate toggle */}
+      <button
+        className={`pf-anim-btn ${playing ? 'running' : ''}`}
+        onClick={() => toggleRun(key)}
+      >
+        {playing ? '⏸' : '▶'}
+      </button>
 
-  // UI Component for rate inputs
-  const ChangeRateInput = ({ param }) => (
-    <input
-      type="text"
-      id={`${param}-change-rate`}
-      name={`${param}-change-rate`}
-      value={changeRates[param]}
-      onChange={handleRateChangeInput}
-      style={{ borderColor: isValid(changeRates[param]) ? undefined : 'red' }}
-    />
+      {/* rate slider */}
+      {playing && (
+        <input
+          ref={rateRef}
+          className="pf-rate"
+          type="range"
+          min={-1} max={1} step={0.001}         // fine 0.001 steps here
+          defaultValue={rates[key]}
+        />
+      )}
+    </div>
   );
-
-
-    return (
-        <div className="controls-container">
-
-            <div className="parameter-control">
-                <label htmlFor={patternParams.maxVertices}>Vertices</label>
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => updateParameter('maxVertices', -100)}>-100</button>
-                    <button className="button-small" onClick={() => updateParameter('maxVertices', -10)}>-10</button>
-                    <button className="button-small" onClick={() => updateParameter('maxVertices', -1)}>-1</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="maxVertices"
-                        name="maxVertices"
-                        value={patternParams.maxVertices.toString()}
-                        onChange={handleParameterChange}
-                    />
-                    <button className="button-small" onClick={() => updateParameter('maxVertices', 100)}>100</button>
-                    <button className="button-small" onClick={() => updateParameter('maxVertices', 10)}>10</button>
-                    <button className="button-small" onClick={() => updateParameter('maxVertices', 1)}>1</button>
-                </div>
-
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => handleRateChange('maxVertices', -0.1)}>-.1</button>
-                    <button className="button-small" onClick={() => handleRateChange('maxVertices', -0.01)}>-.01</button>
-                    <button className="button-small" onClick={() => handleRateChange('maxVertices', -0.001)}>-.001</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="maxVertices-change-rate"
-                        name="maxVertices-change-rate"
-                        value={changeRates.maxVertices}
-                        onChange={handleRateChangeInput}
-                    />
-                    <button className="button-small" onClick={() => handleRateChange('maxVertices', 0.001)}>+.001</button>
-                    <button className="button-small" onClick={() => handleRateChange('maxVertices', 0.01)}>+.01</button>
-                    <button className="button-small" onClick={() => handleRateChange('maxVertices', 0.1)}>+.1</button>
-                </div>
-
-                <div className="toggle-container">
-                    <button className="button-small toggle-button" onClick={() => toggleInterval('maxVertices')}>
-                        {isRunning['maxVertices'] ? 'Stop' : 'Start'}
-                    </button>
-                </div>
-            </div>
-
-
-
-            <div className="parameter-control">
-                <label htmlFor={patternParams.xPos}>X Coordinate</label>
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => updateParameter('xPos', -0.1)}>-.1</button>
-                    <button className="button-small" onClick={() => updateParameter('xPos', -0.01)}>-.01</button>
-                    <button className="button-small" onClick={() => updateParameter('xPos', -0.001)}>-.001</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="xPos"
-                        name="xPos"
-                        value={patternParams.xPos.toString()}
-                        onChange={handleParameterChange}
-                    />
-                    <button className="button-small" onClick={() => updateParameter('xPos', 0.001)}>+.001</button>
-                    <button className="button-small" onClick={() => updateParameter('xPos', 0.01)}>+.01</button>
-                    <button className="button-small" onClick={() => updateParameter('xPos', 0.1)}>+.1</button>
-                </div>
-
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => handleRateChange('xPos', -0.1)}>-.1</button>
-                    <button className="button-small" onClick={() => handleRateChange('xPos', -0.01)}>-.01</button>
-                    <button className="button-small" onClick={() => handleRateChange('xPos', -0.001)}>-.001</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="xPos-change-rate"
-                        name="xPos-change-rate"
-                        value={changeRates.xPos}
-                        onChange={handleRateChangeInput}
-                    />
-                    <button className="button-small" onClick={() => handleRateChange('xPos', 0.001)}>+.001</button>
-                    <button className="button-small" onClick={() => handleRateChange('xPos', 0.01)}>+.01</button>
-                    <button className="button-small" onClick={() => handleRateChange('xPos', 0.1)}>+.1</button>
-                </div>
-
-                <div className="toggle-container">
-                    <button className="button-small toggle-button" onClick={() => toggleInterval('xPos')}>
-                        {isRunning['xPos'] ? 'Stop' : 'Start'}
-                    </button>
-                </div>
-            </div>
-
-
-
-            <div className="parameter-control">
-                <label htmlFor={patternParams.yPos}>Y Coordinate</label>
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => updateParameter('yPos', -0.1)}>-.1</button>
-                    <button className="button-small" onClick={() => updateParameter('yPos', -0.01)}>-.01</button>
-                    <button className="button-small" onClick={() => updateParameter('yPos', -0.001)}>-.001</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="yPos"
-                        name="yPos"
-                        value={patternParams.yPos.toString()}
-                        onChange={handleParameterChange}
-                    />
-                    <button className="button-small" onClick={() => updateParameter('yPos', 0.001)}>+.001</button>
-                    <button className="button-small" onClick={() => updateParameter('yPos', 0.01)}>+.01</button>
-                    <button className="button-small" onClick={() => updateParameter('yPos', 0.1)}>+.1</button>
-                </div>
-
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => handleRateChange('yPos', -0.1)}>-.1</button>
-                    <button className="button-small" onClick={() => handleRateChange('yPos', -0.01)}>-.01</button>
-                    <button className="button-small" onClick={() => handleRateChange('yPos', -0.001)}>-.001</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="yPos-change-rate"
-                        name="yPos-change-rate"
-                        value={changeRates.yPos}
-                        onChange={handleRateChangeInput}
-                    />
-                    <button className="button-small" onClick={() => handleRateChange('yPos', 0.001)}>+.001</button>
-                    <button className="button-small" onClick={() => handleRateChange('yPos', 0.01)}>+.01</button>
-                    <button className="button-small" onClick={() => handleRateChange('yPos', 0.1)}>+.1</button>
-                </div>
-
-                <div className="toggle-container">
-                    <button className="button-small toggle-button" onClick={() => toggleInterval('yPos')}>
-                        {isRunning['yPos'] ? 'Stop' : 'Start'}
-                    </button>
-                </div>
-            </div>
-
-
-
-            <div className="parameter-control">
-                <label htmlFor={patternParams.xFunctionCode}>X Function</label>
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => updateParameter('xFunctionCode', -1)}>-1</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="xFunctionCode"
-                        name="xFunctionCode"
-                        value={patternParams.xFunctionCode.toString()}
-                        onChange={handleParameterChange}
-                    />
-                    <button className="button-small" onClick={() => updateParameter('xFunctionCode', 1)}>+1</button>
-                </div>
-
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => handleRateChange('xFunctionCode', -0.1)}>-.1</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="xFunctionCode-change-rate"
-                        name="xFunctionCode-change-rate"
-                        value={changeRates.xFunctionCode}
-                        onChange={handleRateChangeInput}
-                    />
-                    <button className="button-small" onClick={() => handleRateChange('xFunctionCode', 0.1)}>+.1</button>
-                </div>
-
-                <div className="toggle-container">
-                    <button className="button-small toggle-button" onClick={() => toggleInterval('xFunctionCode')}>
-                        {isRunning['xFunctionCode'] ? 'Stop' : 'Start'}
-                    </button>
-                </div>
-            </div>
-
-
-
-            <div className="parameter-control">
-                <label htmlFor={patternParams.yFunctionCode}>Y Function</label>
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => updateParameter('yFunctionCode', -1)}>-1</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="yFunctionCode"
-                        name="yFunctionCode"
-                        value={patternParams.yFunctionCode.toString()}
-                        onChange={handleParameterChange}
-                    />
-                    <button className="button-small" onClick={() => updateParameter('yFunctionCode', 1)}>+1</button>
-                </div>
-
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => handleRateChange('yFunctionCode', -0.1)}>-.1</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="yFunctionCode-change-rate"
-                        name="yFunctionCode-change-rate"
-                        value={changeRates.yFunctionCode}
-                        onChange={handleRateChangeInput}
-                    />
-                    <button className="button-small" onClick={() => handleRateChange('yFunctionCode', 0.1)}>+.1</button>
-                </div>
-
-                <div className="toggle-container">
-                    <button className="button-small toggle-button" onClick={() => toggleInterval('yFunctionCode')}>
-                        {isRunning['yFunctionCode'] ? 'Stop' : 'Start'}
-                    </button>
-                </div>
-            </div>
-
-
-
-            <div className="parameter-control">
-                <label htmlFor={patternParams.deltaAngle}>Delta Angle</label>
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => updateParameter('deltaAngle', -0.1)}>-.1</button>
-                    <button className="button-small" onClick={() => updateParameter('deltaAngle', -0.01)}>-.01</button>
-                    <button className="button-small" onClick={() => updateParameter('deltaAngle', -0.001)}>-.001</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="deltaAngle"
-                        name="deltaAngle"
-                        value={patternParams.deltaAngle.toString()}
-                        onChange={handleParameterChange}
-                    />
-                    <button className="button-small" onClick={() => updateParameter('deltaAngle', 0.001)}>+.001</button>
-                    <button className="button-small" onClick={() => updateParameter('deltaAngle', 0.01)}>+.01</button>
-                    <button className="button-small" onClick={() => updateParameter('deltaAngle', 0.1)}>+.1</button>
-                </div>
-
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => handleRateChange('deltaAngle', -0.1)}>-.1</button>
-                    <button className="button-small" onClick={() => handleRateChange('deltaAngle', -0.01)}>-.01</button>
-                    <button className="button-small" onClick={() => handleRateChange('deltaAngle', -0.001)}>-.001</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="deltaAngle-change-rate"
-                        name="deltaAngle-change-rate"
-                        value={changeRates.deltaAngle}
-                        onChange={handleRateChangeInput}
-                    />
-                    <button className="button-small" onClick={() => handleRateChange('deltaAngle', 0.001)}>+.001</button>
-                    <button className="button-small" onClick={() => handleRateChange('deltaAngle', 0.01)}>+.01</button>
-                    <button className="button-small" onClick={() => handleRateChange('deltaAngle', 0.1)}>+.1</button>
-                </div>
-
-                <div className="toggle-container">
-                    <button className="button-small toggle-button" onClick={() => toggleInterval('deltaAngle')}>
-                        {isRunning['deltaAngle'] ? 'Stop' : 'Start'}
-                    </button>
-                </div>
-            </div>
-
-
-
-            <div className="parameter-control">
-                <label htmlFor={patternParams.scale}>Scale</label>
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => updateParameter('scale', -0.1)}>-.1</button>
-                    <button className="button-small" onClick={() => updateParameter('scale', -0.01)}>-.01</button>
-                    <button className="button-small" onClick={() => updateParameter('scale', -0.001)}>-.001</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="scale"
-                        name="scale"
-                        value={patternParams.scale.toString()}
-                        onChange={handleParameterChange}
-                    />
-                    <button className="button-small" onClick={() => updateParameter('scale', 0.001)}>+.001</button>
-                    <button className="button-small" onClick={() => updateParameter('scale', 0.01)}>+.01</button>
-                    <button className="button-small" onClick={() => updateParameter('scale', 0.1)}>+.1</button>
-                </div>
-
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => handleRateChange('scale', -0.1)}>-.1</button>
-                    <button className="button-small" onClick={() => handleRateChange('scale', -0.01)}>-.01</button>
-                    <button className="button-small" onClick={() => handleRateChange('scale', -0.001)}>-.001</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="scale-change-rate"
-                        name="scale-change-rate"
-                        value={changeRates.scale}
-                        onChange={handleRateChangeInput}
-                    />
-                    <button className="button-small" onClick={() => handleRateChange('scale', 0.001)}>+.001</button>
-                    <button className="button-small" onClick={() => handleRateChange('scale', 0.01)}>+.01</button>
-                    <button className="button-small" onClick={() => handleRateChange('scale', 0.1)}>+.1</button>
-                </div>
-
-                <div className="toggle-container">
-                    <button className="button-small toggle-button" onClick={() => toggleInterval('scale')}>
-                        {isRunning['scale'] ? 'Stop' : 'Start'}
-                    </button>
-                </div>
-            </div>
-
-
-
-            <div className="parameter-control">
-                <label htmlFor={patternParams.xAngularFreq}>X Angular Frequency</label>
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => updateParameter('xAngularFreq', -0.1)}>-.1</button>
-                    <button className="button-small" onClick={() => updateParameter('xAngularFreq', -0.01)}>-.01</button>
-                    <button className="button-small" onClick={() => updateParameter('xAngularFreq', -0.001)}>-.001</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="xAngularFreq"
-                        name="xAngularFreq"
-                        value={patternParams.xAngularFreq.toString()}
-                        onChange={handleParameterChange}
-                    />
-                    <button className="button-small" onClick={() => updateParameter('xAngularFreq', 0.001)}>+.001</button>
-                    <button className="button-small" onClick={() => updateParameter('xAngularFreq', 0.01)}>+.01</button>
-                    <button className="button-small" onClick={() => updateParameter('xAngularFreq', 0.1)}>+.1</button>
-                </div>
-
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => handleRateChange('xAngularFreq', -0.1)}>-.1</button>
-                    <button className="button-small" onClick={() => handleRateChange('xAngularFreq', -0.01)}>-.01</button>
-                    <button className="button-small" onClick={() => handleRateChange('xAngularFreq', -0.001)}>-.001</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="xAngularFreq-change-rate"
-                        name="xAngularFreq-change-rate"
-                        value={changeRates.xAngularFreq}
-                        onChange={handleRateChangeInput}
-                    />
-                    <button className="button-small" onClick={() => handleRateChange('xAngularFreq', 0.001)}>+.001</button>
-                    <button className="button-small" onClick={() => handleRateChange('xAngularFreq', 0.01)}>+.01</button>
-                    <button className="button-small" onClick={() => handleRateChange('xAngularFreq', 0.1)}>+.1</button>
-                </div>
-
-                <div className="toggle-container">
-                    <button className="button-small toggle-button" onClick={() => toggleInterval('xAngularFreq')}>
-                        {isRunning['xAngularFreq'] ? 'Stop' : 'Start'}
-                    </button>
-                </div>
-            </div>
-
-
-
-            <div className="parameter-control">
-                <label htmlFor={patternParams.yAngularFreq}>Y Angular Frequency</label>
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => updateParameter('yAngularFreq', -0.1)}>-.1</button>
-                    <button className="button-small" onClick={() => updateParameter('yAngularFreq', -0.01)}>-.01</button>
-                    <button className="button-small" onClick={() => updateParameter('yAngularFreq', -0.001)}>-.001</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="yAngularFreq"
-                        name="yAngularFreq"
-                        value={patternParams.yAngularFreq.toString()}
-                        onChange={handleParameterChange}
-                    />
-                    <button className="button-small" onClick={() => updateParameter('yAngularFreq', 0.001)}>+.001</button>
-                    <button className="button-small" onClick={() => updateParameter('yAngularFreq', 0.01)}>+.01</button>
-                    <button className="button-small" onClick={() => updateParameter('yAngularFreq', 0.1)}>+.1</button>
-                </div>
-
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => handleRateChange('yAngularFreq', -0.1)}>-.1</button>
-                    <button className="button-small" onClick={() => handleRateChange('yAngularFreq', -0.01)}>-.01</button>
-                    <button className="button-small" onClick={() => handleRateChange('yAngularFreq', -0.001)}>-.001</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="yAngularFreq-change-rate"
-                        name="yAngularFreq-change-rate"
-                        value={changeRates.yAngularFreq}
-                        onChange={handleRateChangeInput}
-                    />
-                    <button className="button-small" onClick={() => handleRateChange('yAngularFreq', 0.001)}>+.001</button>
-                    <button className="button-small" onClick={() => handleRateChange('yAngularFreq', 0.01)}>+.01</button>
-                    <button className="button-small" onClick={() => handleRateChange('yAngularFreq', 0.1)}>+.1</button>
-                </div>
-
-                <div className="toggle-container">
-                    <button className="button-small toggle-button" onClick={() => toggleInterval('yAngularFreq')}>
-                        {isRunning['yAngularFreq'] ? 'Stop' : 'Start'}
-                    </button>
-                </div>
-            </div>
-
-
-
-            <div className="parameter-control">
-                <label htmlFor={patternParams.xPhase}>X Phase</label>
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => updateParameter('xPhase', -0.1)}>-.1</button>
-                    <button className="button-small" onClick={() => updateParameter('xPhase', -0.01)}>-.01</button>
-                    <button className="button-small" onClick={() => updateParameter('xPhase', -0.001)}>-.001</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="xPhase"
-                        name="xPhase"
-                        value={patternParams.xPhase.toString()}
-                        onChange={handleParameterChange}
-                    />
-                    <button className="button-small" onClick={() => updateParameter('xPhase', 0.001)}>+.001</button>
-                    <button className="button-small" onClick={() => updateParameter('xPhase', 0.01)}>+.01</button>
-                    <button className="button-small" onClick={() => updateParameter('xPhase', 0.1)}>+.1</button>
-                </div>
-
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => handleRateChange('xPhase', -0.1)}>-.1</button>
-                    <button className="button-small" onClick={() => handleRateChange('xPhase', -0.01)}>-.01</button>
-                    <button className="button-small" onClick={() => handleRateChange('xPhase', -0.001)}>-.001</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="xPhase-change-rate"
-                        name="xPhase-change-rate"
-                        value={changeRates.xPhase}
-                        onChange={handleRateChangeInput}
-                    />
-                    <button className="button-small" onClick={() => handleRateChange('xPhase', 0.001)}>+.001</button>
-                    <button className="button-small" onClick={() => handleRateChange('xPhase', 0.01)}>+.01</button>
-                    <button className="button-small" onClick={() => handleRateChange('xPhase', 0.1)}>+.1</button>
-                </div>
-
-                <div className="toggle-container">
-                    <button className="button-small toggle-button" onClick={() => toggleInterval('xPhase')}>
-                        {isRunning['xPhase'] ? 'Stop' : 'Start'}
-                    </button>
-                </div>
-            </div>
-
-
-
-            <div className="parameter-control">
-                <label htmlFor={patternParams.yPhase}>Y Phase</label>
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => updateParameter('yPhase', -0.1)}>-.1</button>
-                    <button className="button-small" onClick={() => updateParameter('yPhase', -0.01)}>-.01</button>
-                    <button className="button-small" onClick={() => updateParameter('yPhase', -0.001)}>-.001</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="yPhase"
-                        name="yPhase"
-                        value={patternParams.yPhase.toString()}
-                        onChange={handleParameterChange}
-                    />
-                    <button className="button-small" onClick={() => updateParameter('yPhase', 0.001)}>+.001</button>
-                    <button className="button-small" onClick={() => updateParameter('yPhase', 0.01)}>+.01</button>
-                    <button className="button-small" onClick={() => updateParameter('yPhase', 0.1)}>+.1</button>
-                </div>
-
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => handleRateChange('yPhase', -0.1)}>-.1</button>
-                    <button className="button-small" onClick={() => handleRateChange('yPhase', -0.01)}>-.01</button>
-                    <button className="button-small" onClick={() => handleRateChange('yPhase', -0.001)}>-.001</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="yPhase-change-rate"
-                        name="yPhase-change-rate"
-                        value={changeRates.yPhase}
-                        onChange={handleRateChangeInput}
-                    />
-                    <button className="button-small" onClick={() => handleRateChange('yPhase', 0.001)}>+.001</button>
-                    <button className="button-small" onClick={() => handleRateChange('yPhase', 0.01)}>+.01</button>
-                    <button className="button-small" onClick={() => handleRateChange('yPhase', 0.1)}>+.1</button>
-                </div>
-
-                <div className="toggle-container">
-                    <button className="button-small toggle-button" onClick={() => toggleInterval('yPhase')}>
-                        {isRunning['yPhase'] ? 'Stop' : 'Start'}
-                    </button>
-                </div>
-            </div>
-
-
-
-            <div className="parameter-control">
-            <div>
-                <label className = "param-label" htmlFor={patternParams.loopVertex}>Loop Vertex</label>
-                <select
-                    className="param-select"
-                    value={patternParams.paramsToAdjust[0]}
-                    onChange={handleParameterChange}
-                >
-                    {Object.entries(patternParams).map(([param, value]) => (
-                        <option key={param} value={param}>{param}</option>
-                    ))}
-                </select>
-                <input
-                    className="param-adjust-amount"
-                    type="number"
-                    value={patternParams.adjustAmounts[0]}
-                    onChange={handleRateChangeInput}
-                    />
-                </div>
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => updateParameter('loopVertex', -100)}>-100</button>
-                    <button className="button-small" onClick={() => updateParameter('loopVertex', -10)}>-10</button>
-                    <button className="button-small" onClick={() => updateParameter('loopVertex', -1)}>-1</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="loopVertex"
-                        name="loopVertex"
-                        value={patternParams.loopVertex.toString()}
-                        onChange={handleParameterChange}
-                    />
-                    <button className="button-small" onClick={() => updateParameter('loopVertex', 100)}>+100</button>
-                    <button className="button-small" onClick={() => updateParameter('loopVertex', 10)}>+10</button>
-                    <button className="button-small" onClick={() => updateParameter('loopVertex', 1)}>+1</button>
-                </div>
-
-                <div className="parameter-grid">
-                    <button className="button-small" onClick={() => handleRateChange('loopVertex', -0.1)}>-.1</button>
-                    <button className="button-small" onClick={() => handleRateChange('loopVertex', -0.01)}>-.01</button>
-                    <button className="button-small" onClick={() => handleRateChange('loopVertex', -0.001)}>-.001</button>
-                    <input
-                        className="input-small"
-                        type="text"
-                        id="loopVertex-change-rate"
-                        name="loopVertex-change-rate"
-                        value={changeRates.loopVertex}
-                        onChange={handleRateChangeInput}
-                    />
-                    <button className="button-small" onClick={() => handleRateChange('loopVertex', 0.001)}>+.001</button>
-                    <button className="button-small" onClick={() => handleRateChange('loopVertex', 0.01)}>+.01</button>
-                    <button className="button-small" onClick={() => handleRateChange('loopVertex', 0.1)}>+.1</button>
-                </div>
-
-                <div className="toggle-container">
-                    <button className="button-small toggle-button" onClick={() => toggleInterval('loopVertex')}>
-                        {isRunning['loopVertex'] ? 'Stop' : 'Start'}
-                    </button>
-                </div>
-            </div>
-
-
-
-        </div>
-
-
-
-
-    );
-
 };
 
-export default PatternFactory;
+
+  /* JSX ----------------------------------------------------- */
+  return (
+    <>
+      <div ref={tabRef} className="pf-tab">CONTROLS</div>
+
+      <aside ref={panelRef} className={`pf-panel ${open ? 'open' : ''}`}>
+        <div className="pf-scroll">
+          {PARAM_CONFIG.map(cfg => <Row key={cfg.key} cfg={cfg} />)}
+        </div>
+      </aside>
+      
+    </>
+  );
+}

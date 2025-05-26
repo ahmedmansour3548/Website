@@ -19,6 +19,7 @@ const MENU_SCALE = 0.75;
 export default function Projects() {
   const [categories, setCategories] = useState([]);
   const [selected, setSelected]   = useState('coding');
+  const [showSoon,   setShowSoon]     = useState(false);
 
   const containerRef    = useRef(null);
   const sceneRef        = useRef(null);
@@ -322,6 +323,9 @@ export default function Projects() {
 
   return (
     <div className="projects-page">
+      <div className={`projects-coming-soon-overlay ${showSoon ? 'show' : ''}`}>
+        Coming&nbsp;Soon!
+      </div>
       <button
         className="projects-back-home"
         onClick={goBackHome}
@@ -334,25 +338,41 @@ export default function Projects() {
       <div className="pattern-container" ref={containerRef} />
 
       <div className="category-tabs bottom">
-        {categories.map((cat, idx) => (
-          <button
-            key={cat.id}
-            className={`tab ${selected===cat.id ? 'active' : ''}`}
-            data-group={
-              idx<2 ? 'left' :
-              idx<4 ? 'middle' :
-              'right'
-            }
-            style={{
-              '--tab-color': `#${COLOR_MAP[cat.id]
-                .toString(16)
-                .padStart(6,'0')}`
-            }}
-            onClick={() => setSelected(cat.id)}
-          >
-            {cat.title}
-          </button>
-        ))}
+        {categories.map((cat, idx) => {
+          const tabColor = `#${COLOR_MAP[cat.id].toString(16).padStart(6,'0')}`;
+          const group =
+            idx < 2 ? 'left' :
+            idx < 4 ? 'middle' : 'right';
+
+          /* “Xplor” special-case (no click, shows overlay) */
+          if (cat.id === 'xplor') {
+            return (
+              <button
+                key={cat.id}
+                className="tab disabled"
+                data-group={group}
+                style={{ '--tab-color': tabColor }}
+                onMouseEnter={() => setShowSoon(true)}
+                onMouseLeave={() => setShowSoon(false)}
+              >
+                {cat.title}
+              </button>
+            );
+          }
+
+          /* normal clickable category tabs */
+          return (
+            <button
+              key={cat.id}
+              className={`tab ${selected === cat.id ? 'active' : ''}`}
+              data-group={group}
+              style={{ '--tab-color': tabColor }}
+              onClick={() => setSelected(cat.id)}
+            >
+              {cat.title}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

@@ -27,6 +27,10 @@ const Home = () => {
   const colorTweenRef = useRef(null);
   const pulseTweenRef = useRef(null);
   
+  /* ──────────────────────────────── */
+  /*  Tooltip state                   */
+  /* ──────────────────────────────── */
+  const [showSoon, setShowSoon] = useState(false);
   
   const COLOR_MAP = {
     projects: 0xf94144,
@@ -427,6 +431,10 @@ const Home = () => {
         <span className="blinking-cursor">▮</span>
       </div>
 
+      <div className={`home-coming-soon-overlay ${showSoon ? 'show' : ''}`}>
+        Coming&nbsp;Soon!
+      </div>
+
       {initialized && uiVisible && (
         <div className="home-category-tabs home-bottom" style={{ opacity: 0 }}>
           <button
@@ -497,15 +505,17 @@ const Home = () => {
             Resume
           </button>
 
-          <button
+<button
             className="home-tab"
-            style={{ '--tab-color': '#90be6d' }}
+            style={{ '--tab-color':'#90be6d' }}
             data-group="middle"
-            onMouseEnter={() => {
+            onMouseEnter={()=>{
+              setShowSoon(true);
               colorTweenRef.current.pause();
               transitionPatternColor(COLOR_MAP.writings);
               colorCycleEnabled.current = false;
             }}
+            onMouseLeave={()=> setShowSoon(false)}
           >
             Writings
           </button>

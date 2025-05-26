@@ -134,94 +134,122 @@ export default class Pattern {
     return this;
   }
 
-  regenerate(options = {}) {
+    regenerate(options = {}) {
     const opts = {
-      deltaAngle     : 1,
-      scale          : 1,
-      xPos           : 0,
-      yPos           : 0,
-      zPos           : 0,
-      xAngularFreq   : 1,
-      yAngularFreq   : 1,
-      xPhase         : 0,
-      yPhase         : 0,
-      xFunctionCode  : 1,
-      yFunctionCode  : 1,
-      maxVertices    : this.maxVertices,
-      colorCallback  : null,
-      ...options
+      /* geometry ------------------------------------------------------- */
+      deltaAngle: 1,
+      scale: 1,
+      xPos: 0,
+      yPos: 0,
+      zPos: 0,
+      xAngularFreq: 1,
+      yAngularFreq: 1,
+      xPhase: 0,
+      yPhase: 0,
+      xFunctionCode: 1,
+      yFunctionCode: 1,
+      maxVertices: this.maxVertices,
+
+      /* colouring ------------------------------------------------------ */
+      colorCallback: null,
+
+      /* loop-vertex ---------------------------------- */
+      loopVertex: 0,                 // 0 ⇒ disabled
+      paramsToAdjust: [],            // string or [string…]
+      adjustAmounts: [],             // number or [number…]
+
+      ...options,
     };
 
+    /* ------------------------------------------------------------------ */
+    /* 0. Normalise paramsToAdjust / adjustAmounts to arrays              */
+    /* ------------------------------------------------------------------ */
+    const paramsToAdjust = Array.isArray(opts.paramsToAdjust)
+      ? opts.paramsToAdjust
+      : [opts.paramsToAdjust];
+    const adjustAmounts = Array.isArray(opts.adjustAmounts)
+      ? opts.adjustAmounts
+      : [opts.adjustAmounts];
+
+    /* ------------------------------------------------------------------ */
+    /* 1. Resolve X / Y math functions                                   */
+    /* ------------------------------------------------------------------ */
     const fnX = this._resolveFunction(opts.xFunctionCode);
     const fnY = this._resolveFunction(opts.yFunctionCode);
 
-    /* ------------------------------------------------------------------ */
-    /* 1. Fill the raw typed buffers                                      */
-    /* ------------------------------------------------------------------ */
     let angle = 0;
-    let idx   = 0;
+    let idx = 0;
 
-    while (idx < opts.maxVertices) {
+    const maxVerts = Math.min(opts.maxVertices, this.maxVertices);
+
+    /* ------------------------------------------------------------------ */
+    /* 2. Main vertex loop                                               */
+    /* ------------------------------------------------------------------ */
+    while (idx < maxVerts) {
       const rad = THREE.MathUtils.degToRad(angle);
-      const f   = rad * opts.scale;
+      const f = rad * opts.scale;
 
-      const x   = opts.xPos + angle * fnX(angle * opts.xAngularFreq + opts.xPhase) * f;
-      const y   = opts.yPos + angle * fnY(angle * opts.yAngularFreq + opts.yPhase) * f;
-      const i3  = idx * 3;
+      const x = opts.xPos + angle * fnX(angle * opts.xAngularFreq + opts.xPhase) * f;
+      const y = opts.yPos + angle * fnY(angle * opts.yAngularFreq + opts.yPhase) * f;
+      const i3 = idx * 3;
 
-      this.positions[i3    ] = x;
+      this.positions[i3] = x;
       this.positions[i3 + 1] = y;
       this.positions[i3 + 2] = opts.zPos;
 
+      /* colour -------------------------------------------------------- */
       let r, g, b;
       if (typeof opts.colorCallback === 'function') {
         [r, g, b] = opts.colorCallback(angle, idx);
       } else {
         [r, g, b] = this._hexToRGB(this.initialColor);
       }
-
-      this.colors[i3    ] = r;
+      this.colors[i3] = r;
       this.colors[i3 + 1] = g;
       this.colors[i3 + 2] = b;
 
       angle += opts.deltaAngle;
       idx++;
+
+      /* --------------------------------------------------------------- */
+      /* Loop-vertex adjustment                                          */
+      /* --------------------------------------------------------------- */
+      if (
+        opts.loopVertex > 0 &&
+        idx % Math.floor(opts.loopVertex) === 0
+      ) {
+        paramsToAdjust.forEach((param, adjIdx) => {
+          if (opts[param] !== undefined && adjustAmounts[adjIdx] !== undefined) {
+            opts[param] += adjustAmounts[adjIdx];
+          }
+        });
+        angle = 0; // restart the spiral (matches old behaviour)
+      }
     }
 
     /* ------------------------------------------------------------------ */
-    /* 2. We need ≥2 vertices for LineGeometry — otherwise keep old mesh  */
+    /* 3. LineGeometry requires an even vertex count                     */
     /* ------------------------------------------------------------------ */
-    if (idx < 2) return this;          // → nothing to upload yet; try again next frame
-
-    /* Ensure an even count (LineGeometry requirement)                    */
-    if (idx & 1) {                     // odd?
-      const src3  = (idx - 1) * 3;
-      const dest3 =  idx      * 3;
-      this.positions.set(this.positions.subarray(src3, src3 + 3), dest3);
-      this.colors   .set(this.colors   .subarray(src3, src3 + 3), dest3);
+    if (idx < 2) return this;
+    if (idx & 1) {
+      const src3 = (idx - 1) * 3;
+      this.positions.set(this.positions.subarray(src3, src3 + 3), idx * 3);
+      this.colors.set(this.colors.subarray(src3, src3 + 3), idx * 3);
       idx++;
     }
 
     /* ------------------------------------------------------------------ */
-    /* 3. Upload trimmed arrays                                           */
+    /* 4. Upload to GPU                                                 */
     /* ------------------------------------------------------------------ */
-    this.geometry.setPositions(
-      Array.from(this.positions.subarray(0, idx * 3))
-    );
-    this.geometry.setColors(
-      Array.from(this.colors.subarray(0, idx * 3))
-    );
+    this.geometry.setPositions(Array.from(this.positions.subarray(0, idx * 3)));
+    this.geometry.setColors(Array.from(this.colors.subarray(0, idx * 3)));
 
-    /* ------------------------------------------------------------------ */
-    /* 4. Dash / dot distances                                            */
-    /* ------------------------------------------------------------------ */
-    if (this.style !== PatternStyle.SOLID) {
-      this._computeLineDistances();
-    }
+    this.geometry.setDrawRange( 0, Math.max( 0, ( idx - 1 ) * 2 ) );
 
+    /* dashed / dotted support                                           */
+    if (this.style !== PatternStyle.SOLID) this._computeLineDistances();
     return this;
   }
-
 
 
   _computeLineDistances() {
