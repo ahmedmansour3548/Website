@@ -41,7 +41,7 @@ const BattleTetris = () => {
       <div className="tetris-main">
         <div ref={wrapperRef} className="tetris-canvas-wrapper" />
 
-        <div className="tetris-controls">
+                <div className="tetris-controls">
           <h2>Controls</h2>
           <table>
             <thead>
@@ -52,18 +52,54 @@ const BattleTetris = () => {
               </tr>
             </thead>
             <tbody>
-              <tr><td>Move Left</td>      <td>A</td>            <td>←</td></tr>
-              <tr><td>Move Right</td>     <td>D</td>            <td>→</td></tr>
-              <tr><td>Rotate (CW)</td>    <td>W</td>            <td>↑</td></tr>
-              <tr><td>Soft Drop</td>      <td>S</td>            <td>↓</td></tr>
-              <tr><td>Hard Drop</td>      <td>V</td>            <td>.</td></tr>
-              <tr><td>Hold</td>           <td>C</td>            <td>,</td></tr>
-              <tr><td>Pause/Resume</td>   <td>P / Pause</td>    <td>Pause</td></tr>
-              <tr><td>Restart Game</td>   <td>Restart button</td><td>Restart button</td></tr>
-              <tr><td>Back to Menu</td>   <td>Menu button</td>  <td>Menu button</td></tr>
+              <tr>
+                <td>Move Left</td>
+                <td>A</td>
+                <td>←</td>
+              </tr>
+              <tr>
+                <td>Move Right</td>
+                <td>D</td>
+                <td>→</td>
+              </tr>
+              <tr>
+                <td>Rotate (CW)</td>
+                <td>W</td>
+                <td>↑</td>
+              </tr>
+              <tr>
+                <td>Soft Drop</td>
+                <td>S</td>
+                <td>↓</td>
+              </tr>
+              <tr>
+                <td>Hard Drop</td>
+                <td>V</td>
+                <td>.</td>
+              </tr>
+              <tr>
+                <td>Hold</td>
+                <td>C</td>
+                <td>,</td>
+              </tr>
+
+              {/* merged rows */}
+              <tr>
+                <td>Pause/Resume</td>
+                <td colSpan={2}>P / Pause</td>
+              </tr>
+              <tr>
+                <td>Restart Game</td>
+                <td colSpan={2}>Restart button</td>
+              </tr>
+              <tr>
+                <td>Back to Menu</td>
+                <td colSpan={2}>Menu button</td>
+              </tr>
             </tbody>
           </table>
         </div>
+
       </div>
     </div>
   );

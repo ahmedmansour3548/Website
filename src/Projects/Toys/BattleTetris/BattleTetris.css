@@ -29,26 +29,26 @@
   top: 2rem;
   left: 1rem;
   background: none;
-  border: 2px solid #f9c74f;
+  border: 2px solid #43aa8b;
   transition: background 0.3s;
   cursor: pointer;
   display: flex;
   align-items: center;
   font-family: 'Speculum';
   font-size: 0.7rem;
-  color: #f9c74f;
+  color: #43aa8b;
   font-weight: 600;
   z-index: 5;
 }
 .tetris-back-home:hover,
 .tetris-back-home.active {
-  background: #f9c74f;
+  background: #43aa8b;
   color: #000;
 }
 .tetris-back-icon {
   width: 2rem;
   height: 2rem;
-  background-color: #f9c74f;
+  background-color: #43aa8b;
   mask: url('/public/assets/icons/arrow-left-white.svg') no-repeat center;
   -webkit-mask: url('/public/assets/icons/arrow-left-white.svg') no-repeat center;
   mask-size: contain;
@@ -124,4 +124,8 @@
   text-transform: uppercase;
   font-size: 0.9rem;
   color: #0ff;
+}
+
+.tetris-controls td[colspan="2"] {
+  text-align: center;
 }
