@@ -911,7 +911,7 @@
                             ]
                         }
                     ],
-                    "liveUrl": "/battletetris/play"
+                    "liveUrl": "/projects/toys/battletetris/play"
                 },
                 {
                     "id": "concentriccircles",
