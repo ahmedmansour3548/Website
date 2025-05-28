@@ -911,7 +911,7 @@
                             ]
                         }
                     ],
-                    "liveUrl": "ahmedamansour.com/projects/toys/battletetris/play"
+                    "liveUrl": "/battletetris/play"
                 },
                 {
                     "id": "concentriccircles",
