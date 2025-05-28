@@ -1,0 +1,127 @@
+/* src/Projects/BattleTetris/BattleTetris.css */
+
+/* full‑viewport w/ neon grid; allow vertical scroll */
+.tetris-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;        /* at least one screen tall, but grows with content */
+  box-sizing: border-box;
+  padding: 2rem 0;          /* breathing room top/bottom */
+  background: #000;
+  font-family: 'Speculum', monospace;
+  overflow: visible;        /* let window/page scroll instead */
+}
+
+/* neon vector grid spans the full container */
+.tetris-pattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(0,255,255,0.1) 0 1px, transparent 1px 20px),
+    repeating-linear-gradient(90deg, rgba(255,0,255,0.1) 0 1px, transparent 1px 20px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* back button */
+.tetris-back-home {
+  position: fixed;
+  top: 2rem;
+  left: 1rem;
+  background: none;
+  border: 2px solid #f9c74f;
+  transition: background 0.3s;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-family: 'Speculum';
+  font-size: 0.7rem;
+  color: #f9c74f;
+  font-weight: 600;
+  z-index: 5;
+}
+.tetris-back-home:hover,
+.tetris-back-home.active {
+  background: #f9c74f;
+  color: #000;
+}
+.tetris-back-icon {
+  width: 2rem;
+  height: 2rem;
+  background-color: #f9c74f;
+  mask: url('/public/assets/icons/arrow-left-white.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/arrow-left-white.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  margin-right: 0.5rem;
+}
+.tetris-back-home:hover .tetris-back-icon {
+  filter: brightness(0);
+}
+
+.tetris-main {
+  position: relative;
+  margin: 0 auto;         /* center horizontally */
+  width: 800px;            /* match your game width */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;               /* plenty of space under the game */
+  z-index: 2;
+}
+
+/* game area */
+.tetris-canvas-wrapper {
+  width: 800px;
+  height: 600px;
+  position: relative;
+  overflow: hidden;
+}
+/* override CheerpJ inline positioning */
+#cheerpjDisplay {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* controls box */
+.tetris-controls {
+  background: rgba(0, 0, 0, 0.85);
+  border: 2px solid;
+  border-image: linear-gradient(45deg, #0ff, #f0f) 1;
+  box-shadow: 0 0 10px rgba(0,255,255,0.5), 0 0 20px rgba(240,0,255,0.5);
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  width: 100%;
+  color: #ececec;
+}
+
+.tetris-controls h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+  color: #fff;
+  text-shadow: 0 0 4px #0ff;
+  font-family: 'Speculum';
+  text-align: center;   /* center the heading */
+}
+
+.tetris-controls table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tetris-controls th,
+.tetris-controls td {
+  padding: 0.5rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.tetris-controls th {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  color: #0ff;
+}

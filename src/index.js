@@ -10,6 +10,7 @@ import Pattern, { PatternStyle } from './utils/Pattern';
 
 import Home from './Home/Home';
 import PatternFactory from './Projects/Toys/PatternFactory/PatternFactory';
+import BattleTetris from './Projects/Toys/BattleTetris/BattleTetris';
 import About from './About/About';
 import Projects from './Projects/Projects';
 import ProjectPage from './Projects/ProjectPage';
@@ -93,6 +94,7 @@ root.render(
             <Route path="/projects/:category/:id" element={<ProjectPage />} />
             <Route path="/music" element={<Music />} />
             <Route path="/projects/toys/patternfactory/play" element={<PatternFactory />} />
+            <Route path="/projects/toys/battletetris/play" element={<BattleTetris />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="*" element={<NotFound />} />

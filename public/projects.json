@@ -884,6 +884,11 @@
                     "link": "/projects/toys/battletetris",
                     "description": "\tBattleTetris was my entry for VARLAB’s Summer Game Jam 2024. The theme of the game jam was \"The Others\", and my interpretation of that concept was something competitive and novel. My idea was a chaotic, two-player twist on the original Tetris formula: both players compete on the same board, but with opposite gravity. Player 1 drops blocks from the top like normal, while Player 2 starts from the bottom and pushes pieces upward.\n\n\tI engineered it in Java using an adapted open-source Tetris base, then heavily modified it to support this 2 player mechanic. At the heart of BattleTetris is strategy of a shared space and all the complications that come with it. If a falling piece from one player intersects with the rising piece of the other, the two pieces merge into a larger, awkward shape, forcing both players to adapt. The game becomes a strategic tug-of-war, with raw Tetris skill playing just as big a role as quick reflexes and the ability to out manuver your opponent.\n\n\tThe hardest part was collision logic: detecting whether overlapping pieces should collide, pass through, or merge. I designed per-player color tracking and conditional board reads to handle overlapping states, as well as custom row-clearing logic that works in both upward and downward directions.",
                     "headerPhoto": "/assets/photos/projects/battletetris/battletetris_header.png",
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/battletetris/1.png"
+                        }
+                    ],
                     "quickFacts": [
                         {
                             "label": "Date Started",
@@ -905,7 +910,8 @@
                                 "Managed simultaneous dual-player logic on a single board using multithreaded timers"
                             ]
                         }
-                    ]
+                    ],
+                    "liveUrl": "ahmedamansour.com/projects/toys/battletetris/play"
                 },
                 {
                     "id": "concentriccircles",
