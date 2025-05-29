@@ -297,6 +297,20 @@
   max-height: 60vh;
 }
 
+.iso-hero-title {
+  display: inline-block;        /* allow wrapping */
+  white-space: pre-wrap;        /* honor real spaces */
+  word-break: keep-all;         /* avoid breaking words internally */
+  overflow-wrap: break-word;    /* wrap at natural breakpoints */
+  hyphens: auto;                /* optional hyphenation */
+  text-align: center;           /* remain centered */
+  font-size: clamp(1.8rem, 6vw, 2.4rem) !important;
+}
+
+.iso-hero-title .char {
+  display: inline;              /* normal inline spans */
+}
+
 /* restore your normal stacked layout on small screens */
 @media (max-width: 800px) {
   .iso-overview .split {
@@ -310,15 +324,15 @@
   }
 }
 
-/* ===================== RESPONSIVE & MOBILE ===================== */
+/* =====================  RESPONSIVE & MOBILE  ===================== */
 @media (max-width: 800px), (orientation: portrait) {
-  /* Shrink gutters */
+  /* shrink side gutter */
   :root { --section-gutter: 2rem; }
-  
-  /* Hide side menu */
+
+  /* hide the vertical category menu */
   .cat-menu { display: none !important; }
-  
-  /* Back button → arrow only, perfectly centered */
+
+  /* back‑button → arrow only */
   .iso-back {
     position: fixed !important;
     top: 2rem !important;
@@ -327,26 +341,29 @@
     width: 2.5rem !important;
     height: 2.5rem !important;
     padding: 0 !important;
-    border: 2px solid var(--project-color) !important;
-    background: none !important;
-    text-indent: -9999px !important;
     overflow: hidden !important;
     box-sizing: border-box !important;
+    border: 2px solid var(--project-color) !important;
+    background: none !important;
+    text-indent: 100% !important;  /* push text way off */
+    white-space: nowrap !important;
+    font-size: 0 !important;       /* kill any rendered text */
+    line-height: 0 !important;     /* extra insurance */
   }
   .iso-back::before {
     position: absolute !important;
+    content: "" !important;
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
     width: 1.8rem !important;
     height: 1.8rem !important;
-    content: "" !important;
     -webkit-mask: url('/public/assets/icons/arrow-left-white.svg') center/contain no-repeat !important;
             mask: url('/public/assets/icons/arrow-left-white.svg') center/contain no-repeat !important;
     background: var(--project-color) !important;
   }
-  
-  /* Section & card padding */
+
+  /* tighter section & card padding */
   .iso-section {
     padding: var(--vertical-gutter) 1rem !important;
   }
@@ -354,8 +371,8 @@
     overflow: hidden !important;
     padding: .75rem !important;
   }
-  
-  /* Quick Facts → 2‑column grid */
+
+  /* Quick Facts → two‑column grid */
   .facts-grid {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
@@ -371,7 +388,7 @@
     padding: 1.5rem .75rem 1rem !important;
     flex: none !important;
   }
-  
+
   /* Technologies → single‑column stack */
   .tech-grid-simple {
     display: grid !important;
@@ -383,27 +400,25 @@
     text-align: center !important;
     align-items: center !important;
   }
-  
-  /* Hero title → smaller & wrap */
+
+  /* Hero title → smaller & wrap at words only */
   .iso-hero-text h1 {
-    font-size: 2.4rem !important;
-    white-space: normal !important;
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-    -webkit-line-break: after-white-space !important;
-    hyphens: auto !important;
+    font-size: clamp(1.8rem, 6vw, 2.4rem) !important;
+    white-space: normal !important;        /* allow breaking */
+    overflow-wrap: break-word !important;  /* wrap on word boundaries */
+    word-break: normal !important;         /* avoid mid‑word breaks */
+    hyphens: auto !important;              /* nice hyphenation */
     text-align: center !important;
   }
 }
 
 @media (max-width: 600px) {
-  /* Even tighter gutters */
+  /* even tighter gutter on very small phones */
   :root { --section-gutter: 1rem; }
 
-  /* Overview image can shrink further */
+  /* overview image can go smaller */
   .iso-overview .img-block {
     max-width: 100% !important;
     max-height: 40vh !important;
   }
 }
-

@@ -303,13 +303,14 @@ return (
 {/* Hero text ― render only if showTitle isn’t explicitly false */}
 {project.showTitle !== false && (
   <div className="iso-hero-text">
-    <h1>
-      {project.title.split("").map((c, i) => (
-        <span key={i} className="char">
-          {c === " " ? "\u00A0" : c}
-        </span>
-      ))}
-    </h1>
+    <h1 className="iso-hero-title">
+  {project.title.split("").map((c, i) =>
+    c === " "
+      ? " "    // render a real space
+      : <span key={i} className="char">{c}</span>
+  )}
+</h1>
+
     <p>{project.headerPhotoCaption || ""}</p>
   </div>
 )}
