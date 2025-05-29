@@ -322,7 +322,6 @@
   transform: translateY(-50%) !important;
 }
 
-
 /* Hover states */
 .yarl__button:hover {
   background: var(--project-color) !important;
@@ -517,10 +516,11 @@
     grid-column: 1 / -1 !important;  /* span both columns */
     justify-self: center !important; /* center within the span */
   }
+  .yarl__navigation_prev,
+  .yarl__navigation_next {
+    display: none !important;
+  }
 
-.yarl__navigation_next .yarl__navigation_prev  {
- display: none !important; /* hide prev/next arrows on mobile */
-}
 }
 
 @media (max-width: 600px) {
