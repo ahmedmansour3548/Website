@@ -328,15 +328,18 @@
   }
 
   /* Make “To Projects” button just the arrow */
-  .iso-back {
-    justify-content: center;      /* center ::before horizontally */
-    padding: .35rem;              /* equal padding on both sides */
-    width: 2.5rem;                
-    text-indent: -9999px;
+ .iso-back {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 0 !important;
+    width: 2.5rem !important;
+    padding: .35rem 0 !important;
+    box-sizing: border-box !important;
+    text-indent: -9999px !important;
   }
-
    .iso-back::before {
-    margin: 0;                    /* make sure mask lives dead‑center */
+    margin: 0 !important;                 /* make sure mask lives dead‑center */
   }
 
   /* Shrink vertical padding and side padding on each section */
@@ -348,24 +351,28 @@
   }
 
   .facts-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-    justify-items: center;
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
+    justify-items: center !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
   }
 
   .iso-fact {
-    padding: 1.5rem .75rem 1rem;  /* slightly smaller cards */
-    max-width: none;              /* let grid manage widths */
-    flex: none;                   /* disable flex sizing */
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 1.5rem .75rem 1rem !important;
+    flex: none !important;
   }
 
   /* — Technologies: force centered grid & center‑align card contents — */
   .tech-grid-simple {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 1rem;
-    justify-items: center;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+    justify-items: center !important;
   }
   .tech-card-simple {
     align-items: center;          /* centers icon & title */
