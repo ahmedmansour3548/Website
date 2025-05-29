@@ -156,6 +156,32 @@
   background: var(--tab-color, #00ffea);
   color: #000;
 }
+
+@media (max-width: 940px) {
+  /* 1. Stop the centered text from ever wrapping */
+  .centered-text {
+    white-space: nowrap;
+    /* scale down a bit if needed */
+    font-size: 2.5rem;
+  }
+
+  /* 2. Fit all six buttons into view */
+  .home-category-tabs.home-bottom {
+    width: 95%;                /* give yourself a little breathing room */
+    max-width: 600px;          /* optional cap for phablets */
+    left: 50%;
+    transform: translateX(-50%);
+    gap: 12px;                 /* smaller gap between buttons */
+    padding: 0 1rem;           /* prevent clipping at edges */
+  }
+
+  .home-tab {
+    font-size: 1.2rem;         /* shrink text */
+    padding: 0.3rem 0.6rem;    /* tighter padding */
+    min-width: 0;              /* allow it to shrink below default */
+  }
+}
+
 /* ───────────────────────────────────────────────────────────────
    Keep home buttons in bottom 25% on short viewports
 ──────────────────────────────────────────────────────────────── */
@@ -173,5 +199,23 @@
     /* shrink with viewport height */
     font-size: 2.5vh;
     padding: 0.5vh 1vh;
+  }
+}
+
+@media (max-width: 600px) {
+  .home-tab {
+    font-size: 1rem;       /* down from 1.2rem */
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+/* ────────────────────────────────────────────────────────── */
+/*  Home Buttons – tiny phones (e.g. iPhone Mini)           */
+/*  under 400px width                                       */
+/* ────────────────────────────────────────────────────────── */
+@media (max-width: 400px) {
+  .home-tab {
+    font-size: 0.8rem;     /* even smaller for the smallest devices */
+    padding: 0.2rem 0.4rem;
   }
 }

@@ -519,18 +519,26 @@
     object-fit: cover;
   }
 
-  .about-hero {
-    /* force a hard 100vh so no gap ever appears */
-    min-height: 100vh;
-    height: 100vh;
+.about-hero {
+    width: 100% !important;      /* instead of 100vw */
+    height: 100vh !important;    /* lock it at full viewport height */
+    min-height: 100vh !important;
+    margin: 0;                   /* kill any stray offsets */
+    padding: 0;
+    overflow: hidden;
   }
 
+  /* Inner background layer: pin it, cover it, crop from the top */
   .about-hero-bg {
-    /* crop from the bottom and zoom in a bit */
+    position: absolute !important;
+    top: 0; left: 0;
+    width: 100% !important;
+    height: 100% !important;
     background-position: center bottom !important;
-    transform-origin: center bottom;
-    transform: scale(1.1);
+    background-size: cover !important;   /* drop auto/125% */
+    transform: none !important;          /* remove any zoom-in shifts */
   }
+
 
 }
 
@@ -546,7 +554,7 @@
   .about-hero-bg {
     transform: scale(1.3);
   }
-  
+
   /* back‑home button larger */
   .about-back-home {
     top: 1rem;
