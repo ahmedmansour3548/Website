@@ -517,6 +517,10 @@
     grid-column: 1 / -1 !important;  /* span both columns */
     justify-self: center !important; /* center within the span */
   }
+
+.yarl__navigation_next .yarl__navigation_prev  {
+ display: none !important; /* hide prev/next arrows on mobile */
+}
 }
 
 @media (max-width: 600px) {

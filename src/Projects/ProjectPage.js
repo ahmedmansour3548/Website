@@ -429,12 +429,7 @@ return (
                ))}
               </Marquee>
             </div>
-            {/* show the caption, if any */}
-           {galleryDesc && (
-             <p className="gallery-caption">
-               {galleryDesc}
-             </p>
-           )}
+
           </div>
         </section>
       )}
