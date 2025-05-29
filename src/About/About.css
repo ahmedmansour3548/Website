@@ -105,7 +105,9 @@
 .about-hero {
   position: relative;
   width: 100vw;
-  height: 100vh;
+  /* use min-height instead of a hard 100vh to avoid mobile gaps */
+  min-height: 100vh;
+  height: auto;
   background: url('/public/assets/photos/Me_Hero.jpg') center / cover no-repeat;
   z-index: 10;
   overflow: hidden;
@@ -133,7 +135,6 @@
   0%   { transform: translateX(-30%) translateY(-10%) rotate(0deg); }
   100% { transform: translateX(30%)  translateY(10%)  rotate(20deg); }
 }
-
 
 .about-hero-text {
   position: absolute;
@@ -168,6 +169,11 @@
   animation: bounce 1.5s infinite;
 }
 
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-15px); }
+}
+
 /* ────────────────────────────────────────────────────────── */
 /*  Call-out Banner                                           */
 /* ────────────────────────────────────────────────────────── */
@@ -199,6 +205,10 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: shine 2s linear infinite;
+}
+
+@keyframes shine {
+  to { background-position: -200% center; }
 }
 
 .about-callout-text span {
@@ -348,7 +358,7 @@
   text-decoration: none;
   color: #333;
   transition: transform 0.2s, box-shadow 0.2s;
-  .about-tech-item { will-change: transform; }
+  will-change: transform;
 }
 
 .about-tech-item img {
@@ -388,7 +398,6 @@
 }
 .about-tech-grid-hint span { display: inline-block; white-space: pre; }
 
-/* divider & subheading */
 .about-divider {
   width: 60%;
   margin: 2rem auto;
@@ -424,7 +433,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-
   text-decoration: none;
   color: #333;
   transition: transform 0.3s, color 0.3s;
@@ -444,39 +452,222 @@
 /* ────────────────────────────────────────────────────────── */
 /*  Micro-animations & Utilities                              */
 /* ────────────────────────────────────────────────────────── */
-@keyframes bounce {
-  0%, 100% { transform: translateY(0);  }
-  50%      { transform: translateY(-15px); }
-}
-
-@keyframes shine {
-  to { background-position: -200% center; }
-}
-
-/* subtle card tilt on hover */
-.about-section-card:hover {
+.subtle-section-card-hover .about-section-card:hover {
   transform: perspective(800px) rotateX(2deg) rotateY(-2deg) translateY(-2px);
   box-shadow: 0 15px 25px rgba(0, 0, 0, 0.12);
   transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
 
-/* optimization */
-.about-hero,
-.about-image-block img,
-.about-tech-item { will-change: transform; }
+/* ────────────────────────────────────────────────────────── */
+/*  Responsive Tweaks (tablet & mobile)                       */
+/* ────────────────────────────────────────────────────────── */
 
 /* ────────────────────────────────────────────────────────── */
-/*  Responsive Tweaks                                         */
+/*  Section 1 “Who am I?” – Narrow‑width refactor             */
+/*  below 1700px                                                 */
 /* ────────────────────────────────────────────────────────── */
-@media (max-width: 512px) {
-  .about-section-1 { margin-left: 0; }
+@media (max-width: 1700px) {
+  .about-section-1 {
+    /* remove the large left margin and fixed height */
+    margin-left: 0;
+    height: auto;
+    padding: 2rem 1rem;
+  }
+
+  .about-section-1 .about-section-card {
+    /* center the card and make it auto‑height */
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    height: auto;
+  }
+
+  .about-section-1 .about-split-layout {
+    /* stack text + image in a responsive row with wrapping */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 2rem;
+    width: 100%;
+  }
+
+  .about-section-1 .about-text-block {
+    /* give the text its own column */
+    flex: 1 1 500px;
+    max-width: 600px;
+    text-align: left;
+  }
+
+  .about-section-1 .about-image-block {
+    /* static flex item, keep the tilt, limit its size */
+    position: static;
+    transform: rotate(3deg);
+    flex: 1 1 400px;
+    max-width: 400px;
+    overflow: visible;
+    margin: 0 auto;
+  }
+
+  .about-section-1 .about-image-block img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  .about-hero {
+    /* force a hard 100vh so no gap ever appears */
+    min-height: 100vh;
+    height: 100vh;
+  }
+
+  .about-hero-bg {
+    /* crop from the bottom and zoom in a bit */
+    background-position: center bottom !important;
+    transform-origin: center bottom;
+    transform: scale(1.1);
+  }
+
+}
+
+@media (max-width: 1200px) {
+  .about-hero-bg {
+    transform: scale(1.2);
+  }
+}
+
+
+@media (max-width: 768px) {
+
+  .about-hero-bg {
+    transform: scale(1.3);
+  }
+  
+  /* back‑home button larger */
+  .about-back-home {
+    top: 1rem;
+    left: 1rem;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+  }
+  .about-back-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 0.25rem;
+  }
+
+  /* hero text & arrow */
+  .about-hero-text-header {
+    font-size: 3rem;
+  }
+  .about-scroll-arrow img {
+    bottom: 2rem;
+    right: 2rem;
+    height: 2.5rem;
+  }
+
+  /* section cards wider */
+  .about-section-card {
+    width: 90%;
+    padding: 1.5rem;
+  }
+
+  /* overview stacks vertically, but desktop tilt intact above */
+  .about-section-1 {
+    flex-direction: column;
+    text-align: center;
+  }
+  .about-section-1 .about-text-block,
   .about-section-1 .about-image-block {
     position: static;
-    width: 80%;
+    width: 100%;
     transform: none;
-    margin-top: 1rem;
+    right: 0;
+    margin-top: 1.5rem;
   }
-  .about-section-1 .about-text-block { width: 100%; }
 
-  .about-callout-text { font-size: 2rem; padding: 1rem; }
+  /* tech grid: 2 per row, larger icons */
+  .about-tech-grid.about-primary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+
+  .about-tech-item img {
+    width: 80px;
+    height: 80px;
+  }
+  .about-tech-item span {
+    font-size: 1.2rem;
+  }
+
+    .about-tech-grid.about-secondary {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, auto);
+  /* remove any grid-auto-flow / grid-auto-columns if present */
+}
+
+
+  .about-secondary-item img {
+    width: 80px;
+    height: 80px;
+  }
+  .about-secondary-item span {
+    font-size: 1.2rem;
+  }
+
+
+  /* social links in 4‑column grid */
+  .about-social-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+  .about-social-item img {
+    width: 40px;
+    height: 40px;
+  }
+  .about-social-item span {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 512px) {
+  /* hero text & arrow scale further */
+  .about-hero-text-header {
+    font-size: 2.5rem;
+  }
+  .about-scroll-arrow img {
+    height: 2rem;
+  }
+
+  /* callout smaller and padded */
+  .about-callout-text {
+    font-size: 1.8rem;
+    padding: 0 1rem;
+  }
+
+  /* reduce overall padding */
+  .about-page,
+  .about-content-section {
+    padding: 1rem;
+  }
+    /* Center & constrain the overview card */
+  .about-section-1 .about-section-card {
+    width: 95%;
+    max-width: 400px;   /* prevents it from getting too wide on phablets */
+    margin: 0 auto;     /* equal left/right padding */
+    padding: 1.5rem 1rem;
+  }
+
+  /* Smaller paragraph text */
+  .about-section-1 .about-section-text {
+    font-size: 1.4rem;  /* down from 2.5rem */
+    line-height: 1.5;
+    text-align: left;   /* keep left‑aligned for readability */
+  }
+
 }
