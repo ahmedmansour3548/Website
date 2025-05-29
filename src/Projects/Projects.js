@@ -6,36 +6,37 @@ import gsap from 'gsap';
 import './Projects.css';
 
 const COLOR_MAP = {
-  vrar:        0xf94144,
-  art:         0xf3722c,
+  vrar: 0xf94144,
+  art: 0xf3722c,
   programming: 0x577590,
-  toys:        0x43aa8b,
-  archive:     0x90be6d,
-  xplor:       0xf9c74f
+  toys: 0x43aa8b,
+  archive: 0x90be6d,
+  xplor: 0xf9c74f
 };
 
 const MENU_SCALE = 0.75;
+const PORTRAIT_MIN_RATIO = 0.8;
 
 export default function Projects() {
   const [categories, setCategories] = useState([]);
-  const [selected, setSelected]   = useState('coding');
-  const [showSoon,   setShowSoon]     = useState(false);
+  const [selected, setSelected] = useState('coding');
+  const [showSoon, setShowSoon] = useState(false);
 
-  const containerRef    = useRef(null);
-  const sceneRef        = useRef(null);
-  const cameraRef       = useRef(null);
-  const rendererRef     = useRef(null);
-  const menuGroupRef    = useRef(null);
-  const spriteData      = useRef(new Map());
-  const raycaster       = useRef(new THREE.Raycaster());
-  const pointer         = useRef(new THREE.Vector2());
-  const hovered         = useRef(null);
+  const containerRef = useRef(null);
+  const sceneRef = useRef(null);
+  const cameraRef = useRef(null);
+  const rendererRef = useRef(null);
+  const menuGroupRef = useRef(null);
+  const spriteData = useRef(new Map());
+  const raycaster = useRef(new THREE.Raycaster());
+  const pointer = useRef(new THREE.Vector2());
+  const hovered = useRef(null);
   const isTransitioning = useRef(false);
-  const pendingHover    = useRef(null);
+  const pendingHover = useRef(null);
 
   const navigate = useNavigate();
-  const currentColor = `#${(COLOR_MAP[selected]||0x000000)
-    .toString(16).padStart(6,'0')}`;
+  const currentColor = `#${(COLOR_MAP[selected] || 0x000000)
+    .toString(16).padStart(6, '0')}`;
 
   // Load categories
   useEffect(() => {
@@ -68,34 +69,34 @@ export default function Projects() {
 
     // scene & camera
     const { clientWidth: W, clientHeight: H } = container;
-    const scene  = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, W/H, 0.1, 1000);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, W / H, 0.1, 1000);
     camera.position.z = 3;
 
     // renderer
-    const renderer = new THREE.WebGLRenderer({ alpha:true, antialias:true });
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(W, H);
     renderer.domElement.classList.add('pattern-canvas');
     container.appendChild(renderer.domElement);
 
-    sceneRef.current    = scene;
-    cameraRef.current   = camera;
+    sceneRef.current = scene;
+    cameraRef.current = camera;
     rendererRef.current = renderer;
 
     // pointermove: update coords only
     const onMove = e => {
       const rect = renderer.domElement.getBoundingClientRect();
-      pointer.current.x = ((e.clientX - rect.left) / rect.width)*2 - 1;
-      pointer.current.y = -((e.clientY - rect.top)  / rect.height)*2 + 1;
+      pointer.current.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.current.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
     };
 
     // handle hover transitions
     const startTransition = obj => {
       isTransitioning.current = true;
       // scale swap
-      hovered.current?.scale.set(1.5,0.5,1);
+      hovered.current?.scale.set(1.5, 0.5, 1);
       hovered.current = obj;
-      obj.scale.set(1.7,0.6,1);
+      obj.scale.set(1.7, 0.6, 1);
 
       const newSrc = spriteData.current.get(obj)?.headerPhoto;
       gsap.to(previewImg, {
@@ -138,7 +139,7 @@ export default function Projects() {
       } else {
         // mouse left all sprites
         if (!isTransitioning.current && hovered.current) {
-          hovered.current.scale.set(1.5,0.5,1);
+          hovered.current.scale.set(1.5, 0.5, 1);
           hovered.current = null;
           gsap.to(previewImg, { opacity: 0, duration: 0.5 });
         }
@@ -151,18 +152,18 @@ export default function Projects() {
       if (!hovered.current) return;
       const proj = spriteData.current.get(hovered.current);
       const tabs = document.querySelector('.category-tabs.bottom');
-      const g    = menuGroupRef.current;
+      const g = menuGroupRef.current;
 
       gsap.timeline({
         defaults: { duration: 0.5, ease: 'power2.inOut' },
         onComplete: () => navigate(proj.link)
       })
-      .to(g.scale, { x:0, y:0, z:0 })
-      .to(tabs, { opacity: 0 }, '<');
+        .to(g.scale, { x: 0, y: 0, z: 0 })
+        .to(tabs, { opacity: 0 }, '<');
     };
 
     renderer.domElement.addEventListener('pointermove', onMove);
-    renderer.domElement.addEventListener('click',      onClick);
+    renderer.domElement.addEventListener('click', onClick);
 
     // render loop
     const animate = () => {
@@ -176,15 +177,36 @@ export default function Projects() {
     const onResize = () => {
       const W = container.clientWidth, H = container.clientHeight;
       renderer.setSize(W, H);
-      camera.aspect = W/H;
+      camera.aspect = W / H;
       camera.updateProjectionMatrix();
+
+      // responsive wheel scale
+      const isPortrait = W < H;
+      const factor = isPortrait
+        ? Math.max(W / H, PORTRAIT_MIN_RATIO)
+        : 1;
+      const dynamicScale = MENU_SCALE * factor;
+
+      const group = menuGroupRef.current;
+      if (group) {
+        // resize the whole wheel
+        group.scale.set(dynamicScale, dynamicScale, dynamicScale);
+        // resize each spoke‑label sprite
+        spriteData.current.forEach((proj, sprite) => {
+          sprite.scale.set(
+            1.5 * dynamicScale,
+            0.375 * dynamicScale,
+            1
+          );
+        });
+      }
     };
     window.addEventListener('resize', onResize);
 
     // cleanup
     return () => {
       renderer.domElement.removeEventListener('pointermove', onMove);
-      renderer.domElement.removeEventListener('click',      onClick);
+      renderer.domElement.removeEventListener('click', onClick);
       window.removeEventListener('resize', onResize);
       container.removeChild(previewImg);
       container.removeChild(renderer.domElement);
@@ -194,8 +216,16 @@ export default function Projects() {
   // build & animate the circular menu
   useEffect(() => {
     const scene = sceneRef.current;
+    const container = containerRef.current;
     if (!scene || !categories.length) return;
 
+    const W = container.clientWidth;
+    const H = container.clientHeight;
+    const isPortrait = W < H;
+    const factor = isPortrait
+      ? Math.max(W / H, PORTRAIT_MIN_RATIO)
+      : 1;
+    const dynamicScale = MENU_SCALE * factor;
     // remove old
     const oldGroup = menuGroupRef.current;
     if (oldGroup) {
@@ -207,26 +237,26 @@ export default function Projects() {
 
     // new group
     const group = new THREE.Group();
-    group.scale.set(0,0,0);
+    group.scale.set(0, 0, 0);
     group.position.y = 0.3;
     menuGroupRef.current = group;
     scene.add(group);
 
     // add items
-    const projs  = categories.find(c=>c.id===selected)?.projects||[];
-    const color  = COLOR_MAP[selected];
+    const projs = categories.find(c => c.id === selected)?.projects || [];
+    const color = COLOR_MAP[selected];
     const radius = 1.5;
 
-    projs.forEach((proj,i) => {
-      const angle = (i/projs.length)*Math.PI*2;
-      const x = Math.cos(angle)*radius;
-      const y = Math.sin(angle)*radius;
+    projs.forEach((proj, i) => {
+      const angle = (i / projs.length) * Math.PI * 2;
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
 
       // line
       const line = new THREE.Line(
         new THREE.BufferGeometry().setFromPoints([
-          new THREE.Vector3(0,0,0),
-          new THREE.Vector3(x,y,0)
+          new THREE.Vector3(0, 0, 0),
+          new THREE.Vector3(x, y, 0)
         ]),
         new THREE.LineBasicMaterial({ color })
       );
@@ -236,37 +266,37 @@ export default function Projects() {
       const canvas = document.createElement('canvas');
       canvas.width = 512; canvas.height = 128;
       const ctx = canvas.getContext('2d');
-      ctx.clearRect(0,0,512,128);
+      ctx.clearRect(0, 0, 512, 128);
 
       const text = proj.title;
-      let fontSize = 64, minFont = 16, margin = 512*0.05;
-      while(fontSize>minFont){
+      let fontSize = 64, minFont = 16, margin = 512 * 0.05;
+      while (fontSize > minFont) {
         ctx.font = `bold ${fontSize}px "Speculum"`;
-        if(ctx.measureText(text).width <= 512-margin*2) break;
+        if (ctx.measureText(text).width <= 512 - margin * 2) break;
         fontSize -= 2;
       }
 
-      ctx.textAlign    = 'center';
+      ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.lineWidth    = Math.ceil(fontSize/8);
-      ctx.strokeStyle  = '#000';
-      ctx.strokeText(text,256,64);
-      ctx.fillStyle    = `#${color.toString(16).padStart(6,'0')}`;
-      ctx.fillText(text,256,64);
+      ctx.lineWidth = Math.ceil(fontSize / 8);
+      ctx.strokeStyle = '#000';
+      ctx.strokeText(text, 256, 64);
+      ctx.fillStyle = `#${color.toString(16).padStart(6, '0')}`;
+      ctx.fillText(text, 256, 64);
 
-      const tex    = new THREE.CanvasTexture(canvas);
+      const tex = new THREE.CanvasTexture(canvas);
       const sprite = new THREE.Sprite(
         new THREE.SpriteMaterial({ map: tex, transparent: true })
       );
-      sprite.position.set(x,y,0);
-      sprite.scale.set(1.5*MENU_SCALE,0.375*MENU_SCALE,1);
+      sprite.position.set(x, y, 0);
+      sprite.scale.set(1.5 * dynamicScale, 0.375 * dynamicScale, 1);
       group.add(sprite);
       spriteData.current.set(sprite, proj);
     });
 
     // slow orbit
     gsap.to(group.rotation, {
-      z: '+=' + Math.PI*2,
+      z: '+=' + Math.PI * 2,
       duration: 120,
       ease: 'none',
       repeat: -1
@@ -274,7 +304,7 @@ export default function Projects() {
 
     // pop‑in
     gsap.to(group.scale, {
-      x: MENU_SCALE, y: MENU_SCALE, z: MENU_SCALE,
+      x: dynamicScale, y: dynamicScale, z: dynamicScale,
       duration: 0.8,
       ease: 'elastic.out(1,0.5)'
     });
@@ -283,40 +313,40 @@ export default function Projects() {
   // back‑home animation
   const goBackHome = () => {
     const group = menuGroupRef.current;
-    const tabs  = document.querySelector('.category-tabs.bottom');
+    const tabs = document.querySelector('.category-tabs.bottom');
     gsap.timeline({
       defaults: { duration: 0.5, ease: 'power2.inOut' },
       onComplete: () => navigate('/')
     })
-    .to(".projects-back-home", { x: 15,  duration:0.15, ease:"power2.out" }, 0)
-    .to(".projects-back-home", { x:-200, duration:0.5,  ease:"power2.out" }, 0.15)
-    .to(".projects-back-home", { opacity:0, duration:0.2 }, '<')
-    .to(group.scale,            { x:0, y:0, z:0 },     '<')
-    .to(tabs,                   { opacity:0 },          0)
-    .to({},                     { duration:0.4 });
+      .to(".projects-back-home", { x: 15, duration: 0.15, ease: "power2.out" }, 0)
+      .to(".projects-back-home", { x: -200, duration: 0.5, ease: "power2.out" }, 0.15)
+      .to(".projects-back-home", { opacity: 0, duration: 0.2 }, '<')
+      .to(group.scale, { x: 0, y: 0, z: 0 }, '<')
+      .to(tabs, { opacity: 0 }, 0)
+      .to({}, { duration: 0.4 });
   };
 
   useEffect(() => {
     gsap.from('.projects-back-home', {
-      opacity:0, duration:0.6, ease:"power2.out", delay:0.1
+      opacity: 0, duration: 0.6, ease: "power2.out", delay: 0.1
     });
   }, []);
 
   // tabs intro
   useEffect(() => {
     const tabs = gsap.utils.toArray('.category-tabs.bottom .tab');
-    tabs.forEach((tab,i) => {
+    tabs.forEach((tab, i) => {
       const grp = tab.getAttribute('data-group');
       let props = {};
-      if (grp==='left')   props={ x:'-150vw' };
-      if (grp==='middle') props={ y:'150vh' };
-      if (grp==='right')  props={ x:'150vw' };
+      if (grp === 'left') props = { x: '-150vw' };
+      if (grp === 'middle') props = { y: '150vh' };
+      if (grp === 'right') props = { x: '150vw' };
 
       gsap.from(tab, {
         ...props,
-        duration:0.6,
-        ease:'power2.out',
-        delay:0.1 + i*0.05
+        duration: 0.6,
+        ease: 'power2.out',
+        delay: 0.1 + i * 0.05
       });
     });
   }, []);
@@ -339,10 +369,10 @@ export default function Projects() {
 
       <div className="category-tabs bottom">
         {categories.map((cat, idx) => {
-          const tabColor = `#${COLOR_MAP[cat.id].toString(16).padStart(6,'0')}`;
+          const tabColor = `#${COLOR_MAP[cat.id].toString(16).padStart(6, '0')}`;
           const group =
             idx < 2 ? 'left' :
-            idx < 4 ? 'middle' : 'right';
+              idx < 4 ? 'middle' : 'right';
 
           /* “Xplor” special-case (no click, shows overlay) */
           if (cat.id === 'xplor') {
