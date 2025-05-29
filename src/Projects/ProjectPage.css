@@ -310,48 +310,52 @@
   }
 }
 
-
-
-/* =====================  RESPONSIVE  ===================== */
-@media (max-width:800px), (orientation: portrait){
-  .split{flex-direction:column;}
-  .facts-grid{flex-direction:column; align-items:center;}
-  .iso-live-demo .iso-card{padding:1.5rem 0;}
-  /* Reduce your big side‑gutters so cards fill more width */
-  :root {
-    --section-gutter: 2rem;
-  }
-
-  /* Hide the left category menu entirely */
-  .cat-menu {
-    display: none !important;
-  }
-
-  /* Make “To Projects” button just the arrow */
- .iso-back {
-    font-size: 0 !important;            /* kills all text */
-    color: transparent !important;      /* extra insurance */
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
+/* ===================== RESPONSIVE & MOBILE ===================== */
+@media (max-width: 800px), (orientation: portrait) {
+  /* Shrink gutters */
+  :root { --section-gutter: 2rem; }
+  
+  /* Hide side menu */
+  .cat-menu { display: none !important; }
+  
+  /* Back button → arrow only, perfectly centered */
+  .iso-back {
+    position: fixed !important;
+    top: 2rem !important;
+    left: 1rem !important;
+    z-index: 10 !important;
     width: 2.5rem !important;
-    padding: .35rem 0 !important;
+    height: 2.5rem !important;
+    padding: 0 !important;
+    border: 2px solid var(--project-color) !important;
+    background: none !important;
+    text-indent: -9999px !important;
+    overflow: hidden !important;
     box-sizing: border-box !important;
-    text-indent: 0 !important;          /* clear out old rules */
   }
-   .iso-back::before {
-    margin: 0 !important;                 /* make sure mask lives dead‑center */
+  .iso-back::before {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 1.8rem !important;
+    height: 1.8rem !important;
+    content: "" !important;
+    -webkit-mask: url('/public/assets/icons/arrow-left-white.svg') center/contain no-repeat !important;
+            mask: url('/public/assets/icons/arrow-left-white.svg') center/contain no-repeat !important;
+    background: var(--project-color) !important;
   }
-
-  /* Shrink vertical padding and side padding on each section */
+  
+  /* Section & card padding */
   .iso-section {
-    padding: var(--vertical-gutter) 1rem;
+    padding: var(--vertical-gutter) 1rem !important;
   }
   .iso-card {
     overflow: hidden !important;
-    padding: .75rem;
+    padding: .75rem !important;
   }
-
+  
+  /* Quick Facts → 2‑column grid */
   .facts-grid {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
@@ -360,7 +364,6 @@
     overflow: hidden !important;
     box-sizing: border-box !important;
   }
-
   .iso-fact {
     width: 100% !important;
     max-width: 100% !important;
@@ -368,39 +371,39 @@
     padding: 1.5rem .75rem 1rem !important;
     flex: none !important;
   }
-
-  /* — Technologies: force centered grid & center‑align card contents — */
+  
+  /* Technologies → single‑column stack */
   .tech-grid-simple {
     display: grid !important;
     grid-template-columns: 1fr !important;
     gap: 1rem !important;
     justify-items: center !important;
   }
-  .tech-grid-simple {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    gap: 1rem !important;
-    justify-items: center !important;
+  .tech-card-simple {
+    text-align: center !important;
+    align-items: center !important;
   }
+  
+  /* Hero title → smaller & wrap */
   .iso-hero-text h1 {
-    font-size: 2.4rem !important;           /* smaller heading */
-    white-space: normal !important;         /* allow breaks */
-    overflow-wrap: break-word !important;   /* wrap at spaces */
+    font-size: 2.4rem !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    -webkit-line-break: after-white-space !important;
+    hyphens: auto !important;
+    text-align: center !important;
   }
 }
 
 @media (max-width: 600px) {
-  :root {
-    --section-gutter: 1rem;
-  }
+  /* Even tighter gutters */
+  :root { --section-gutter: 1rem; }
 
-  /* Let the overview image shrink below your 260px clamp */
+  /* Overview image can shrink further */
   .iso-overview .img-block {
     max-width: 100% !important;
     max-height: 40vh !important;
   }
 }
 
-@media (max-width:500px){
-  .tech-grid-simple{flex-direction:column;}
-}
