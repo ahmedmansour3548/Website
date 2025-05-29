@@ -21,7 +21,9 @@ export default function Projects() {
   const [categories, setCategories] = useState([]);
   const [selected, setSelected] = useState('coding');
   const [showSoon, setShowSoon] = useState(false);
-
+  const [isMobilePortrait, setIsMobilePortrait] = useState(
+    window.innerWidth < 600 && window.innerHeight > window.innerWidth
+  );
   const containerRef = useRef(null);
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
@@ -186,6 +188,7 @@ export default function Projects() {
         ? Math.max(W / H, PORTRAIT_MIN_RATIO)
         : 1;
       const dynamicScale = MENU_SCALE * factor;
+      cameraRef.current.position.z = 3 / factor;
 
       const group = menuGroupRef.current;
       if (group) {
@@ -213,6 +216,17 @@ export default function Projects() {
     };
   }, []);
 
+    useEffect(() => {
+    const onMPResize = () => {
+      setIsMobilePortrait(
+        window.innerWidth < 600 &&
+        window.innerHeight > window.innerWidth
+      );
+    };
+    window.addEventListener('resize', onMPResize);
+    return () => window.removeEventListener('resize', onMPResize);
+  }, []);
+
   // build & animate the circular menu
   useEffect(() => {
     const scene = sceneRef.current;
@@ -226,6 +240,8 @@ export default function Projects() {
       ? Math.max(W / H, PORTRAIT_MIN_RATIO)
       : 1;
     const dynamicScale = MENU_SCALE * factor;
+
+    cameraRef.current.position.z = 3 / factor;
     // remove old
     const oldGroup = menuGroupRef.current;
     if (oldGroup) {
@@ -268,21 +284,40 @@ export default function Projects() {
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, 512, 128);
 
-      const text = proj.title;
-      let fontSize = 64, minFont = 16, margin = 512 * 0.05;
+            const words = proj.title.split(' ');
+      let lines = [proj.title];
+      if (isPortrait && words.length > 1) {
+        const mid = Math.ceil(words.length / 2);
+        lines = [
+          words.slice(0, mid).join(' '),
+          words.slice(mid).join(' ')
+        ];
+      }
+
+      // find best fontSize as before…
+      let fontSize = 64, minFont = 24, margin = 512 * 0.05;
       while (fontSize > minFont) {
         ctx.font = `bold ${fontSize}px "Speculum"`;
-        if (ctx.measureText(text).width <= 512 - margin * 2) break;
+        const widest = Math.max(
+          ...lines.map(line => ctx.measureText(line).width)
+        );
+        if (widest <= 512 - margin * 2) break;
         fontSize -= 2;
       }
 
-      ctx.textAlign = 'center';
+      ctx.textAlign    = 'center';
       ctx.textBaseline = 'middle';
-      ctx.lineWidth = Math.ceil(fontSize / 8);
-      ctx.strokeStyle = '#000';
-      ctx.strokeText(text, 256, 64);
-      ctx.fillStyle = `#${color.toString(16).padStart(6, '0')}`;
-      ctx.fillText(text, 256, 64);
+      ctx.lineWidth    = Math.ceil(fontSize / 8);
+      ctx.strokeStyle  = '#000';
+      ctx.fillStyle    = `#${color.toString(16).padStart(6, '0')}`;
+
+      // draw each line, vertically centered
+      const lineHeight = fontSize * 1.2;
+      lines.forEach((line, idx) => {
+        const y = 64 + (idx - (lines.length - 1) / 2) * lineHeight;
+        ctx.strokeText(line, 256, y);
+        ctx.fillText  (line, 256, y);
+      });
 
       const tex = new THREE.CanvasTexture(canvas);
       const sprite = new THREE.Sprite(
@@ -385,7 +420,9 @@ export default function Projects() {
                 onMouseEnter={() => setShowSoon(true)}
                 onMouseLeave={() => setShowSoon(false)}
               >
-                {cat.title}
+                {isMobilePortrait
+                ? cat.title.replace(/\s*projects?/i, '')
+                : cat.title}
               </button>
             );
           }
@@ -399,7 +436,9 @@ export default function Projects() {
               style={{ '--tab-color': tabColor }}
               onClick={() => setSelected(cat.id)}
             >
-              {cat.title}
+              {isMobilePortrait
+                ? cat.title.replace(/\s*projects?/i, '')
+                : cat.title}
             </button>
           );
         })}
