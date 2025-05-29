@@ -188,10 +188,10 @@
 @media (max-width: 600px) and (orientation: portrait) {
 
   /* Center the back‑home button and shrink it slightly */
-  .projects-back-home {
+ .projects-back-home {
     top: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 1rem;
+    transform: none;
     font-size: 0.6rem;
   }
 

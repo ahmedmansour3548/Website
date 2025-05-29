@@ -410,6 +410,11 @@
     hyphens: auto !important;              /* nice hyphenation */
     text-align: center !important;
   }
+
+  .facts-grid > .iso-fact:last-child:nth-child(odd) {
+    grid-column: 1 / -1 !important;  /* span both columns */
+    justify-self: center !important; /* center within the span */
+  }
 }
 
 @media (max-width: 600px) {
@@ -420,5 +425,11 @@
   .iso-overview .img-block {
     max-width: 100% !important;
     max-height: 40vh !important;
+  }
+}
+
+@media (min-width: 801px) {
+  .iso-hero-text h1 {
+    font-size: 5rem !important;    /* bigger on non‑mobile */
   }
 }
