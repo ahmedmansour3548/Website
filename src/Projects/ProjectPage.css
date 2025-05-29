@@ -1,5 +1,5 @@
 /* ─────────────────────────────────────────────
-   EscapeVRoom.css  –  dynamic project palette
+   ProjectPage.css  –  dynamic project palette
    ───────────────────────────────────────────── */
 :root{
   --section-gutter : 13rem;
@@ -277,13 +277,114 @@
 .iso-back:hover::before,
 .iso-back.active::before{ background:#000; }
 
+/* =====================  OVERVIEW: wrap text under the image  ===================== */
+.iso-overview .split {
+  /* stop the flex columns so float can work */
+  display: block;
+}
+
+.iso-overview .iso-card.split {
+  /* contain floats and expand to fit both children */
+  overflow: auto;
+}
+
+.iso-overview .img-block {
+  /* float the image to the top right */
+  float: right;
+  margin: 0 0 1rem 1rem;
+  /* honor your existing caps */
+  max-width: clamp(260px, 40vw, 480px);
+  max-height: 60vh;
+}
+
+/* restore your normal stacked layout on small screens */
+@media (max-width: 800px) {
+  .iso-overview .split {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .iso-overview .img-block {
+    float: none;
+    margin: 0 auto 1rem auto;
+  }
+}
+
+
 
 /* =====================  RESPONSIVE  ===================== */
-@media (max-width:800px){
+@media (max-width:800px), (orientation: portrait){
   .split{flex-direction:column;}
   .facts-grid{flex-direction:column; align-items:center;}
   .iso-live-demo .iso-card{padding:1.5rem 0;}
+  /* Reduce your big side‑gutters so cards fill more width */
+  :root {
+    --section-gutter: 2rem;
+  }
+
+  /* Hide the left category menu entirely */
+  .cat-menu {
+    display: none !important;
+  }
+
+  /* Make “To Projects” button just the arrow */
+  .iso-back {
+    justify-content: center;      /* center ::before horizontally */
+    padding: .35rem;              /* equal padding on both sides */
+    width: 2.5rem;                
+    text-indent: -9999px;
+  }
+
+   .iso-back::before {
+    margin: 0;                    /* make sure mask lives dead‑center */
+  }
+
+  /* Shrink vertical padding and side padding on each section */
+  .iso-section {
+    padding: var(--vertical-gutter) 1rem;
+  }
+  .iso-card {
+    padding: .75rem;
+  }
+
+  .facts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    justify-items: center;
+  }
+
+  .iso-fact {
+    padding: 1.5rem .75rem 1rem;  /* slightly smaller cards */
+    max-width: none;              /* let grid manage widths */
+    flex: none;                   /* disable flex sizing */
+  }
+
+  /* — Technologies: force centered grid & center‑align card contents — */
+  .tech-grid-simple {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    justify-items: center;
+  }
+  .tech-card-simple {
+    align-items: center;          /* centers icon & title */
+    text-align: center;           /* centers bullets/text */
+  }
 }
+
+@media (max-width: 600px) {
+  :root {
+    --section-gutter: 1rem;
+  }
+
+  /* Let the overview image shrink below your 260px clamp */
+  .iso-overview .img-block {
+    max-width: 100% !important;
+    max-height: 40vh !important;
+  }
+}
+
 @media (max-width:500px){
   .tech-grid-simple{flex-direction:column;}
 }

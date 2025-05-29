@@ -722,12 +722,25 @@
                 {
                     "id": "largelanguagemonkey",
                     "title": "Large Language Monkey",
+                    "showTitle": false,
                     "link": "/projects/programming/largelanguagemonkey",
                     "description": "\tLarge Language Monkey was my first venture into using Large Language Models for Procedural Content Generation. Reese and I designed a 2D platformer that parses level data created entirely by a generative AI model. We set out to measure zero-shot capabilities across model architectures—comparing OpenAI’s 3.5-Turbo and 4o with Ollama’s 70B and 3B variants—and to refine a prompt framework that could consistently yield compilable, playable, and novel levels.\n\n\tWe divvied up the work: Reese built the game code and parser, while I managed LLM selection and engineered the prompts. We iterated seven prompting strategies—incrementally adding grammar rules, jump-distance guidelines, and example layouts—then generated 280 levels for hands-on testing. Our findings expressed a complex landscape: smaller models excel with tight prompts, larger ones nail parsing accuracy, and prompt detail has diminishing returns. Some levels generated were incredibly simple to beat, while others were flat out impossible. And many simply could not be parsed due to issues in the data.\n\n\tFrom all this, one thing I definitely learned is that prompt engineering is a craft in of itself. There is a sweet spot between telling the AI just enough to guide its output without stifling its inventiveness. And I learned that sometimes, size isn't everything. A smaller model in the right context can perform just as well as a larger one. Procedural Content Generation is not only viable but certainly ripe for further exploration.",
                     "headerPhoto": "/assets/photos/projects/largelanguagemonkey/largelanguagemonkey_header.png",
                     "photos": [
                         {
-                            "url": "/assets/photos/largelanguagemonkey/1.png"
+                            "url": "/assets/photos/projects/largelanguagemonkey/1.png"
+                        },
+                        {
+                            "url": "/assets/photos/projects/largelanguagemonkey/2.png"
+                        },
+                        {
+                            "url": "/assets/photos/projects/largelanguagemonkey/3.png"
+                        },
+                        {
+                            "url": "/assets/photos/projects/largelanguagemonkey/4.png"
+                        },
+                        {
+                            "url": "/assets/photos/projects/largelanguagemonkey/5.png"
                         }
                     ],
                     "quickFacts": [

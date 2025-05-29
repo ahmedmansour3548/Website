@@ -361,23 +361,25 @@ return (
       )}
 
       {/* ────────── OVERVIEW ────────── */}
-      {project.description && (
-        <section className="iso-section iso-overview">
-          <div className="iso-card split">
-            <div className="text-block">
-              <h2 className="iso-card-header">Overview</h2>
-              <p className="iso-overview-text">{formatText(project.description)}</p>
-            </div>
+{project.description && (
+  <section className="iso-section iso-overview">
+    <div className="iso-card split">
+      {/* image first so float can wrap text */}
+      <div className="img-block">
+        <img
+          src={project.photos?.[0]?.url || project.headerPhoto}
+          alt={project.title}
+        />
+      </div>
 
-            <div className="img-block">
-              <img
-                src={project.photos?.[0]?.url || project.headerPhoto}
-                alt={project.title}
-              />
-            </div>
-          </div>
-        </section>
-      )}
+      <div className="text-block">
+        <h2 className="iso-card-header">Overview</h2>
+        <p className="iso-overview-text">{formatText(project.description)}</p>
+      </div>
+    </div>
+  </section>
+)}
+
 
       {/* ────────── TECHNOLOGIES ────────── */}
       {Array.isArray(project.techUsed) && project.techUsed.length > 0 && (
