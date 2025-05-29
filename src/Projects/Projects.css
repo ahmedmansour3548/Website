@@ -163,6 +163,10 @@
   color: var(--tab-color);
 }
 
+.pattern-canvas {
+  touch-action: none;
+}
+
 /* ───────────────────────────────────────────────────────────────
    Keep projects buttons in bottom 25% on short viewports
 ──────────────────────────────────────────────────────────────── */

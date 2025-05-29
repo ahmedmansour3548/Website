@@ -167,6 +167,23 @@ export default function Projects() {
     renderer.domElement.addEventListener('pointermove', onMove);
     renderer.domElement.addEventListener('click', onClick);
 
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+if (isTouchDevice) {
+  const onTouchStart = e => {
+    onMove(e);      // update pointer coords
+    updateHover();  // do the hover‐preview immediately
+    if (hovered.current) {
+      onClick();    // trigger your same click/navigation logic
+    }
+  };
+  renderer.domElement.addEventListener('pointerdown', onTouchStart);
+
+  // cleanup
+  var cleanupTouch = () => {
+    renderer.domElement.removeEventListener('pointerdown', onTouchStart);
+  };
+} 
+
     // render loop
     const animate = () => {
       requestAnimationFrame(animate);
@@ -213,6 +230,7 @@ export default function Projects() {
       window.removeEventListener('resize', onResize);
       container.removeChild(previewImg);
       container.removeChild(renderer.domElement);
+      if (cleanupTouch) cleanupTouch();
     };
   }, []);
 
@@ -294,7 +312,7 @@ export default function Projects() {
         ];
       }
 
-      // find best fontSize as before…
+      // find best fontSize
       let fontSize = 64, minFont = 24, margin = 512 * 0.05;
       while (fontSize > minFont) {
         ctx.font = `bold ${fontSize}px "Speculum"`;
