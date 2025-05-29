@@ -335,17 +335,50 @@
 .video-wrapper iframe{position:absolute; inset:0; width:100%; height:100%; border:none; border-radius:4px;}
 
 /* =====================  RESOURCES  ===================== */
-.iso-resources .res-grid{display:flex; justify-content:center; gap:2rem; flex-wrap:wrap; margin-top:1rem;}
-.iso-resources .res-item{
-  background:var(--project-color); color:var(--navy);
-  display:flex; flex-direction:column; align-items:center;
-  width:120px; padding:1rem; border-radius:.5rem; text-decoration:none;
-  box-shadow:0 2px 8px rgba(0,0,0,.25);
-  transition:transform .2s ease, box-shadow .2s ease;
+.iso-resources .res-grid {
+  display: grid;
+  gap: 1.5rem;
+  /* auto-fit as many 160px-wide columns as will fit */
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  justify-items: center;
+  align-items: start;
+  margin-top: 1rem;
 }
-.iso-resources .res-item:hover{transform:translateY(-4px); box-shadow:0 4px 12px rgba(0,0,0,.35);}
-.iso-resources .res-item img{width:48px; height:48px; margin-bottom:.5rem; filter:brightness(0);}
-.iso-resources .res-item span{font-size:.9rem; font-weight:600;}
+
+.iso-resources .res-item {
+  background: var(--project-card);
+  border: 2px solid var(--project-color);
+  border-radius: 8px;
+  padding: 1rem;
+  text-decoration: none;
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.iso-resources .res-item img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  margin-bottom: 0.75rem;
+  filter: brightness(0) invert(1); /* white icons */
+}
+
+.iso-resources .res-item span {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Hover effect */
+.iso-resources .res-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+}
+
 
 /* =====================  BACK BUTTON  ===================== */
 .iso-back{
@@ -521,6 +554,10 @@
     display: none !important;
   }
 
+  .iso-resources .res-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
 }
 
 @media (max-width: 600px) {
@@ -534,6 +571,10 @@
   }
   .gallery-caption {
     font-size: 0.9rem;
+  }
+
+  .iso-resources .res-grid {
+    grid-template-columns: 1fr;
   }
 }
 

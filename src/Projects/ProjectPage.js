@@ -83,7 +83,6 @@ useEffect(() => {
     .catch(console.error);
 }, [id]);
 
-
 // ─────────── Push theme colours to CSS custom-props ───────────
 useEffect(() => {
   if (!project || !firstLoad.current) return;
@@ -258,6 +257,30 @@ useEffect(() => {
   }, [project]);
 
   if (!project) return <div className="iso-loading">Loading…</div>;
+
+
+    const resourceList = [];
+  if (project.resources?.repoUrl) {
+    resourceList.push({
+      icon: "github.svg",
+      label: "GitHub",
+      url: project.resources.repoUrl,
+    });
+  }
+  if (project.resources?.liveUrl) {
+    resourceList.push({
+      icon: "external.svg",
+      label: "Live Demo",
+      url: project.resources.liveUrl,
+    });
+  }
+  if (project.resources?.downloadUrl) {
+    resourceList.push({
+      icon: "zip.svg",
+      label: "Download ZIP",
+      url: project.resources.downloadUrl,
+    });
+  }
 
   const goBack = () => navigate("/projects");
 
@@ -471,34 +494,27 @@ return (
       )}
 
       {/* ────────── RESOURCES ────────── */}
-      {(project.resources) && (
-        <section className="iso-section iso-resources">
-          <div className="iso-card">
-            <h2 className="iso-card-header">Resources</h2>
-
-            <div className="res-grid">
-              {project.repoUrl && (
-                <a href={project.repoUrl} className="res-item" target="_blank" rel="noopener noreferrer">
-                  <img src="/assets/icons/github.svg" alt="GitHub" />
-                  <span>GitHub</span>
-                </a>
-              )}
-              {project.downloadUrl && (
-                <a href={project.downloadUrl} className="res-item" download>
-                  <img src="/assets/icons/zip.svg" alt="Download ZIP" />
-                  <span>Download</span>
-                </a>
-              )}
-              {project.liveUrl && (
-                <a href={project.liveUrl} className="res-item" target="_blank" rel="noopener noreferrer">
-                  <img src="/assets/icons/external.svg" alt="Live Demo" />
-                  <span>Live Demo</span>
-                </a>
-              )}
+      {resourceList.length > 0 && (
+          <section className="iso-section iso-resources">
+            <div className="iso-card">
+              <h2 className="iso-card-header">Resources</h2>
+              <div className="res-grid">
+                {resourceList.map((r, i) => (
+                  <a
+                    key={i}
+                    href={r.url}
+                    className="res-item"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img src={`/assets/icons/${r.icon}`} alt={r.label} />
+                    <span>{r.label}</span>
+                  </a>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
-      )}
+          </section>
+        )}
 
       {/* ────────── BACK HOME BUTTON ────────── */}
       <button className="iso-back" onClick={()=>navigate("/projects")} aria-label="Go back to projects">
