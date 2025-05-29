@@ -1,7 +1,6 @@
 // src/Projects/ProjectPage.js
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import "./ProjectPage.css";
 import gsap from "gsap";
 import { Flip } from "gsap/Flip";
 import Marquee from "react-fast-marquee";
@@ -10,7 +9,9 @@ import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import CategoryMenu from "../utils/CategoryMenu";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
-
+import Captions from "yet-another-react-lightbox/plugins/captions";
+import "yet-another-react-lightbox/plugins/captions.css";
+import "./ProjectPage.css";
 
 gsap.registerPlugin(Flip);
 
@@ -52,7 +53,7 @@ const ProjectPage = () => {
   const { category, id } = useParams();
   const [project, setProject]         = useState(null); // currently displayed
 const [queuedProject, setQueued]    = useState(null); // awaiting display
-
+const [galleryDesc, setGalleryDesc] = useState("");
   const navigate = useNavigate();
   const sectionRefs = useRef([]);
   const [lightboxIndex, setLightboxIndex] = useState(-1);
@@ -261,7 +262,10 @@ useEffect(() => {
   const goBack = () => navigate("/projects");
 
   const photos = project.photos || [];
-  const slides = photos.map((p) => ({ src: p.url }));
+ const slides = photos.slice(1).map((p) => ({
+   src: p.url,
+   description: p.caption || "",    // pull in caption
+ }));
 
   const techUsed = Array.isArray(project.techUsed)
     ? project.techUsed.map((t) => ({
@@ -412,12 +416,25 @@ return (
             <div className="gallery-marquee">
               <Marquee gradient={false} speed={30} loop={0} autoFill>
                 {project.photos.slice(1).map((ph,i)=>(
-                  <div key={i} className="gallery-item" onClick={()=>setLightboxIndex(i)}>
-                    <img src={ph.url} alt={`Screenshot ${i+1}`} />
-                  </div>
-                ))}
+                 <div
+                   key={i}
+                   className="gallery-item"
+                   onClick={()=>{
+                     setLightboxIndex(i);
+                     setGalleryDesc(ph.caption || "");
+                   }}
+                 >
+                   <img src={ph.url} alt={`Screenshot ${i+1}`} />
+                 </div>
+               ))}
               </Marquee>
             </div>
+            {/* show the caption, if any */}
+           {galleryDesc && (
+             <p className="gallery-caption">
+               {galleryDesc}
+             </p>
+           )}
           </div>
         </section>
       )}
@@ -425,13 +442,20 @@ return (
       {/* ────────── LIGHTBOX (always present if photos) ────────── */}
       {project.photos?.length > 1 && (
         <Lightbox
-          open={lightboxIndex >= 0}
-          close={() => setLightboxIndex(-1)}
-          slides={project.photos.slice(1).map(ph=>({ src: ph.url }))}
-          index={lightboxIndex}
-          plugins={[Thumbnails]}
-          thumbnails={{ position:"bottom", height:80, spacing:8 }}
-        />
+   open={lightboxIndex >= 0}
+   close={() => {
+     setLightboxIndex(-1);
+     setGalleryDesc("");
+   }}
+   slides={slides}
+   index={lightboxIndex}
+   plugins={[Thumbnails, Captions]}
+   thumbnails={{ position: "bottom", height: 80, spacing: 8 }}
+   captions={{
+     descriptionTextAlign: "center",
+     descriptionMaxLines: 4,
+   }}
+ />
       )}
 
       {/* ────────── VIDEO ────────── */}

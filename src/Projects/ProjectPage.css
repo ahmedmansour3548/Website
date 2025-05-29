@@ -220,7 +220,27 @@
 }
 
 /* =====================  GALLERY  ===================== */
-.gallery-marquee{margin-top:1rem; overflow-x:hidden; padding:.5rem 0;}
+.gallery-marquee {
+  /* only horizontal clipping; vertical overflow is hidden */
+  overflow-x: hidden;      /* clip the sides as before */
+  overflow-y: hidden;      /* hide that pesky vertical scroll */  /* :contentReference[oaicite:0]{index=0} */
+
+  /* remove scrollbar “chrome” in IE/Edge and Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+  scrollbar-width: none;    /* Firefox */                   /* :contentReference[oaicite:1]{index=1} */
+}
+
+.gallery-marquee,
+.gallery-marquee > div,
+.gallery-marquee > div > div {
+  overflow-y: hidden !important;
+}
+/* kill WebKit scrollbars (Chrome, Safari, Opera) */
+.gallery-marquee::-webkit-scrollbar {
+  display: none;            /* :contentReference[oaicite:2]{index=2} */
+}
+
+
 .gallery-item{
   flex:0 0 auto; margin-right:.5rem; border-radius:6px; cursor:pointer;
   overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,.35);
@@ -228,6 +248,88 @@
 }
 .gallery-item:hover{transform:scale(1.05);}
 .gallery-item img{height:150px; object-fit:cover; display:block;}
+
+.gallery-caption {
+  margin-top: 1rem;
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  line-height: 1.6;
+  color: var(--tech-text);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+/* ───────────────── Lightbox Overrides ───────────────── */
+
+/* Darken the backdrop */
+.yarl__container {
+  background: rgba(12, 12, 12, 0.85) !important;
+}
+
+/* Keep neon border + glow on the image */
+.yarl__slide img {
+  clip-path: none !important;
+  border: 3px solid var(--project-color) !important;
+  box-shadow:
+    0 0 20px var(--project-color)
+    0 0 40px var(--project-light) !important;
+}
+
+/* Caption sits below the image, fades slightly */
+.yarl__slide_description {
+  font-family: 'Speculum', sans-serif !important;
+  color: var(--project-light) !important;
+  opacity: 0.7 !important;               /* fade text */
+  font-size: clamp(1rem, 2.5vw, 1.2rem) !important;
+  line-height: 1.4 !important;
+  margin: 1rem auto 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  border: none !important;
+  text-align: center !important;
+  max-width: 80% !important;
+}
+
+/* Prev / Next arrows and Close button - larger & saturated */
+.yarl__button {
+  position: absolute !important;
+  color: var(--project-color) !important;       /* saturated */
+  border: 2px solid var(--project-color) !important;
+  background: none !important;
+  border-radius: 50% !important;
+  width: 4rem !important;                        /* bigger */
+  height: 4rem !important;
+  padding: 1rem !important;                      /* larger click area */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+}
+
+
+/* Pad arrows away from edges */
+.yarl__navigation_prev  {
+  left: 2rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+.yarl__navigation_next  {
+  right: 2rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+
+/* Hover states */
+.yarl__button:hover {
+  background: var(--project-color) !important;
+  color: #000 !important;
+}
+
+
 
 /* =====================  VIDEO  ===================== */
 .video-wrapper{position:relative; width:100%; padding-top:56.25%;}
@@ -425,6 +527,9 @@
   .iso-overview .img-block {
     max-width: 100% !important;
     max-height: 40vh !important;
+  }
+  .gallery-caption {
+    font-size: 0.9rem;
   }
 }
 
