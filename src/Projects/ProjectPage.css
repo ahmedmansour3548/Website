@@ -329,14 +329,15 @@
 
   /* Make “To Projects” button just the arrow */
  .iso-back {
+    font-size: 0 !important;            /* kills all text */
+    color: transparent !important;      /* extra insurance */
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
-    gap: 0 !important;
     width: 2.5rem !important;
     padding: .35rem 0 !important;
     box-sizing: border-box !important;
-    text-indent: -9999px !important;
+    text-indent: 0 !important;          /* clear out old rules */
   }
    .iso-back::before {
     margin: 0 !important;                 /* make sure mask lives dead‑center */
@@ -347,6 +348,7 @@
     padding: var(--vertical-gutter) 1rem;
   }
   .iso-card {
+    overflow: hidden !important;
     padding: .75rem;
   }
 
@@ -374,9 +376,16 @@
     gap: 1rem !important;
     justify-items: center !important;
   }
-  .tech-card-simple {
-    align-items: center;          /* centers icon & title */
-    text-align: center;           /* centers bullets/text */
+  .tech-grid-simple {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+    justify-items: center !important;
+  }
+  .iso-hero-text h1 {
+    font-size: 2.4rem !important;           /* smaller heading */
+    white-space: normal !important;         /* allow breaks */
+    overflow-wrap: break-word !important;   /* wrap at spaces */
   }
 }
 
