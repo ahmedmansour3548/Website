@@ -129,19 +129,13 @@
   bottom: calc(constant(safe-area-inset-bottom) + 20px);
   /* Modern iOS Safari: */
   bottom: calc(env(safe-area-inset-bottom) + 20px);
-
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, auto);
   gap: 40px;
-
-  opacity: 0; /* start hidden */
+  opacity: 0;
   transition: opacity 0.5s ease-in-out;
   z-index: 2;
-
-  /* If your grid ever grows taller, this ensures it remains above the inset */
-  padding-bottom: constant(safe-area-inset-bottom);
-  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .home-tab {
@@ -190,10 +184,7 @@
     transform: translateX(-50%);
     gap: 12px;                 /* smaller gap between buttons */
     padding: 0 1rem;           /* prevent clipping at edges */
-    bottom: calc(constant(safe-area-inset-bottom) + 16px);
-    bottom: calc(env(safe-area-inset-bottom) + 16px);
-    padding-bottom: constant(safe-area-inset-bottom);
-    padding-bottom: env(safe-area-inset-bottom);
+
 
   }
 
@@ -222,10 +213,7 @@
     transform: translateX(-50%);
     gap: 12px;                 /* smaller gap between buttons */
     padding: 0 1rem;           /* prevent clipping at edges */
-bottom: calc(constant(safe-area-inset-bottom) + 12px);
-    bottom: calc(env(safe-area-inset-bottom) + 12px);
-    padding-bottom: constant(safe-area-inset-bottom);
-    padding-bottom: env(safe-area-inset-bottom);
+
 
   }
 
@@ -245,8 +233,7 @@ bottom: calc(constant(safe-area-inset-bottom) + 12px);
     bottom: auto;
     left: 50%;
     transform: translateX(-50%);
-    padding-bottom: constant(safe-area-inset-bottom);
-    padding-bottom: env(safe-area-inset-bottom);
+
   }
 
   .home-category-tabs.home-bottom .home-tab {
@@ -262,11 +249,6 @@ bottom: calc(constant(safe-area-inset-bottom) + 12px);
     grid-template-rows: repeat(3, auto);
     gap: 12px;
 
-    bottom: calc(constant(safe-area-inset-bottom) + 10px);
-    bottom: calc(env(safe-area-inset-bottom) + 10px);
-
-    padding-bottom: constant(safe-area-inset-bottom);
-    padding-bottom: env(safe-area-inset-bottom);
 
     width: 90%;
     max-width: 360px;

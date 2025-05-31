@@ -17,7 +17,10 @@ html, body {
     height: 100%; /* Ensure the body takes the full height of the viewport */
     margin: 0; /* Remove default margin */
     z-index: 1;
-
+     /* reserve the bottom inset, so content never goes under Safari’s toolbar */
+  padding-bottom: env(safe-area-inset-bottom);
+  /* fallback for older iOS Safari (<11.2): */
+  padding-bottom: constant(safe-area-inset-bottom);
 }
 /* Custom Scrollbar with Tapered Ends */
 /* ::-webkit-scrollbar {
