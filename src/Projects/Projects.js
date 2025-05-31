@@ -138,7 +138,7 @@ const startImageTransition = obj => {
     onComplete: () => {
       // Before loading the new image, check if another transition started in the meantime
       if (thisID !== transitionCounter) {
-        // A newer hover happened—abort this one
+        // A newer hover happened, abort this one
         isTransitioning.current = false;
         return;
       }
@@ -147,32 +147,30 @@ const startImageTransition = obj => {
       const loader = new Image();
       loader.src = newSrc;
       loader.onload = () => {
-        // Again, confirm we’re still on the same transition
         if (thisID !== transitionCounter) {
           isTransitioning.current = false;
           return;
         }
 
-        // Swap the <img>’s src now that the new image is fully loaded
+        // Swap <img>’s src now that the new image is fully loaded
         previewImg.src = newSrc;
 
-        // Immediately set filter to black and opacity 0 (in case they changed)
+        // Set filter to black and opacity 0
         previewImg.style.filter = 'brightness(0)';
         previewImg.style.opacity = '0';
 
-        // Fade back up from black → full brightness & visible
+        // Fade back up from black
         gsap.to(previewImg, {
           duration: 0.5,
           filter: 'brightness(1)',  // ramp up to normal brightness
-          opacity: 0.5,             // fade in to 50% opacity (match what you were using before)
+          opacity: 0.5,
           onComplete: () => {
-            // Final check: if another hover started, we’ll let that call interrupt as needed
+            // if another hover started, let that call interrupt as needed
             if (thisID !== transitionCounter) {
               isTransitioning.current = false;
               return;
             }
             isTransitioning.current = false;
-            // No need for “pendingHover” here—any new hover simply incremented transitionCounter
           }
         });
       };
@@ -187,9 +185,7 @@ const startImageTransition = obj => {
   });
 };
     //
-    // 2E) Raycast + hover logic. Now decoupled into:
-    //     (a) immediate sprite scaling
-    //     (b) conditional 'startImageTransition' if no other fade is running
+    // Raycast + hover logic
     //
     const updateHover = () => {
   raycaster.current.setFromCamera(pointer.current, cameraRef.current);
@@ -202,26 +198,26 @@ const startImageTransition = obj => {
     const obj = hits[0].object;
 
     if (hovered.current !== obj) {
-      // 1) Immediately restore the old sprite’s scale (if any)
+      // Immediately restore the old sprite’s scale (if any)
       if (hovered.current) {
         hovered.current.scale.set(1.5, 0.5, 1);
       }
-      // 2) Grow the new sprite
+      // Grow the new sprite
       hovered.current = obj;
       obj.scale.set(1.7, 0.6, 1);
 
-      // 3) Always kick off a brand‑new transition for this sprite,
+      // Always kick off a brand‑new transition for this sprite,
       //    even if a previous fade is still in motion.
       startImageTransition(obj);
     }
   } else {
     // Mouse has left all sprites
     if (hovered.current) {
-      // 1) Immediately restore that sprite’s scale
+      // Immediately restore that sprite’s scale
       hovered.current.scale.set(1.5, 0.5, 1);
       hovered.current = null;
 
-      // 2) Hide the preview image entirely:
+      // Hide the preview image entirely:
       //    Kill any tweens, then fade opacity → 0 & reset brightness.
       gsap.killTweensOf(previewImg);
       gsap.to(previewImg, {
@@ -239,7 +235,7 @@ const startImageTransition = obj => {
 };
 
     //
-    // 2F) Click handler (navigates once you click while hovering)
+    // Click handler (navigates once you click while hovering)
     //
     const onClick = () => {
       if (!hovered.current) return;
@@ -258,7 +254,7 @@ const startImageTransition = obj => {
     renderer.domElement.addEventListener('pointermove', onMove);
     renderer.domElement.addEventListener('click', onClick);
 
-    // 2G) Touch support (tap = hover + click)
+    // Touch support (tap = hover + click)
     const isTouchDevice =
       'ontouchstart' in window || navigator.maxTouchPoints > 0;
     let cleanupTouch = null;
@@ -278,7 +274,7 @@ const startImageTransition = obj => {
     }
 
     //
-    // 2H) The render loop
+    // The render loop
     //
     const animate = () => {
       requestAnimationFrame(animate);
@@ -288,7 +284,7 @@ const startImageTransition = obj => {
     animate();
 
     //
-    // 2I) Handle window resize (resize wheel + sprites)
+    // Handle window resize (resize wheel + sprites)
     //
     const onResize = () => {
       const W = container.clientWidth,
@@ -335,7 +331,7 @@ const startImageTransition = obj => {
   }, [/* empty deps: run once */]);
 
   //
-  // 3) Watch for portrait mobile orientation changes
+  // Watch for portrait mobile orientation changes
   //
   useEffect(() => {
     const onMPResize = () => {
@@ -349,7 +345,7 @@ const startImageTransition = obj => {
   }, []);
 
   //
-  // 4) Build & animate the circular menu any time `categories` or `selected` changes
+  // Build & animate the circular menu any time `categories` or `selected` changes
   //
   useEffect(() => {
     const scene = sceneRef.current;
@@ -366,7 +362,7 @@ const startImageTransition = obj => {
 
     cameraRef.current.position.z = 3 / factor;
 
-    // 4A) Remove old menu group (if any)
+    // Remove old menu group (if any)
     const oldGroup = menuGroupRef.current;
     if (oldGroup) {
       oldGroup.children.forEach(c => {
@@ -375,14 +371,14 @@ const startImageTransition = obj => {
       scene.remove(oldGroup);
     }
 
-    // 4B) Create new group
+    // Create new group
     const group = new THREE.Group();
     group.scale.set(0, 0, 0);
     group.position.y = 0.3;
     menuGroupRef.current = group;
     scene.add(group);
 
-    // 4C) Add lines + sprites for each project in the “selected” category
+    // 4Add lines + sprites for each project in the “selected” category
     const projs = categories.find(c => c.id === selected)?.projects || [];
     const color = COLOR_MAP[selected];
     const radius = 1.5;
@@ -455,7 +451,7 @@ const startImageTransition = obj => {
       spriteData.current.set(sprite, proj);
     });
 
-    // 4D) Slowly orbit the entire group
+    // Slowly orbit the entire group
     gsap.to(group.rotation, {
       z: '+=' + Math.PI * 2,
       duration: 120,
@@ -463,7 +459,7 @@ const startImageTransition = obj => {
       repeat: -1
     });
 
-    // 4E) Pop‐in animation
+    // Pop‐in animation
     gsap.to(group.scale, {
       x: dynamicScale,
       y: dynamicScale,
@@ -474,7 +470,7 @@ const startImageTransition = obj => {
   }, [categories, selected]);
 
   //
-  // 5) “Back Home” animation
+  // “Back Home” animation
   //
   const goBackHome = () => {
     const group = menuGroupRef.current;
@@ -501,7 +497,7 @@ const startImageTransition = obj => {
   }, []);
 
   //
-  // 6) Category‐tabs intro animation
+  // Category‐tabs intro animation
   //
   useEffect(() => {
     const tabs = gsap.utils.toArray('.category-tabs.bottom .tab');
