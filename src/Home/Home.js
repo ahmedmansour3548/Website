@@ -102,6 +102,19 @@ const Home = () => {
     });
   }, []);
 
+    useEffect(() => {
+    // Detect iPhone Safari:
+    const ua = navigator.userAgent || '';
+    const isiPhone = ua.includes('iPhone');
+    const isSafari = ua.includes('Safari') && !ua.includes('CriOS') && !ua.includes('FxiOS');
+
+    if (isiPhone && isSafari) {
+      document.documentElement.classList.add('iphone-safari');
+    } else {
+      document.documentElement.classList.add('not-iphone-safari');
+    }
+  }, []);
+
   useEffect(() => {
     const cycleFonts = async () => {
       await loadFont(FONT_LIST[0]);

@@ -243,21 +243,45 @@ body {
 }
 
 @media (max-width: 600px) {
-  .home-category-tabs.home-bottom {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(3, auto);
-    gap: 12px;
-    width: 90%;
-    max-width: 360px;
-    padding: 0;
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
-    top: 70vh
-  }
-  .home-tab {
-    font-size: 1rem;
-    padding: 0.4rem 0.8rem;
-    min-width: 0;
-  }
+  .iphone-safari .home-category-tabs.home-bottom {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, auto);
+  gap: 12px;
+  width: 90%;
+  max-width: 360px;
+  padding: 0;
+
+  /* Because we’re pushing it down via top:70vh, remove any bottom:… */
+  bottom: auto;
+  top: 70vh;
+}
+
+.iphone-safari .home-tab {
+  font-size: 1rem;
+  padding: 0.4rem 0.8rem;
+  min-width: 0;
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   Any other browser on a small screen: top: 75vh
+─────────────────────────────────────────────────────────────────── */
+.not-iphone-safari .home-category-tabs.home-bottom {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, auto);
+  gap: 12px;
+  width: 90%;
+  max-width: 360px;
+  padding: 0;
+
+  bottom: auto;
+  top: 75vh;
+}
+
+.not-iphone-safari .home-tab {
+  font-size: 1rem;
+  padding: 0.4rem 0.8rem;
+  min-width: 0;
+}
 }
 
 @media (max-width: 400px) {
