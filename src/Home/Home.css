@@ -138,16 +138,17 @@ body {
 ──────────────────────────────────────────────────────────────────────────── */
 .home-category-tabs.home-bottom {
   position: fixed;
-  bottom: 5%;
   left: 50%;
   transform: translateX(-50%);
+
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
 
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, auto);
   gap: 40px;
 
-  opacity: 0;              /* start hidden (you fade it in via JS) */
+  opacity: 0; /* you fade this in via JS when ready */
   transition: opacity 0.5s ease-in-out;
   z-index: 2;
 }
@@ -199,6 +200,7 @@ body {
     max-width: 600px;
     gap: 12px;
     padding: 0 1rem;   /* prevent clipping at edges */
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
   }
 
   .home-tab {
@@ -219,6 +221,7 @@ body {
     max-width: 600px;
     gap: 12px;
     padding: 0 1rem;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
   }
 
   .home-tab {
@@ -231,7 +234,7 @@ body {
 @media (max-height: 700px) {
   .home-category-tabs.home-bottom {
     top: 75vh;
-    bottom: auto;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
   }
   .home-category-tabs.home-bottom .home-tab {
     font-size: 2.5vh;
@@ -247,6 +250,7 @@ body {
     width: 90%;
     max-width: 360px;
     padding: 0;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
   }
   .home-tab {
     font-size: 1rem;
@@ -256,6 +260,15 @@ body {
 }
 
 @media (max-width: 400px) {
+  .home-category-tabs.home-bottom {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, auto);
+    gap: 12px;
+    width: 90%;
+    max-width: 360px;
+    padding: 0;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  }
   .home-tab {
     font-size: 0.8rem;
     padding: 0.2rem 0.4rem;
