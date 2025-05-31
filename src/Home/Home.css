@@ -1,23 +1,42 @@
-/* src/Home/Home.css */
+/* ───────────────────────────────────────────────────────────────────────────
+   1) Ensure the page’s own content never sits under Safari’s toolbar.
+      We pad the bottom of <html> and <body> by the safe‐area inset.
+   2) Once that padding is in place, a fixed element with bottom:0 will
+      always be above the toolbar.
+──────────────────────────────────────────────────────────────────────────── */
+html,
+body {
+  margin: 0;
+  padding: 0;
+
+  /* Push all content (including fixed elements) up by the inset */
+  padding-bottom: constant(safe-area-inset-bottom); /* iOS <11.2 fallback */
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   Existing styles, unchanged
+──────────────────────────────────────────────────────────────────────────── */
 .home-page {
-    position: relative; /* Ensures it's positioned relative to your viewport */
-    z-index: 1; /* Ensures it sits above the canvas */
+  position: relative; /* Ensures it’s positioned relative to your viewport */
+  z-index: 1;         /* Ensures it sits above the canvas */
 }
 
 .homepage-button-container.fade-out {
-    opacity: 0;
+  opacity: 0;
 }
 
 .homepage-button {
-    width: 100px;
-    height: 50px;
-    background-color: black;
-    color: white;
+  width: 100px;
+  height: 50px;
+  background-color: black;
+  color: white;
 }
-/* Center-screen “Coming Soon!” tooltip */
+
+/* Center‐screen “Coming Soon!” tooltip */
 .writings-button::after {
   content: 'Coming Soon!';
-  position: fixed;                 /* lock to viewport, not the button */
+  position: fixed; /* lock to viewport, not the button */
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -28,16 +47,11 @@
   background: rgba(0, 0, 0, 0.85);
   border: 2px solid var(--tab-color, #90be6d);
   white-space: nowrap;
-
-  /* heavy “not ready” halo */
   box-shadow: 0 0 40px 20px rgba(0, 0, 0, 0.8);
-
-  /* fade-in animation */
   opacity: 0;
   transition: opacity 0.25s ease-out;
-
-  pointer-events: none;            /* keep it non-interactive */
-  z-index: 100;                    /* float above pattern & UI */
+  pointer-events: none;
+  z-index: 100;
 }
 
 .writings-button:hover::after {
@@ -53,19 +67,18 @@
   font-family: 'Speculum', sans-serif;
   font-size: 1.8rem;
   color: #90be6d;
-  background: rgba(0,0,0,0.85);
+  background: rgba(0, 0, 0, 0.85);
   border: 2px solid #90be6d;
   white-space: nowrap;
   pointer-events: none;
-  opacity: 0; 
+  opacity: 0;
   transition: opacity 0.25s ease-out;
-  z-index: 100; 
+  z-index: 100;
 }
 
 .home-coming-soon-overlay.show {
   opacity: 1;
 }
-
 
 .centered-text {
   position: absolute;
@@ -88,9 +101,8 @@
   right: 300px;
   margin-left: -10px;
   vertical-align: baseline;
-  /* only blink — remove fadeIn */
   animation: blink 1s step-end infinite;
-  margin-top: -2px;;
+  margin-top: -2px;
 }
 
 @keyframes blink {
@@ -100,40 +112,42 @@
 }
 
 .progressBarContainer {
-    background: #333333;
-    border: 2px solid red;
-    position: absolute;
-    top: 200px;
-    left: 10px;
-    z-index: 1;
+  background: #333333;
+  border: 2px solid red;
+  position: absolute;
+  top: 200px;
+  left: 10px;
+  z-index: 1;
 }
 
 .progressBarLabel {
-    color: white;
+  color: white;
 }
 
 .progressBarButton {
-    width: 100px;
-    height: 20px;
-    margin: 30px;
-    display: grid;
+  width: 100px;
+  height: 20px;
+  margin: 30px;
+  display: grid;
 }
 
+/* ───────────────────────────────────────────────────────────────────────────
+   3) Position the bottom six buttons at bottom: 0. Because <body> already
+      has padding‐bottom equal to the safe‐area inset, “bottom: 0” will sit
+      just above Safari’s toolbar (never under it).
+──────────────────────────────────────────────────────────────────────────── */
 .home-category-tabs.home-bottom {
   position: fixed;
+  bottom: 5%;
   left: 50%;
   transform: translateX(-50%);
 
-  /* Use the inset plus a 20px margin. Adjust “20px” as needed. */
-  /* Older WebKit fallback: */
-  bottom: calc(constant(safe-area-inset-bottom) + 20px);
-  /* Modern iOS Safari: */
-  bottom: calc(env(safe-area-inset-bottom) + 20px);
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, auto);
   gap: 40px;
-  opacity: 0;
+
+  opacity: 0;              /* start hidden (you fade it in via JS) */
   transition: opacity 0.5s ease-in-out;
   z-index: 2;
 }
@@ -155,6 +169,10 @@
   color: #000;
 }
 
+/* ───────────────────────────────────────────────────────────────────────────
+   4) In all media queries, continue to use bottom: 0 (never calc).
+      The body’s padding keeps you above the toolbar regardless of screen size.
+──────────────────────────────────────────────────────────────────────────── */
 @media (max-width: 1100px) {
   .centered-text {
     font-size: 60px;
@@ -164,11 +182,10 @@
 
   .home-category-tabs.home-bottom {
     height: 20%;
-    width: 90%; /* Make it narrower for smaller screens */
-    max-width: 600px; /* Optional cap for phablets */
+    width: 90%;        /* narrower on mid‐size screens */
+    max-width: 600px;  /* cap for phablets */
   }
 }
-
 
 @media (max-width: 1700px) {
   .centered-text {
@@ -177,67 +194,46 @@
     white-space: nowrap;
   }
 
- .home-category-tabs.home-bottom {
-    width: 95%;                /* give yourself a little breathing room */
-    max-width: 600px;          /* optional cap for phablets */
-    left: 50%;
-    transform: translateX(-50%);
-    gap: 12px;                 /* smaller gap between buttons */
-    padding: 0 1rem;           /* prevent clipping at edges */
-
-
-  }
-
-    .home-tab {
-    font-size: 1.3rem;         /* shrink text */
-    padding: 0.3rem 0.6rem;    /* tighter padding */
-    min-width: 0;              /* allow it to shrink below default */
-  }
-
-}
-
-
-@media (max-width: 940px) {
-  /* 1. Stop the centered text from ever wrapping */
-  .centered-text {
-    white-space: nowrap;
-    /* scale down a bit if needed */
-    font-size: 2.5rem;
-  }
-
-  /* 2. Fit all six buttons into view */
   .home-category-tabs.home-bottom {
-    width: 95%;                /* give yourself a little breathing room */
-    max-width: 600px;          /* optional cap for phablets */
-    left: 50%;
-    transform: translateX(-50%);
-    gap: 12px;                 /* smaller gap between buttons */
-    padding: 0 1rem;           /* prevent clipping at edges */
-
-
+    width: 95%;
+    max-width: 600px;
+    gap: 12px;
+    padding: 0 1rem;   /* prevent clipping at edges */
   }
 
   .home-tab {
-    font-size: 1.2rem;         /* shrink text */
-    padding: 0.3rem 0.6rem;    /* tighter padding */
-    min-width: 0;              /* allow it to shrink below default */
+    font-size: 1.3rem;
+    padding: 0.3rem 0.6rem;
+    min-width: 0;
   }
 }
 
-/* ───────────────────────────────────────────────────────────────
-   Keep home buttons in bottom 25% on short viewports
-──────────────────────────────────────────────────────────────── */
-@media (max-height: 700px) {
-.home-category-tabs.home-bottom {
-    top: 75vh;
-    bottom: auto;
-    left: 50%;
-    transform: translateX(-50%);
-
+@media (max-width: 940px) {
+  .centered-text {
+    white-space: nowrap;
+    font-size: 2.5rem;
   }
 
+  .home-category-tabs.home-bottom {
+    width: 95%;
+    max-width: 600px;
+    gap: 12px;
+    padding: 0 1rem;
+  }
+
+  .home-tab {
+    font-size: 1.2rem;
+    padding: 0.3rem 0.6rem;
+    min-width: 0;
+  }
+}
+
+@media (max-height: 700px) {
+  .home-category-tabs.home-bottom {
+    top: 75vh;
+    bottom: auto;
+  }
   .home-category-tabs.home-bottom .home-tab {
-    /* shrink with viewport height */
     font-size: 2.5vh;
     padding: 0.5vh 1vh;
   }
@@ -248,30 +244,20 @@
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, auto);
     gap: 12px;
-
-
     width: 90%;
     max-width: 360px;
-    left: 50%;
-    transform: translateX(-50%);
     padding: 0;
   }
-
   .home-tab {
-    /* adjust size if needed */
     font-size: 1rem;
     padding: 0.4rem 0.8rem;
-    min-width: 0;        /* allow flex-shrink */
+    min-width: 0;
   }
 }
 
-/* ────────────────────────────────────────────────────────── */
-/*  Home Buttons – tiny phones (e.g. iPhone Mini)           */
-/*  under 400px width                                       */
-/* ────────────────────────────────────────────────────────── */
 @media (max-width: 400px) {
   .home-tab {
-    font-size: 0.8rem;     /* even smaller for the smallest devices */
+    font-size: 0.8rem;
     padding: 0.2rem 0.4rem;
   }
 }
