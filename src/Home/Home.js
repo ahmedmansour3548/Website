@@ -103,7 +103,7 @@ const Home = () => {
   }, []);
 
     useEffect(() => {
-    // Detect iPhone Safari:
+    // Detect iPhone Safari
     const ua = navigator.userAgent || '';
     const isiPhone = ua.includes('iPhone');
     const isSafari = ua.includes('Safari') && !ua.includes('CriOS') && !ua.includes('FxiOS');

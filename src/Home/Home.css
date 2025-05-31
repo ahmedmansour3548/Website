@@ -250,8 +250,6 @@ body {
   width: 90%;
   max-width: 360px;
   padding: 0;
-
-  /* Because we’re pushing it down via top:70vh, remove any bottom:… */
   bottom: auto;
   top: 70vh;
 }
@@ -263,7 +261,7 @@ body {
 }
 
 /* ──────────────────────────────────────────────────────────────────
-   Any other browser on a small screen: top: 75vh
+   Any other browser on a small screen
 ─────────────────────────────────────────────────────────────────── */
 .not-iphone-safari .home-category-tabs.home-bottom {
   grid-template-columns: repeat(2, 1fr);
@@ -272,7 +270,6 @@ body {
   width: 90%;
   max-width: 360px;
   padding: 0;
-
   bottom: auto;
   top: 75vh;
 }

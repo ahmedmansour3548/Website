@@ -188,7 +188,7 @@
 @media (max-width: 600px) and (orientation: portrait) {
 
   /* Center the back‑home button and shrink it slightly */
- .projects-back-home {
+  .projects-back-home {
     top: 1rem;
     left: 1rem;
     transform: none;
@@ -198,7 +198,7 @@
   /* Reflow category tabs into wrapping rows */
   .category-tabs.bottom {
     position: fixed;
-    bottom: 20px;
+
     left: 50%;
     transform: translateX(-50%);
 
@@ -226,5 +226,33 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .iphone-safari .category-tabs.bottom {
+    padding: 0;
+    bottom: auto;
+    top: 70vh;
+  }
+
+  .iphone-safari .home-tab {
+    font-size: 1rem;
+    padding: 0.4rem 0.8rem;
+    min-width: 0;
+  }
+
+
+  /* ──────────────────────────────────────────────────────────────────
+   Any other browser on a small screen
+─────────────────────────────────────────────────────────────────── */
+  .not-iphone-safari .home-category-tabs.home-bottom {
+    padding: 0;
+    bottom: auto;
+    top: 75vh;
+  }
+
+  .not-iphone-safari .home-tab {
+    font-size: 1rem;
+    padding: 0.4rem 0.8rem;
+    min-width: 0;
   }
 }

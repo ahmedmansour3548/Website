@@ -51,14 +51,27 @@ export default function Projects() {
         }
       });
   }, []);
+  
+  useEffect(() => {
+    // Detect iPhone Safari
+    const ua = navigator.userAgent || '';
+    const isiPhone = ua.includes('iPhone');
+    const isSafari = ua.includes('Safari') && !ua.includes('CriOS') && !ua.includes('FxiOS');
 
-  // 2) Init Three.js + interactions
+    if (isiPhone && isSafari) {
+      document.documentElement.classList.add('iphone-safari');
+    } else {
+      document.documentElement.classList.add('not-iphone-safari');
+    }
+  }, []);
+
+  // Init Three.js + interactions
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     //
-    // 2A) Create the preview <img> that will sit behind the menu
+    // Create the preview <img> that will sit behind the menu
     //
     const previewImg = document.createElement('img');
 Object.assign(previewImg.style, {
@@ -75,7 +88,7 @@ Object.assign(previewImg.style, {
     container.appendChild(previewImg);
 
     //
-    // 2B) Basic Three.js boilerplate: scene, camera, renderer
+    // Basic Three.js boilerplate: scene, camera, renderer
     //
     const { clientWidth: W, clientHeight: H } = container;
     const scene = new THREE.Scene();
@@ -92,7 +105,7 @@ Object.assign(previewImg.style, {
     rendererRef.current = renderer;
 
     //
-    // 2C) Track pointer coords (ndc)
+    // Track pointer coords (ndc)
     //
     const onMove = e => {
       const rect = renderer.domElement.getBoundingClientRect();
@@ -100,9 +113,6 @@ Object.assign(previewImg.style, {
       pointer.current.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
     };
 
-    //
-    // 2D)
-    //
    let transitionCounter = 0;
 
 const startImageTransition = obj => {
@@ -120,7 +130,7 @@ const startImageTransition = obj => {
   // Immediately kill any existing tweens on previewImg so we can start fresh
   gsap.killTweensOf(previewImg);
 
-  // Step 1: Fade the previewImg to black + invisible over 0.3s
+  // Fade the previewImg to black + invisible over 0.3s
   gsap.to(previewImg, {
     duration: 0.3,
     filter: 'brightness(0)', // ramp down to black
@@ -133,7 +143,7 @@ const startImageTransition = obj => {
         return;
       }
 
-      // Step 2: Preload the new image behind the scenes
+      // Preload the new image behind the scenes
       const loader = new Image();
       loader.src = newSrc;
       loader.onload = () => {
@@ -150,7 +160,7 @@ const startImageTransition = obj => {
         previewImg.style.filter = 'brightness(0)';
         previewImg.style.opacity = '0';
 
-        // Step 3: Fade back up from black → full brightness & visible
+        // Fade back up from black → full brightness & visible
         gsap.to(previewImg, {
           duration: 0.5,
           filter: 'brightness(1)',  // ramp up to normal brightness
