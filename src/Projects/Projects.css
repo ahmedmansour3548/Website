@@ -198,11 +198,9 @@
   /* Reflow category tabs into wrapping rows */
   .category-tabs.bottom {
     position: fixed;
-
     left: 50%;
     transform: translateX(-50%);
 
-    /* make it span almost the full viewport, with 1rem gutters on each side */
     width: calc(100% - 2rem);
     padding: 0 1rem;
     box-sizing: border-box;
@@ -222,7 +220,7 @@
     /* bump up the side padding */
     padding: 0.75rem;
     min-height: 2.5rem;
-    font-size: clamp(0.8rem, 4vw, 1rem);
+    font-size: clamp(0.8rem, 4vw, 0.5rem);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
