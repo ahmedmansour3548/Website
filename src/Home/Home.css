@@ -251,6 +251,7 @@ body {
     max-width: 360px;
     padding: 0;
     bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+    top: 72vh
   }
   .home-tab {
     font-size: 1rem;
