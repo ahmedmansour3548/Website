@@ -339,7 +339,7 @@
 
 /* primary: 3×2 grid  */
 .about-tech-grid.about-primary {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   grid-template-rows: repeat(2, auto);
 }
 
@@ -506,7 +506,7 @@
   .about-section-1 .about-image-block {
     /* static flex item, keep the tilt, limit its size */
     position: static;
-    transform: rotate(3deg);
+    transform: rotate(0deg);
     flex: 1 1 400px;
     max-width: 400px;
     overflow: visible;
@@ -539,7 +539,15 @@
     transform: none !important;          /* remove any zoom-in shifts */
   }
 
+  .about-text-block-header {
+    font-size: 3.5rem; /* smaller header */
+    margin-bottom: 1rem;
+    margin-right: 0rem;
 
+  }
+  .about-section-text {
+    text-align: center;
+  }
 }
 
 @media (max-width: 1200px) {

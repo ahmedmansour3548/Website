@@ -23,16 +23,21 @@ const primaryTech = [
   { file: 'threejs.svg',  label: 'Three.js',   url: '/projects/threejs' },
   { file: 'unity.svg',    label: 'Unity',      url: '/projects/unity' },
   { file: 'node.svg',     label: 'Node.js',    url: '/projects/nodejs' },
+  { file: 'java.svg',     label: 'Java',       url: '/projects/scss' },
+  { file: 'angular.svg',     label: 'Angular',       url: '/projects/scss' },
+  { file: 'c-sharp.svg',     label: 'C#',       url: '/projects/scss' },
+  { file: 'typescript.svg', label: 'TypeScript', url: '/projects/typescript' },
+
   { file: 'scss.svg',     label: 'SCSS',       url: '/projects/scss' }
 ];
 
 const otherTech = [
-  { file: 'typescript.svg', label: 'TypeScript', url: '/projects/typescript' },
+  
   { file: 'git.svg',        label: 'Git',        url: '/projects/git' },
+    { file: 'scss.svg',     label: 'SCSS',       url: '/projects/scss' },
   { file: 'mysql.svg',      label: 'MySQL',      url: '/projects/mysql' },
-  { file: 'angular.svg',    label: 'Angular',    url: '/projects/angular' },
-  { file: 'nextjs.svg',     label: 'Next.js',    url: '/projects/nextjs' },
-  { file: 'java.svg',       label: 'Java',       url: '/projects/java' }
+  { file: 'cesium.svg',      label: 'Cesium',      url: '/projects/mysql' },
+  { file: 'nextjs.svg',     label: 'Next.js',    url: '/projects/nextjs' }
 ];
 
 const socialLinks = [

@@ -81,13 +81,6 @@
   opacity: 0;
 }
 
-@media (max-width: 1100px) {
-  .centered-text {
-    font-size: 40px;
-  }
-}
-
-
 .blinking-cursor {
   display: inline-block;
   width: 0.6em;
@@ -128,7 +121,8 @@
 
 .home-category-tabs.home-bottom {
   position: fixed;
-  bottom: 30px;
+  bottom: calc(30px + env(safe-area-inset-bottom));
+  bottom: calc(30px + constant(safe-area-inset-bottom));
   left: 50%;
   transform: translateX(-50%);
   display: grid;
@@ -138,6 +132,9 @@
   opacity: 0;             /* start hidden */
   transition: opacity .5s ease-in-out;
   z-index: 2;
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: constant(safe-area-inset-bottom);
+
 }
 
 .home-tab {
@@ -157,6 +154,51 @@
   color: #000;
 }
 
+@media (max-width: 1100px) {
+  .centered-text {
+    font-size: 60px;
+    top: 80px;
+    white-space: nowrap;
+  }
+
+  .home-category-tabs.home-bottom {
+    height: 20%;
+    width: 90%; /* Make it narrower for smaller screens */
+    max-width: 600px; /* Optional cap for phablets */
+  }
+}
+
+
+@media (max-width: 1700px) {
+  .centered-text {
+    font-size: 60px;
+    top: 80px;
+    white-space: nowrap;
+  }
+
+ .home-category-tabs.home-bottom {
+    width: 95%;                /* give yourself a little breathing room */
+    max-width: 600px;          /* optional cap for phablets */
+    left: 50%;
+    transform: translateX(-50%);
+    gap: 12px;                 /* smaller gap between buttons */
+    padding: 0 1rem;           /* prevent clipping at edges */
+    bottom: calc(30px + env(safe-area-inset-bottom));
+bottom: calc(30px + constant(safe-area-inset-bottom));
+padding-bottom: env(safe-area-inset-bottom);
+padding-bottom: constant(safe-area-inset-bottom);
+
+  }
+
+    .home-tab {
+    font-size: 1.3rem;         /* shrink text */
+    padding: 0.3rem 0.6rem;    /* tighter padding */
+    min-width: 0;              /* allow it to shrink below default */
+  }
+
+}
+
+
 @media (max-width: 940px) {
   /* 1. Stop the centered text from ever wrapping */
   .centered-text {
@@ -173,6 +215,11 @@
     transform: translateX(-50%);
     gap: 12px;                 /* smaller gap between buttons */
     padding: 0 1rem;           /* prevent clipping at edges */
+    bottom: calc(30px + env(safe-area-inset-bottom));
+bottom: calc(30px + constant(safe-area-inset-bottom));
+padding-bottom: env(safe-area-inset-bottom);
+padding-bottom: constant(safe-area-inset-bottom);
+
   }
 
   .home-tab {
@@ -189,7 +236,11 @@
   .home-category-tabs.home-bottom {
     /* anchor to 75% down instead of a fixed 30px from bottom */
     top: 75vh;
-    bottom: auto;
+    bottom: calc(30px + env(safe-area-inset-bottom));
+bottom: calc(30px + constant(safe-area-inset-bottom));
+padding-bottom: env(safe-area-inset-bottom);
+padding-bottom: constant(safe-area-inset-bottom);
+
     /* keep centered */
     left: 50%;
     transform: translateX(-50%);
@@ -208,7 +259,11 @@
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, auto);
     gap: 12px;           /* tighter gap */
-    bottom: 30px;        /* keep them low so pattern stays visible */
+    bottom: calc(30px + env(safe-area-inset-bottom));
+bottom: calc(30px + constant(safe-area-inset-bottom));
+padding-bottom: env(safe-area-inset-bottom);
+padding-bottom: constant(safe-area-inset-bottom);
+
     width: 90%;          /* a bit narrower to avoid edge clipping */
     max-width: 360px;    /* caps total width on larger phones */
     left: 50%;
