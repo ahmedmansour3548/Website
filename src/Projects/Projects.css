@@ -80,7 +80,8 @@
   bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
-
+width: 70%;
+height: 18vh;
   display: grid;
   /* exactly 2 rows */
   grid-template-rows: repeat(2, auto);
@@ -167,6 +168,21 @@
   touch-action: none;
 }
 
+@media (max-width: 1700px) {
+  .category-tabs.bottom {
+    width: 80%;
+    max-width: 1000px;
+    gap: 24px;
+    height: 20vh;
+    padding: 0 1rem;   /* prevent clipping at edges */
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 1rem);
+  }
+  .category-tabs.bottom .tab {
+    font-size: 1.3vh;
+    text-wrap: wrap;
+    padding: 0.5vh 1vh;
+  }
+}
 /* ───────────────────────────────────────────────────────────────
    Keep projects buttons in bottom 25% on short viewports
 ──────────────────────────────────────────────────────────────── */

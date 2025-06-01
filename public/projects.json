@@ -13,30 +13,35 @@
                     "photos": [
                         {
                             "url": "/assets/photos/projects/qubitvr/1.png",
-                            "caption": "QubitVR in action, demonstrating the interactive qubit gates."
+                            "caption": "We created a floating panel that displays the current qubit state, and allows users to learn more about gates."
                         },
                         {
                             "url": "/assets/photos/projects/qubitvr/2.gif",
-                            "caption": "A user interacting with the Hadamard gate in QubitVR."
+                            "caption": "A view of all the available gates."
                         },
                         {
                             "url": "/assets/photos/projects/qubitvr/3.gif",
-                            "caption": "Visualizing the Bloch sphere and qubit states in QubitVR."
+                            "caption": "Demonstrating the 'R' gate, the universal rotation gate that can be used to manually adjust the qubit state using the VR controllers."
                         },
                         {
-                            "url": "/assets/photos/projects/qubitvr/4.png"
+                            "url": "/assets/photos/projects/qubitvr/4.gif",
+                            "caption": "Gates that are aren't applied to a qubit are quickly faded out. This helps reduce clutter in the scene."
                         },
                         {
-                            "url": "/assets/photos/projects/qubitvr/5.png"
+                            "url": "/assets/photos/projects/qubitvr/4.png",
+                            "caption": "Questions to test the user's understanding of the concepts presented in the tutorial."
                         },
                         {
-                            "url": "/assets/photos/projects/qubitvr/6.png"
+                            "url": "/assets/photos/projects/qubitvr/5.gif",
+                            "caption": "Users can apply multiple gates in sequence to the qubit, and see how the state changes in real-time. Measurement collapses the quantum state, and the user can see the resulting matrix math."
                         },
                         {
-                            "url": "/assets/photos/projects/qubitvr/7.png"
+                            "url": "/assets/photos/projects/qubitvr/7.png",
+                            "caption": "Our prototype Bloch Sphere design."
                         },
                         {
-                            "url": "/assets/photos/projects/qubitvr/8.png"
+                            "url": "/assets/photos/projects/qubitvr/8.png",
+                            "caption": "Our final Bloch Sphere design, with transparent axis-aligned discs to aid in visualizing the qubit state."
                         }
                     ],
                     "headerPhoto": "/assets/photos/projects/qubitvr/qubitvr_header.png",
@@ -79,7 +84,7 @@
                         }
                     ],
                     "resources": {
-                        "repoUrl": "https://github.com/you/qubitvr"
+                        "repoUrl": "https://github.com/ahmedmansour3548/qubitvr"
                     }
 
                 },
@@ -91,25 +96,32 @@
                     "headerPhoto": "/assets/photos/projects/subvrine/subvrine_header.png",
                     "photos": [
                         {
-                            "url": "/assets/photos/projects/subvrine/1.png"
+                            "url": "/assets/photos/projects/subvrine/1.png",
+                            "caption": "The opening screen of the experience."
                         },
                         {
-                            "url": "/assets/photos/projects/subvrine/2.gif"
+                            "url": "/assets/photos/projects/subvrine/2.gif",
+                            "caption": "The goal of the game is to find this treasure chest, which is hidden in the depths of the ocean."
                         },
                         {
-                            "url": "/assets/photos/projects/subvrine/3.png"
+                            "url": "/assets/photos/projects/subvrine/3.png",
+                            "caption": "Wildlife and other obstacles can be found in the ocean, such as this shark. The user must avoid these to reach the treasure."
                         },
                         {
-                            "url": "/assets/photos/projects/subvrine/4.png"
+                            "url": "/assets/photos/projects/subvrine/4.png",
+                            "caption": "The enviornment consists of a large ocean area with a dark cave that the user must navigate through."
                         },
                         {
-                            "url": "/assets/photos/projects/subvrine/5.gif"
+                            "url": "/assets/photos/projects/subvrine/5.gif",
+                            "caption": "The sharks that guard the cave were given simple AI that allows them to swim around the area, and chase the user if they get too close."
                         },
                         {
-                            "url": "/assets/photos/projects/subvrine/6.png"
+                            "url": "/assets/photos/projects/subvrine/6.png",
+                            "caption": "A view of the cockpit of the submarine. The user can see the miniature of the submarine in front of them, which they can grab to control the ship. The dive mode button is a toggle that allows the user to switch between diving and surfacing."
                         },
                         {
-                            "url": "/assets/photos/projects/subvrine/7.png"
+                            "url": "/assets/photos/projects/subvrine/7.png",
+                            "caption": "A menu to adjust the HoloSphere, which is the glass sphere that contains the miniature of the submarine. This allows the user to adjust the position of the sphere to their comfort level."
                         }
                     ],
                     "quickFacts": [
@@ -159,7 +171,7 @@
                         }
                     ],
                     "resources": {
-                        "repoUrl": "https://github.com/you/knighthacks2020"
+                        "repoUrl": "https://github.com/ahmedmansour3548/subvrine"
                     }
 
                 },
@@ -171,16 +183,19 @@
                     "headerPhoto": "/assets/photos/projects/solitudevr/solitudevr_header.png",
                     "photos": [
                         {
-                            "url": "/assets/photos/projects/solitudevr/1.png"
+                            "url": "/assets/photos/projects/solitudevr/1.png",
+                            "caption": "During the calibration process, the webcams video feed is overlaid on the virtual table. This allows the user to see the edges of the viewable area, and adjust the camera position to fit the table."
                         },
                         {
-                            "url": "/assets/photos/projects/solitudevr/2.gif"
+                            "url": "/assets/photos/projects/solitudevr/2.gif",
+                            "caption": "Demonstrating the tracking of the AprilTags and the overlaying of a virtual card in the same position. I would of shown this off with the physical cards, but I seem to have misplaced them..."
                         },
                         {
                             "url": "/assets/photos/projects/solitudevr/3.png"
                         },
                         {
-                            "url": "/assets/photos/projects/solitudevr/4.png"
+                            "url": "/assets/photos/projects/solitudevr/4.png",
+                            "caption": "The enviornment, meant to evoke a calming and peaceful experience."
                         }
                     ],
                     "quickFacts": [
@@ -247,13 +262,16 @@
                             "url": "/assets/photos/projects/holosphere/1.png"
                         },
                         {
-                            "url": "/assets/photos/projects/holosphere/2.jpg"
+                            "url": "/assets/photos/projects/holosphere/2.jpg",
+                            "caption": "My poster submission for AsEMFL 2023, where I presented the HoloSphere concept."
                         },
                         {
-                            "url": "/assets/photos/projects/holosphere/3.png"
+                            "url": "/assets/photos/projects/holosphere/3.png",
+                            "caption": "The basic HoloSphere setup, with the user in the center and the proxies around them."
                         },
                         {
-                            "url": "/assets/photos/projects/holosphere/4.jpg"
+                            "url": "/assets/photos/projects/holosphere/4.jpg",
+                            "caption": "Me during the poster session."
                         }
                     ],
                     "quickFacts": [
@@ -301,16 +319,19 @@
                     "headerPhoto": "/assets/photos/projects/earthxr/earthxr_header.jpg",
                     "photos": [
                         {
-                            "url": "/assets/photos/projects/earthxr/1.png"
+                            "url": "/assets/photos/projects/earthxr/1.png",
+                            "caption": "A view of the CAVE with EarthXR running. The user is able to walk around the area and explore the virtual world."
                         },
                         {
-                            "url": "/assets/photos/projects/earthxr/2.jpg"
+                            "url": "/assets/photos/projects/earthxr/2.jpg",
+                            "caption": "The advantage of the CAVE system is the ability to have multiple users in the same space, all experiencing the same virtual world."
                         },
                         {
                             "url": "/assets/photos/projects/earthxr/3.jpg"
                         },
                         {
-                            "url": "/assets/photos/projects/earthxr/4.jpg"
+                            "url": "/assets/photos/projects/earthxr/4.jpg",
+                            "caption": "Using Cesium, we are able to include contexual information on the map depending on your elevation."
                         }
                     ],
                     "quickFacts": [
@@ -374,13 +395,16 @@
                             "url": "/assets/photos/projects/longboardvr/1.png"
                         },
                         {
-                            "url": "/assets/photos/projects/longboardvr/2.png"
+                            "url": "/assets/photos/projects/longboardvr/2.png",
+                            "caption": "The first thing that the user sees is this black void where the user can orient and position themselves before starting the experience."
                         },
                         {
-                            "url": "/assets/photos/projects/longboardvr/3.png"
+                            "url": "/assets/photos/projects/longboardvr/3.png",
+                            "caption": "The collectable token."
                         },
                         {
-                            "url": "/assets/photos/projects/longboardvr/4.gif"
+                            "url": "/assets/photos/projects/longboardvr/4.gif",
+                            "caption": "The main path is procedurally generated, and the terrain is colored based on the height of the vertex. The main path is flat, while the surrounding terrain is more rugged."
                         }
                     ],
                     "quickFacts": [
@@ -448,7 +472,15 @@
                             "url": "/assets/photos/projects/spatialcompositions/1.png"
                         },
                         {
-                            "url": "/assets/photos/projects/spatialcompositions/2.png"
+                            "url": "/assets/photos/projects/spatialcompositions/2.gif",
+                            "caption": "Creating a basic beat using the tools provided. Users can place blocks in 3D space, duplicate them, and adjust their pitch."
+                        },
+                        {
+                            "url": "/assets/photos/projects/spatialcompositions/3.png"
+                        },
+                        {
+                            "url": "/assets/photos/projects/spatialcompositions/4.gif",
+                            "caption": "With this system more complex structures can easily be created and adjusted on the fly."
                         }
                     ],
                     "quickFacts": [
@@ -520,7 +552,8 @@
                             "url": "/assets/photos/projects/coneman/3.png"
                         },
                         {
-                            "url": "/assets/photos/projects/coneman/4.png"
+                            "url": "/assets/photos/projects/coneman/4.png",
+                            "caption": "I made sure to drop off the cones after filming was completed."
                         },
                         {
                             "url": "/assets/photos/projects/coneman/5.png"
@@ -565,7 +598,8 @@
                             "url": "/assets/photos/projects/mural/1.jpg"
                         },
                         {
-                            "url": "/assets/photos/projects/mural/2.jpg"
+                            "url": "/assets/photos/projects/mural/2.jpg",
+                            "caption": "The VARLAB (most of us, anyways)."
                         }
                     ],
                     "quickFacts": [
@@ -735,23 +769,22 @@
                         },
                         {
                             "url": "/assets/photos/projects/largelanguagemonkey/2.png",
-                            "caption": "A screenshot of the game in action, showing a level generated by the LLM. A screenshot of the game in action, showing a level generated by the LLM. A screenshot of the game in action, showing a level generated by the LLM. A screenshot of the game in action, showing a level generated by the LLM. A screenshot of the game in action, showing a level generated by the LLM.A screenshot of the game in action, showing a level generated by the LLM."
-
+                            "caption": "When the game begins, you are presented with a choice between running through the AI generated levels, or the human made levels. The human made levels are there to provide a baseline for comparison."
                         },
                         {
                             "url": "/assets/photos/projects/largelanguagemonkey/3.png",
                             "caption": "A screenshot of the game in action, showing a level generated by the LLM."
-
                         },
                         {
                             "url": "/assets/photos/projects/largelanguagemonkey/4.png",
-                            "caption": "A screenshot of the game in action, showing a level generated by the LLM."
-
+                            "caption": "Levels generated by the AI often had interesting design that presented geniune challenges."
                         },
                         {
                             "url": "/assets/photos/projects/largelanguagemonkey/5.png",
-                            "caption": "A screenshot of the game in action, showing a level generated by the LLM."
-
+                            "caption": "Sometimes though, the AI would generate strange levels that didn't really make sense"
+                        },
+                        {
+                            "url": "/assets/photos/projects/largelanguagemonkey/6.gif"
                         }
                     ],
                     "quickFacts": [
@@ -1063,6 +1096,11 @@
                     "link": "/projects/archive/dinnertime",
                     "description": "\tDinnerTime was our team’s solution to an annoyingly common question: Where should we eat? Built for my Principles of Object Oriented Programming (better known as POOP) class, this web and mobile app helps indecisive users actually choose a resturant. Whether you’re alone, with friends, or trying to pick from an overwhelming list of nearby spots to eat, DinnerTime gives you a button to press and a place to go.\n\n\tAs the project manager and backend lead, I oversaw development and feature planning while also building out the core APIs in Express and Node.js. We used MongoDB for storage, and React on the frontend for a responsive, user-friendly interface. The app uses geolocation to grab real-time options near you, and supports filtering (for example, “only Italian food”) and social features such as sharing results or exploring a friend’s favorite spots. We followed the MERN stack and deployed to a live server with the intent of supporting both browser and mobile clients. Our Android developer worked in parallel to create a mobile build, while our frontend team focused on smooth UI/UX in React. Despite a few bumps in the road (mostly Git being Git) we collaborated successfully and shipped our final build.\n\n\tDinnerTime was a strong example of a simple, targeted app idea executed cleanly. We had fun making it, learned a lot about collaborative web development, and proved that even the most basic ideas can inspire great things.",
                     "headerPhoto": "/assets/photos/projects/dinnertime/dinnertime_header.png",
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/dinnertime/1.png"
+                        }
+                    ],
                     "quickFacts": [
                         {
                             "label": "Date Started",

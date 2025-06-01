@@ -290,6 +290,7 @@
   border: none !important;
   text-align: center !important;
   max-width: 80% !important;
+  word-break: auto-phrase !important; /* wrap long captions */
 }
 
 /* Prev / Next arrows and Close button - larger & saturated */
