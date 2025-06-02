@@ -21,12 +21,14 @@ const primaryTech = [
   { file: 'js.svg',       label: 'JavaScript', url: '/projects/coding/knighthacks2020' },
   { file: 'reactjs.svg',  label: 'React',      url: '/projects/react' },
   { file: 'threejs.svg',  label: 'Three.js',   url: '/projects/threejs' },
-  { file: 'unity.svg',    label: 'Unity',      url: '/projects/unity' },
+  { file: 'unity.svg',    label: 'Unity',      url: '/projects/vrar/earthxr' },
   { file: 'node.svg',     label: 'Node.js',    url: '/projects/nodejs' },
   { file: 'java.svg',     label: 'Java',       url: '/projects/scss' },
   { file: 'angular.svg',     label: 'Angular',       url: '/projects/scss' },
-  { file: 'c-sharp.svg',     label: 'C#',       url: '/projects/scss' },
+  { file: 'c-sharp.svg',     label: 'C#',       url: '/projects/vrar/spatialcompositions' },
   { file: 'typescript.svg', label: 'TypeScript', url: '/projects/typescript' },
+  { file: 'python.svg', label: 'Python', url: '/projects/programming/raytracedmusicvisualizer' },
+  { file: 'rest.svg', label: 'RESTful API', url: '/projects/art/mural' },
 
   { file: 'scss.svg',     label: 'SCSS',       url: '/projects/scss' }
 ];
@@ -36,15 +38,17 @@ const otherTech = [
   { file: 'git.svg',        label: 'Git',        url: '/projects/git' },
     { file: 'scss.svg',     label: 'SCSS',       url: '/projects/scss' },
   { file: 'mysql.svg',      label: 'MySQL',      url: '/projects/mysql' },
-  { file: 'cesium.svg',      label: 'Cesium',      url: '/projects/mysql' },
-  { file: 'nextjs.svg',     label: 'Next.js',    url: '/projects/nextjs' }
+  { file: 'cesium.svg',      label: 'Cesium',      url: '/projects/vrar/earthxr' },
+  { file: 'nextjs.svg',     label: 'Next.js',    url: '/projects/nextjs' },
+  { file: 'php.svg',     label: 'PHP',    url: '/projects/archive/amazoff' },
+  { file: 'mongodb.svg',     label: 'MongoDB',    url: '/projects/archive/dinnertime' },
 ];
 
 const socialLinks = [
-  { file: 'linkedin.svg',  url: 'https://www.linkedin.com/in/yourprofile', label: 'LinkedIn' },
-  { file: 'github.svg',    url: 'https://github.com/yourusername',        label: 'GitHub' },
+  { file: 'linkedin.svg',  url: 'https://www.linkedin.com/in/ahmedmansour3548/', label: 'LinkedIn' },
+  { file: 'github.svg',    url: 'https://github.com/ahmedmansour3548',        label: 'GitHub' },
   { file: 'resume.svg',    url: '/assets/resume.pdf',                     label: 'Resume' },
-  { file: 'soundcloud.svg',url: '/assets/soundcloud.pdf',                 label: 'Soundcloud' }
+  { file: 'soundcloud.svg',url: 'https://soundcloud.com/user-757501519',                 label: 'Soundcloud' }
 ];
 
 /* ────────────────────────────────────────────────────────── */
@@ -195,7 +199,7 @@ useEffect(() => {
   gsap.utils.toArray('.about-tech-item').forEach(item => {
     // each icon gets its own randomised looping tween
     gsap.to(item, {
-      y: () => gsap.utils.random(-8, 8),
+      y: () => gsap.utils.random(-3, 3),
       rotation: () => gsap.utils.random(-1, 1),
       duration: () => gsap.utils.random(2.5, 4),
       ease: 'sine.inOut',
@@ -293,10 +297,10 @@ useEffect(() => {
         className="about-content-section about-section-2"
       >
         <div className="about-section-card">
-          <h2 className="about-tech-grid-header">Core Technologies & Tools</h2>
+          <h2 className="about-tech-grid-header">Technologies & Tools I've Worked With</h2>
 
           <p className="about-tech-grid-hint">
-            Psst – click a tool to see how I’ve used it :)
+            Psst – click on a tool to see how I’ve used it in a project :)
           </p>
 
           <div className="about-tech-grid about-primary">

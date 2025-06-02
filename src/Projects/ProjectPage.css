@@ -20,6 +20,9 @@
 
 .iso-grid-page{ background:var(--project-background); color:var(--white); }
 
+body.project-page-body {
+  background: var(--project-background) !important;
+}
 /* =====================  HERO  ===================== */
 .iso-hero{
   position:relative; height:100vh; overflow:hidden;
@@ -259,6 +262,29 @@
   margin-right: auto;
   text-align: center;
   padding: 0 1rem;
+}
+
+.iso-gallery-alt .gallery-single-card img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border: 3px solid var(--project-color);
+  box-shadow:
+    0 0 20px var(--project-color),
+    0 0 40px var(--project-light);
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.iso-gallery-alt .gallery-caption {
+  margin-top: 1rem;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  line-height: 1.4;
+  color: var(--tech-text);
+  text-align: center;
+  max-width: 80%;
+  word-break: break-word;
 }
 
 /* ───────────────── Lightbox Overrides ───────────────── */
@@ -531,10 +557,6 @@
     gap: 1rem !important;
     justify-items: center !important;
   }
-  .tech-card-simple {
-    text-align: center !important;
-    align-items: center !important;
-  }
 
   /* Hero title → smaller & wrap at words only */
   .iso-hero-text h1 {
@@ -559,6 +581,22 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .iso-gallery-alt .iso-card {
+    padding: 0.75rem;
+    max-width: 100%;
+    margin: 0 1rem;
+  }
+
+  .iso-gallery-alt .gallery-single-card img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .iso-gallery-alt .gallery-caption {
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    padding: 0 1rem;
+  }
+
 }
 
 @media (max-width: 600px) {
@@ -576,6 +614,10 @@
 
   .iso-resources .res-grid {
     grid-template-columns: 1fr;
+  }
+
+  .iso-gallery-alt .gallery-caption {
+    font-size: 0.9rem;
   }
 }
 

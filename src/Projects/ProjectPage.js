@@ -106,6 +106,13 @@ useEffect(() => {
   );
 }, [project]);
 
+useEffect(() => {
+  document.body.classList.add("project-page-body");
+  return () => {
+    document.body.classList.remove("project-page-body");
+  };
+}, []);
+
 
 useEffect(() => {
   if (!queuedProject) return;
@@ -430,51 +437,62 @@ return (
         </section>
       )}
 
-      {/* ────────── GALLERY ────────── */}
-      {project.photos?.length > 1 && (
-        <section className="iso-section iso-gallery">
-          <div className="iso-card">
-            <h2 className="iso-card-header">Gallery</h2>
+{/* ────────── GALLERY (3+ photos) ────────── */}
+        {photos.length >= 3 && (
+          <section className="iso-section iso-gallery">
+            <div className="iso-card">
+              <h2 className="iso-card-header">Gallery</h2>
 
-            <div className="gallery-marquee">
-              <Marquee gradient={false} speed={30} loop={0} autoFill>
-                {project.photos.slice(1).map((ph,i)=>(
-                 <div
-                   key={i}
-                   className="gallery-item"
-                   onClick={()=>{
-                     setLightboxIndex(i);
-                     setGalleryDesc(ph.caption || "");
-                   }}
-                 >
-                   <img src={ph.url} alt={`Screenshot ${i+1}`} />
-                 </div>
-               ))}
-              </Marquee>
+              <div className="gallery-marquee">
+                <Marquee gradient={false} speed={30} loop={0} autoFill>
+                  {photos.slice(1).map((ph, i) => (
+                    <div
+                      key={i}
+                      className="gallery-item"
+                      onClick={() => {
+                        setLightboxIndex(i);
+                        setGalleryDesc(ph.caption || "");
+                      }}
+                    >
+                      <img src={ph.url} alt={`Screenshot ${i + 1}`} />
+                    </div>
+                  ))}
+                </Marquee>
+              </div>
             </div>
+          </section>
+        )}
 
-          </div>
-        </section>
-      )}
+        {/* ────────── GALLERY (exactly 2 photos) ────────── */}
+        {photos.length === 2 && (
+          <section className="iso-section iso-gallery-alt">
+            <div className="iso-card gallery-single-card">
+              <img src={photos[1].url} alt={`${project.title} – photo`} />
+              {photos[1].caption && (
+                <div className="gallery-caption">{photos[1].caption}</div>
+              )}
+            </div>
+          </section>
+        )}
 
-      {/* ────────── LIGHTBOX (always present if photos) ────────── */}
-      {project.photos?.length > 1 && (
-        <Lightbox
-   open={lightboxIndex >= 0}
-   close={() => {
-     setLightboxIndex(-1);
-     setGalleryDesc("");
-   }}
-   slides={slides}
-   index={lightboxIndex}
-   plugins={[Thumbnails, Captions]}
-   thumbnails={{ position: "bottom", height: 80, spacing: 8 }}
-   captions={{
-     descriptionTextAlign: "center",
-     descriptionMaxLines: 4,
-   }}
- />
-      )}
+        {/* ────────── LIGHTBOX (only for 3+ photos) ────────── */}
+        {photos.length >= 3 && (
+          <Lightbox
+            open={lightboxIndex >= 0}
+            close={() => {
+              setLightboxIndex(-1);
+              setGalleryDesc("");
+            }}
+            slides={slides}
+            index={lightboxIndex}
+            plugins={[Thumbnails, Captions]}
+            thumbnails={{ position: "bottom", height: 80, spacing: 8 }}
+            captions={{
+              descriptionTextAlign: "center",
+              descriptionMaxLines: 4,
+            }}
+          />
+        )}
 
       {/* ────────── VIDEO ────────── */}
       {project.videoUrl && (

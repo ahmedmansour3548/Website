@@ -1,242 +1,298 @@
 ﻿/* ========================================================== */
-/*  PatternFactory – v3.0  (CSS‐only slide, bulletproof)      */
+/*  PatternFactory – v5.3 (fix true drag by pausing sync)    */
 /* ========================================================== */
 
-import React, {
-  useState, useEffect, useContext, useRef, useMemo,
-} from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { PatternContext } from '../../../index';
 import './PatternFactory.css';
-import { gsap } from "gsap";
+import { gsap } from 'gsap';
+
 /* ───────────────────────── UI CONFIG (unchanged) ────────── */
 const PARAM_CONFIG = [
-  { key: 'maxVertices',  label: 'Vertices',            min: 0,    max: 10000,  step: 1,     default: 100 },
-  { key: 'xPos',         label: 'X Position',          min: -10,  max: 10,     step: 0.01,  default: 0   },
-  { key: 'yPos',         label: 'Y Position',          min: -10,  max: 10,     step: 0.01,  default: 0   },
-  { key: 'xFunctionCode',label: 'X Function',          min: 0,    max: 25,     step: 1,     default: 0   },
-  { key: 'yFunctionCode',label: 'Y Function',          min: 0,    max: 25,     step: 1,     default: 1   },
-  { key: 'deltaAngle',   label: 'Δ Angle',             min: -2,   max: 2,      step: 0.001, default: 1   },
-  { key: 'scale',        label: 'Scale',               min: 0.01, max: 10,     step: 0.01,  default: 1   },
-  { key: 'xAngularFreq', label: 'X Angular Freq',      min: 0,    max: 10,     step: 0.01,  default: 1   },
-  { key: 'yAngularFreq', label: 'Y Angular Freq',      min: 0,    max: 10,     step: 0.01,  default: 1   },
-  { key: 'xPhase',       label: 'X Phase',             min: -Math.PI, max: Math.PI, step: 0.01, default: 0 },
-  { key: 'yPhase',       label: 'Y Phase',             min: -Math.PI, max: Math.PI, step: 0.01, default: 0 },
+  { key: 'maxVertices',  label: 'Vertices',       min: 0,        max: 10000,       step: 1,      default: 100 },
+  { key: 'xPos',         label: 'X Position',     min: -10,      max: 10,          step: 0.01,   default: 0   },
+  { key: 'yPos',         label: 'Y Position',     min: -10,      max: 10,          step: 0.01,   default: 0   },
+  { key: 'xFunctionCode',label: 'X Function',     min: 0,        max: 25,          step: 1,      default: 0   },
+  { key: 'yFunctionCode',label: 'Y Function',     min: 0,        max: 25,          step: 1,      default: 1   },
+  { key: 'deltaAngle',   label: 'Δ Angle',        min: -2,       max: 2,           step: 0.001, default: 1   },
+  { key: 'scale',        label: 'Scale',          min: 0.01,     max: 10,          step: 0.01,   default: 1   },
+  { key: 'xAngularFreq', label: 'X Angular Freq', min: 0,        max: 10,          step: 0.01,   default: 1   },
+  { key: 'yAngularFreq', label: 'Y Angular Freq', min: 0,        max: 10,          step: 0.01,   default: 1   },
+  { key: 'xPhase',       label: 'X Phase',        min: -Math.PI, max: Math.PI,     step: 0.01,   default: 0 },
+  { key: 'yPhase',       label: 'Y Phase',        min: -Math.PI, max: Math.PI,     step: 0.01,   default: 0 },
 ];
 
-const CLAMP = { maxVertices: { min: 0, max: 10000 }, xFunctionCode: { min: 0, max: 25 }, yFunctionCode: { min: 0, max: 25 } };
-const initRates = () => Object.fromEntries(PARAM_CONFIG.map(({ key }) => [key, 0]));
+/* Any parameters that need clamping beyond their slider bounds: */
+const CLAMP = {
+  maxVertices:   { min: 0,    max: 10000 },
+  xFunctionCode: { min: 0,    max: 25 },
+  yFunctionCode: { min: 0,    max: 25 },
+};
 
-/* ────────────────────────────────────────────────────────── */
+/* Initialize “vals” to each param’s default */
+const initVals = () =>
+  Object.fromEntries(PARAM_CONFIG.map(({ key, default: d }) => [key, d]));
+
+/* Initialize “rates” (all zero) */
+const initRates = () =>
+  Object.fromEntries(PARAM_CONFIG.map(({ key }) => [key, 0]));
+
+/* Initialize “run” flags (all false) */
+const initRunFlags = () =>
+  Object.fromEntries(PARAM_CONFIG.map(({ key }) => [key, false]));
+
 export default function PatternFactory() {
   const { pattern } = useContext(PatternContext);
 
-  /* state --------------------------------------------------- */
-  const [vals,  setVals]  = useState(Object.fromEntries(PARAM_CONFIG.map(({ key, default: d }) => [key, d])));
-  const [rates, setRates] = useState(initRates());
-  const [run,   setRun]   = useState({});
-  const timers            = useRef({});
+  /* ───────────────────────────────────────────────────── */
+  /*  STATE                                                */
+  /* ───────────────────────────────────────────────────── */
+  const [vals, setVals]           = useState(initVals());
+  const [rates, setRates]         = useState(initRates());
+  const [runFlags, setRunFlags]     = useState(initRunFlags());
+  const [openState, setOpenState]   = useState(false);
 
-  /* panel open flag */
-  const [open, setOpen]   = useState(false);
-  const panelRef          = useRef(null);
-  const tabRef   = useRef(null);
-  /* helpers ------------------------------------------------- */
+  /* ───────────────────────────────────────────────────── */
+  /*  REFS for animation and slider DOM elements            */
+  /* ───────────────────────────────────────────────────── */
+  const panelRef     = useRef(null);
+  const tabRef       = useRef(null);
+  const animationRef = useRef(null);
+  const lastTimeRef  = useRef(null);
+
+  /* Keep up‐to‐date copies of runFlags & rates in refs */
+  const runRef   = useRef(initRunFlags());
+  const ratesRef = useRef(initRates());
+
+  /* Refs to each slider so we can manually set .value when state changes */
+  const sliderRefs = useRef({});
+  const rateRefs   = useRef({});
+
+  /* ───────────────────────────────────────────────────── */
+  /*  HELPER: clamp a value to its min/max if needed        */
+  /* ───────────────────────────────────────────────────── */
   const clamp = (k, v) => {
     const rule = CLAMP[k];
-    return rule ? Math.max(rule.min, Math.min(rule.max, v)) : v;
+    return rule
+      ? Math.max(rule.min, Math.min(rule.max, v))
+      : v;
   };
 
-  const numeric = useMemo(() => {
-    const out = {};
-    for (const [k, v] of Object.entries(vals)) out[k] = clamp(k, parseFloat(v) || 0);
-    return out;
-  }, [vals]);
-
-  /* redraw pattern */
-  useEffect(() => { if (pattern) pattern.regenerate(numeric); }, [pattern, numeric]);
-
-  /* intervals for animating parameters ---------------------- */
+  /* ───────────────────────────────────────────────────── */
+  /*  Whenever “vals” changes, regenerate pattern            */
+  /* ───────────────────────────────────────────────────── */
   useEffect(() => {
-    Object.entries(rates).forEach(([k, r]) => {
-      if (r !== 0 && run[k]) startLoop(k, r);
+    if (pattern) {
+      pattern.regenerate(vals);
+    }
+  }, [pattern, vals]);
+
+  /* ───────────────────────────────────────────────────── */
+  /*  Start/stop the rAF loop when runFlags or rates update  */
+  /* ───────────────────────────────────────────────────── */
+  useEffect(() => {
+    runRef.current = runFlags;
+    ratesRef.current = rates;
+
+    const anyRunning = Object.values(runRef.current).some((x) => x);
+    if (anyRunning && !animationRef.current) {
+      animationRef.current = requestAnimationFrame(animateFrame);
+    }
+    if (!anyRunning && animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
+      lastTimeRef.current = null;
+    }
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+        lastTimeRef.current = null;
+      }
+    };
+  }, [runFlags, rates]);
+
+  /* ───────────────────────────────────────────────────── */
+  /*  The rAF callback that advances all “running” params   */
+  /* ───────────────────────────────────────────────────── */
+  const animateFrame = (time) => {
+    if (lastTimeRef.current == null) {
+      lastTimeRef.current = time;
+    }
+    const deltaSeconds = (time - lastTimeRef.current) / 1000;
+    lastTimeRef.current = time;
+
+    let anyStillRunning = false;
+    setVals((prev) => {
+      const next = { ...prev };
+      Object.entries(runRef.current).forEach(([k, isRunning]) => {
+        if (isRunning && ratesRef.current[k] !== 0) {
+          anyStillRunning = true;
+          next[k] = clamp(k, prev[k] + ratesRef.current[k] * deltaSeconds);
+        }
+      });
+      return next;
     });
-    return () => Object.values(timers.current).forEach(clearInterval);
-  }, [run, rates]);
 
-  const startLoop = (k, r) => {
-    clearInterval(timers.current[k]);
-    timers.current[k] = setInterval(() => {
-      setVals(p => ({ ...p, [k]: clamp(k, (parseFloat(p[k]) || 0) + r) }));
-    }, 16);
+    if (anyStillRunning) {
+      animationRef.current = requestAnimationFrame(animateFrame);
+    } else {
+      animationRef.current = null;
+      lastTimeRef.current = null;
+    }
   };
 
-  /* mouse-move listener — bottom ⅓ opens, mid screen closes --- */
+  /* ───────────────────────────────────────────────────── */
+  /*  PANEL OPEN/CLOSE via mouse position                    */
+  /* ───────────────────────────────────────────────────── */
   useEffect(() => {
-    const handle = (e) => {
+    const handleMouse = (e) => {
       const y = e.clientY;
       const h = window.innerHeight;
       const inside = panelRef.current?.contains(e.target);
+
       if (y > h * 0.66 || inside) {
-        setOpen(true);
+        setOpenState(true);
       } else if (y < h * 0.5 && !inside) {
-        setOpen(false);
+        setOpenState(false);
       }
     };
-    window.addEventListener('mousemove', handle);
-    return () => window.removeEventListener('mousemove', handle);
+    window.addEventListener('mousemove', handleMouse);
+    return () => window.removeEventListener('mousemove', handleMouse);
   }, []);
 
-
-  /* sliding animation */
-useEffect(() => {
-  if (!panelRef.current || !tabRef.current) return;
-
-  // how tall the panel will be when it’s open
-  const panelHeight = panelRef.current.offsetHeight;
-
-  // lift or drop the tab by exactly the panel’s height
-  gsap.to(tabRef.current, {
-    bottom: open ? panelHeight : 0,
-    ease: 'expo.out',
-    duration: 0.5,
-  });
-}, [open]);
-
-  /* mutators ------------------------------------------------ */
-  const setVal  = (k, v) => setVals(p => ({ ...p, [k]: clamp(k, v) }));
-  const setRate = (k, v) => setRates(r => ({ ...r, [k]: v }));
-  const toggleRun = (k) =>
-    setRun(prev => {
-      const now = !prev[k];
-      if (!now) clearInterval(timers.current[k]);
-      return { ...prev, [k]: now };
+  /* ───────────────────────────────────────────────────── */
+  /*  Slide the “CONTROLS” tab when openState changes        */
+  /* ───────────────────────────────────────────────────── */
+  useEffect(() => {
+    if (!panelRef.current || !tabRef.current) return;
+    const panelHeight = panelRef.current.offsetHeight;
+    gsap.to(tabRef.current, {
+      bottom: openState ? panelHeight : 0,
+      ease: 'expo.out',
+      duration: 0.5,
     });
+  }, [openState]);
 
-const Row = ({ cfg }) => {
-  const { key, label, min, max, step } = cfg;
-  const playing   = run[key];
-  const sliderRef = useRef(null);
-  const rateRef   = useRef(null);
-  const valsRef   = useRef(vals);
-
-  // Always keep valsRef up to date for regenerations:
-  useEffect(() => { valsRef.current = vals; }, [vals]);
-
-  // General drag‑binder factory
-  const bindDrag = (ref, isRate) => {
-    const el = ref.current;
-    if (!el) return () => {};
-
-    // how fine to snap:
-    const snapStep = isRate ? 0.001 : parseFloat(el.getAttribute('step')) || step;
-
-    const onDown = (e) => {
-      e.preventDefault();
-      document.body.style.userSelect = 'none'; // avoid text‑select
-      const rect = el.getBoundingClientRect();
-
-      const onMove = (ev) => {
-        let pct = (ev.clientX - rect.left) / rect.width;
-        pct = Math.max(0, Math.min(1, pct));
-        let v = min + pct * (max - min);
-        // snap to step
-        const k = Math.round((v - min) / snapStep);
-        v = min + k * snapStep;
-        el.value = v;
-
-        if (isRate) {
-          setRate(key, v);
-        } else {
-          // immediate visual update:
-          const fresh = { ...valsRef.current, [key]: v };
-          if (pattern) pattern.regenerate(fresh);
-        }
-      };
-
-      const onUp = (ev) => {
-        document.body.style.userSelect = '';
-        document.removeEventListener('pointermove', onMove);
-        document.removeEventListener('pointerup', onUp);
-        if (!isRate) {
-          // commit to React state last
-          setVal(key, parseFloat(el.value));
-        }
-      };
-
-      document.addEventListener('pointermove', onMove);
-      document.addEventListener('pointerup',   onUp);
-    };
-
-    el.addEventListener('pointerdown', onDown);
-    return () => el.removeEventListener('pointerdown', onDown);
+  /* ───────────────────────────────────────────────────── */
+  /*  MUTATORS                                               */
+  /* ───────────────────────────────────────────────────── */
+  const changeVal = (k, v) => {
+    setVals((prev) => ({ ...prev, [k]: clamp(k, v) }));
   };
 
-  // bind both sliders whenever they mount or `playing` toggles
-  useEffect(() => {
-    const unbindMain = bindDrag(sliderRef, /*isRate=*/false);
-    const unbindRate = playing ? bindDrag(rateRef, /*isRate=*/true) : () => {};
-    return () => {
-      unbindMain();
-      unbindRate();
-    };
-  }, [playing, key]);
+  const changeRate = (k, v) => {
+    setRates((prev) => ({ ...prev, [k]: v }));
+    ratesRef.current = { ...ratesRef.current, [k]: v };
+  };
 
-  return (
-    <div className="pf-row" key={key}>
-      <span className="pf-label">{label}</span>
+  const toggleRun = (k) => {
+    const updated = { ...runFlags, [k]: !runFlags[k] };
+    setRunFlags(updated);
+    runRef.current = updated;
+  };
 
-      {/* main slider */}
-      <input
-        ref={sliderRef}
-        className="pf-slider"
-        type="range"
-        min={min} max={max} step={step}
-        defaultValue={vals[key]}
-      />
+  /* ───────────────────────────────────────────────────── */
+  /*  ROW: one line with label, uncontrolled slider, number, ▶/⏸, rate‐slider */
+  /* ───────────────────────────────────────────────────── */
+  const Row = ({ cfg }) => {
+    const { key, label, min, max, step } = cfg;
+    const isRunning = runFlags[key];
 
-      {/* manual number input */}
-      <input
-        className="pf-number"
-        type="number"
-        min={min} max={max} step={step}
-        value={vals[key]}
-        onChange={e => setVal(key, clamp(key, e.target.value))}
-      />
+    /* Create or reuse refs for this key’s sliders */
+    const sliderRef = (sliderRefs.current[key] ??= React.createRef());
+    const rateRef   = (rateRefs.current[key]   ??= React.createRef());
 
-      {/* animate toggle */}
-      <button
-        className={`pf-anim-btn ${playing ? 'running' : ''}`}
-        onClick={() => toggleRun(key)}
-      >
-        {playing ? '⏸' : '▶'}
-      </button>
+    /* Local ref to detect if the user is currently dragging the main slider */
+    const draggingSlider = useRef(false);
 
-      {/* rate slider */}
-      {playing && (
+    /* Whenever state “vals[key]” changes, push to DOM only if not dragging */
+    useEffect(() => {
+      if (!draggingSlider.current && sliderRef.current) {
+        sliderRef.current.value = vals[key];
+      }
+    }, [vals[key]]);
+
+    /* Local ref to detect if user is dragging the rate slider */
+    const draggingRate = useRef(false);
+
+    /* Whenever state “rates[key]” changes, push to DOM only if not dragging */
+    useEffect(() => {
+      if (!draggingRate.current && rateRef.current) {
+        rateRef.current.value = rates[key];
+      }
+    }, [rates[key]]);
+
+    return (
+      <div className="pf-row" key={key}>
+        <span className="pf-label">{label}</span>
+
+        {/* Main slider: uncontrolled, with drag detection */}
         <input
-          ref={rateRef}
-          className="pf-rate"
+          className="pf-slider"
           type="range"
-          min={-1} max={1} step={0.001}         // fine 0.001 steps here
-          defaultValue={rates[key]}
+          min={min}
+          max={max}
+          step={step}
+          defaultValue={vals[key]}
+          ref={sliderRef}
+          onPointerDown={() => { draggingSlider.current = true; }}
+          onPointerUp={() => { draggingSlider.current = false; changeVal(key, parseFloat(sliderRef.current.value)); }}
+          onInput={(e) => changeVal(key, parseFloat(e.target.value))}
+          onChange={(e) => changeVal(key, parseFloat(e.target.value))}
         />
-      )}
-    </div>
-  );
-};
 
+        {/* Number input: controlled */}
+        <input
+          className="pf-number"
+          type="number"
+          min={min}
+          max={max}
+          step={step}
+          value={vals[key]}
+          onChange={(e) => changeVal(key, parseFloat(e.target.value))}
+        />
 
-  /* JSX ----------------------------------------------------- */
+        {/* Play/Pause button */}
+        <button
+          className={`pf-anim-btn ${isRunning ? 'running' : ''}`}
+          onClick={() => toggleRun(key)}
+        >
+          {isRunning ? '⏸' : '▶'}
+        </button>
+
+        {/* Rate slider: only show if running */}
+        {isRunning && (
+          <input
+            className="pf-rate"
+            type="range"
+            min={-1}
+            max={1}
+            step={0.001}
+            defaultValue={rates[key]}
+            ref={rateRef}
+            onPointerDown={() => { draggingRate.current = true; }}
+            onPointerUp={() => { draggingRate.current = false; changeRate(key, parseFloat(rateRef.current.value)); }}
+            onInput={(e) => changeRate(key, parseFloat(e.target.value))}
+            onChange={(e) => changeRate(key, parseFloat(e.target.value))}
+          />
+        )}
+      </div>
+    );
+  };
+
+  /* ─────────────────────────────────────────────────────── */
   return (
     <>
       <div ref={tabRef} className="pf-tab">CONTROLS</div>
-
-      <aside ref={panelRef} className={`pf-panel ${open ? 'open' : ''}`}>
+      <aside ref={panelRef} className={`pf-panel ${openState ? 'open' : ''}`}>
         <div className="pf-scroll">
-          {PARAM_CONFIG.map(cfg => <Row key={cfg.key} cfg={cfg} />)}
+          {PARAM_CONFIG.map((cfg) => (
+            <Row key={cfg.key} cfg={cfg} />
+          ))}
         </div>
       </aside>
-      
     </>
   );
 }

@@ -1,5 +1,5 @@
 /* ========================================================== */
-/*  PatternFactory – v3.0 (CSS slide)                         */
+/*  PatternFactory – v5.0 (controllers CSS)                    */
 /* ========================================================== */
 
 :root {
@@ -10,7 +10,7 @@
   --pf-danger:    #ff3355;
 }
 
-/* ► always-visible tab ------------------------------------- */
+/* ► always-visible “CONTROLS” tab ------------------------- */
 .pf-tab {
   position: fixed;
   left: 50%;
@@ -28,6 +28,7 @@
 }
 
 /* ► sliding panel ----------------------------------------- */
+/* Hidden by default (translateY(100%)) */
 .pf-panel {
   position: fixed;
   left: 0;
@@ -36,45 +37,52 @@
   background: var(--pf-bg);
   border-top: 2px solid var(--pf-neon);
   box-shadow: 0 0 24px var(--pf-neon-soft);
-  transform: translateY(100%);                /* hidden */
-  transition: transform 0.45s cubic-bezier(0.19,1,0.22,1);
+  transform: translateY(100%);
+  transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1);
   z-index: 2000;
 }
-.pf-panel.open { transform: translateY(0%); } /* fully shown */
+.pf-panel.open {
+  transform: translateY(0%);
+}
 
+/* ► remove inner scrolling so all rows show at once -------- */
 .pf-scroll {
-  max-height: 40vh;
-  overflow-y: auto;
   padding: 22px 30px 50px;
 }
 
-/* ► row / controls ---------------------------------------- */
-.pf-row { display:flex; align-items:center; gap:10px; padding:6px 0; }
+/* ► each row of controls ---------------------------------- */
+.pf-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+}
 
 .pf-label {
-  flex:0 0 150px;
-  color:var(--pf-neon);
-  font:500 0.9rem 'Orbitron',sans-serif;
-  letter-spacing:0.6px;
+  flex: 0 0 150px;
+  color: var(--pf-neon);
+  font: 500 0.9rem 'Orbitron', sans-serif;
+  letter-spacing: 0.6px;
 }
 
+/* ► number input on the right of each slider ------------- */
 .pf-number {
-  width:80px;
-  background:#111;
-  color:var(--pf-text);
-  border:1px solid var(--pf-neon-soft);
-  border-radius:4px;
-  padding:2px 4px;
-  text-align:center;
+  width: 80px;
+  background: #111;
+  color: var(--pf-text);
+  border: 1px solid var(--pf-neon-soft);
+  border-radius: 4px;
+  padding: 2px 4px;
+  text-align: center;
 }
 
+/* ► both main slider and rate slider use the same styling - */
 .pf-slider,
 .pf-rate {
   -webkit-appearance: none;
   appearance: none;
   flex: 1 1 auto;
-  /* bigger hit area for easier grabbing */
-  height: 20px;
+  height: 20px;             /* enlarge hit area */
   background: transparent;
   cursor: pointer;
 }
@@ -93,13 +101,13 @@
   border-radius: 2px;
 }
 
-/* neon thumb */
+/* neon circular thumb */
 .pf-slider::-webkit-slider-thumb,
 .pf-rate::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 14px;
   height: 14px;
-  margin-top: -5px; /* center it in the 20px hit area */
+  margin-top: -5px;  /* center in 20px */
   background: var(--pf-neon);
   border-radius: 50%;
   box-shadow: 0 0 6px var(--pf-neon);
@@ -113,15 +121,24 @@
   border-radius: 50%;
 }
 
+/* ► play/pause button (circle) --------------------------- */
 .pf-anim-btn {
-  width:34px; height:34px;
-  border:none; border-radius:50%;
-  background:var(--pf-neon);
-  color:#081018;
-  font-size:1rem; line-height:1;
-  cursor:pointer;
-  transition:background 0.25s;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: var(--pf-neon);
+  color: #081018;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.25s;
 }
-.pf-anim-btn.running { background:var(--pf-danger); }
+.pf-anim-btn.running {
+  background: var(--pf-danger);
+}
 
-.pf-rate { max-width:120px; }
+/* ► restrict rate slider’s width so the row doesn’t overflow */
+.pf-rate {
+  max-width: 120px;
+}

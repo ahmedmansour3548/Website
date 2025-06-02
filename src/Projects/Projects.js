@@ -88,7 +88,7 @@ Object.assign(previewImg.style, {
     container.appendChild(previewImg);
 
     //
-    // Basic Three.js boilerplate: scene, camera, renderer
+    // scene, camera, renderer
     //
     const { clientWidth: W, clientHeight: H } = container;
     const scene = new THREE.Scene();
@@ -378,7 +378,7 @@ const startImageTransition = obj => {
     menuGroupRef.current = group;
     scene.add(group);
 
-    // 4Add lines + sprites for each project in the “selected” category
+    // Add lines + sprites for each project in the “selected” category
     const projs = categories.find(c => c.id === selected)?.projects || [];
     const color = COLOR_MAP[selected];
     const radius = 1.5;
@@ -417,7 +417,7 @@ const startImageTransition = obj => {
 
       // Find an appropriate fontSize that fits
       let fontSize = 64,
-        minFont = 24,
+        minFont = 2,
         margin = 512 * 0.05;
       while (fontSize > minFont) {
         ctx.font = `bold ${fontSize}px "Speculum"`;

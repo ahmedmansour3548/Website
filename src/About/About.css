@@ -335,6 +335,7 @@
   gap: 1.5rem 2rem;
   justify-items: center;
   margin: 1.5rem 0;
+  align-items: center;
 }
 
 /* primary: 3×2 grid  */
@@ -411,6 +412,34 @@
   color: #666;
   font-family: 'Montserrat-Italic', serif;
 }
+
+
+.about-tech-grid.about-primary .about-tech-item {
+  display: grid;
+  grid-template-rows: 60px auto;
+  justify-items: center;
+  gap: 0.5rem;
+}
+
+.about-tech-grid.about-primary .about-tech-item img {
+  align-self: center;
+  max-height: 60px;
+  margin: 0;
+}
+
+.about-tech-grid.about-secondary .about-tech-item {
+  display: grid;
+  grid-template-rows: 40px auto;
+  justify-items: center;
+  gap: 0.5rem;
+}
+
+.about-tech-grid.about-secondary .about-tech-item img {
+  align-self: center;
+  max-height: 40px;
+  margin: 0;
+}
+
 
 /* ────────────────────────────────────────────────────────── */
 /*  Social Links                                              */
