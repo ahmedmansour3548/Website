@@ -56,3 +56,27 @@
   background:var(--project-color);
   color:#000;
 }
+
+.proj-list .proj-link-disabled {
+  display: block;
+  width: calc(79%);       /* same indent as .proj-list a */
+  margin-left: 8px;
+  padding: .4rem .8rem;
+  background: none;
+  border: 2px solid var(--project-color);
+  color: var(--project-color);
+  font: 600 clamp(.6rem, 1.4vw, .75rem)/1 'Speculum';
+  text-decoration: none;
+  transition: background .25s, color .25s;
+  cursor: default;        /* not clickable */
+  user-select: none;
+  white-space: normal;    /* allow wrapping */
+  word-break: break-word; /* match .proj-list a */
+  overflow: visible;      /* match .proj-list a */
+}
+
+.proj-list .proj-link-disabled:hover,
+.proj-list .proj-link-disabled.active {
+  background: var(--project-color);
+  color: #000;
+}

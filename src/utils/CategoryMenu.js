@@ -6,10 +6,12 @@ import "./CategoryMenu.css";
 const CategoryMenu = ({ categories = [] }) => {
   const { pathname } = useLocation();
   const [openCat, setOpenCat] = useState(null);
-  const listRefs = useRef({});                // map cat.id → <ul> element
+  const listRefs = useRef({}); // map cat.id → <ul> element
 
   /* create refs as we render */
-  const setRef = (id) => (el) => { listRefs.current[id] = el; };
+  const setRef = (id) => (el) => {
+    listRefs.current[id] = el;
+  };
 
   /* run accordion animation whenever openCat changes */
   useEffect(() => {
@@ -33,22 +35,39 @@ const CategoryMenu = ({ categories = [] }) => {
         <div key={cat.id} className="cat-block">
           <button
             className={`cat-btn ${openCat === cat.id ? "open" : ""}`}
-            onClick={() => setOpenCat((prev) => (prev === cat.id ? null : cat.id))}
+            onClick={() =>
+              setOpenCat((prev) => (prev === cat.id ? null : cat.id))
+            }
           >
             {cat.title}
           </button>
 
           <ul ref={setRef(cat.id)} className="proj-list">
-            {cat.projects.map((p) => (
-              <li key={p.id}>
-                <Link
-                  to={p.link}
-                  className={pathname.endsWith(p.id) ? "active" : ""}
-                >
-                  {p.title}
-                </Link>
-              </li>
-            ))}
+            {cat.projects.map((p) => {
+              const isActive = pathname.endsWith(p.id);
+
+              // If this category is "Xplor", render a non-clickable <span>
+              if (cat.title === "Xplor") {
+                return (
+                  <li key={p.id}>
+                    <span
+                      className={`proj-link-disabled ${isActive ? "active" : ""}`}
+                    >
+                      {p.title}
+                    </span>
+                  </li>
+                );
+              }
+
+              // Otherwise, render a normal <Link>
+              return (
+                <li key={p.id}>
+                  <Link to={p.link} className={isActive ? "active" : ""}>
+                    {p.title}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
       ))}

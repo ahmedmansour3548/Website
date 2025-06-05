@@ -1239,8 +1239,8 @@
             "projects": [
                 {
                     "id": "xplor",
-                    "title": "Xplor",
-                    "description": "TestDescription",
+                    "title": "Coming Soon!",
+                    "description": "How did you get here?",
                     "headerPhoto": "/assets/photos/projects/xplor/xplor_header.jpg",
                     "keyTakeaways": [
                         "Improved real-time collaboration skills",
@@ -1253,30 +1253,9 @@
                         }
                     ],
                     "link": "/projects/xplor/xplor",
-                    "dateCompleted": "October 7th, 2020",
-                    "softwareUsed": "Unity",
-                    "hardware": "Meta Quest 2",
-                    "teamMembers": [
-                        "Javier Aguilar",
-                        "Jeff Fortune",
-                        "Timothy Jinks",
-                        "Jacob Powers"
-                    ],
-                    "sponsors": [
-                        "Dr. Ryan McMahan",
-                        "\nDr. Michael Kolodrubetz"
-                    ],
-                    "techUsed": [
-                        {
-                            "label": "Unity",
-                            "icon": "unity.svg",
-                            "url": "/projects/unity",
-                            "bullets": [
-                                "Built core 3D environment and physics interactions",
-                                "Utilized Unity's XR Toolkit for VR interactions"
-                            ]
-                        }
-                    ]
+                    "dateStarted": "October 7th, 2022",
+                    "softwareUsed": "Android Studio",
+                    "hardware": "Android"
                 }
             ]
         }
