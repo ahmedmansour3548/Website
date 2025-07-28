@@ -528,6 +528,51 @@
                             ]
                         }
                     ]
+                },
+                {
+                    "id": "artist",
+                    "title": "ARtist",
+                    "link": "/projects/vrar/artist",
+                    "description": "\tARtist is a Augmented Reality painting application that allows users to create 3D art that lives in your physical space. It is designed to be intuitive and easy to use, allowing users to use their hands to draw, rather than being tied down with controllers. The application features a variety of brush presets, as well as a color palette for selecting colors. You need only to pinch your index finger and your thumb to begin making your masterpiece.\n\n\t This project was created for the University of Central Florida Camp Connect showcase, where middle and high school students come to the campus and visit some of our research labs. Our lab tends to be mostly interactive, giving the kids a chance to try out the technology that we work with everyday.",
+                    "headerPhoto": "/assets/photos/projects/artist/artist_header.png",
+                    "photos": [
+                        {
+                            "url": "/assets/photos/projects/artist/1.gif"
+                        }
+                    ],
+                    "quickFacts": [
+                        {
+                            "label": "Date Started",
+                            "icon": "date-completed.svg",
+                            "value": "June 2025"
+                        },
+                        {
+                            "label": "Date Completed",
+                            "icon": "date-completed.svg",
+                            "value": "June 2025"
+                        },
+                        {
+                            "label": "Principal Software",
+                            "icon": "wrench.svg",
+                            "value": "Unity"
+                        },
+                        {
+                            "label": "Principal Hardware",
+                            "icon": "hmd.svg",
+                            "value": "Meta Quest Pro"
+                        }
+                    ],
+                    "techUsed": [
+                        {
+                            "label": "Unity",
+                            "icon": "unity.svg",
+                            "bullets": [
+                                "Utilized Meta SDK for Passthrough and hand tracking",
+                                "Created a palette menu for selecting stroke color width, and erasing strokes"
+                            ]
+                        }
+                    ],
+                    "videoUrl": "https://www.youtube.com/embed/jh5M_V6bmtw"
                 }
             ]
         },
