@@ -10,7 +10,7 @@ To run the project locally:
 1. Clone the repo:
    ```bash
    git clone https://github.com/ahmedmansour3548/Website.git
-   cd <your-repo>```
+   cd Website```
 2. Install dependencies:
    ```bash
    npm install
