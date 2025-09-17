@@ -1,7 +1,7 @@
 # Personal Website
 
 This is the source code for my personal website ([ahmedamansour.com](https://ahmedamansour.com/)), built with **React** using [Create React App](https://github.com/facebook/create-react-app).  
-It serves as my portfolio and a place to showcase projects, research, and other work.
+It serves as my professional portfolio and a place to showcase projects, research, and artistic endeavors.
 
 ## 🚀 Getting Started
 
