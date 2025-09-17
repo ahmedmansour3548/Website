@@ -10,7 +10,11 @@ To run the project locally:
 1. Clone the repo:
    ```bash
    git clone https://github.com/<your-username>/<your-repo>.git
-   cd <your-repo>
+   cd <your-repo>```
 2. Install dependencies:
-```base
-  npm install
+   ```bash
+   npm install
+2. Start the development server:
+   ```bash
+   npm start
+
